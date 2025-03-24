@@ -1,0 +1,68 @@
+<!--
+Author: Harrison Armstrong
+Date: 24/03/2025
+Description:    This is the register page for the website. 
+                It is a simple form that takes in an email and password. 
+                The email and password are then sent to the server for validation.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Register-</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <script src="index.js"></script>
+
+    <div class="header">
+        <img src="logo.png" alt="Image Cannot be Loaded...">
+    </div>
+
+    <div class="form" id="registerForm">
+        <h1 class="title">Register</h1>
+        <form action="/" method="POST">
+            <div class="input">
+                <label for="firstName">First Name</label>
+                <input type="text" name="firstName" id="firstName" placeholder="Stuart" required>
+            </div>
+
+            <div class="input">
+                <label for="surname">Surname</label>
+                <input type="text" name="surname" id="surname" placeholder="Little" required>
+            </div>
+
+            <div class="input">
+                <label for="email">Email</label>
+                <input type="text" name="email" id="emailLogin" placeholder="stuart.little@email.com" required>
+            </div>
+
+            <div class="input">
+                <label for="password">Password</label>
+                <input type="password" name="password" id="passwordRegister" placeholder="password" required>
+                <img src="eye-open.svg" alt="Error Loading Image..." id="hideButtonRegister" class="hideButton">
+            </div>
+
+            <div class="input">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" name="confirmPassword" id="confirmPasswordRegister" placeholder="password" required>
+                <img src="eye-open.svg" alt="Error Loading Image..." id="hideButtonConf" class="hideButton">
+            </div>
+
+            <div class="input">
+                <button><a href="/login">Back</a></button>
+            </div>
+
+            <div class="input">
+                <button type="submit">Register</button>
+            </div>
+    </div>
+
+    <div class="footer">
+
+    </div>
+  </body>
+</html>

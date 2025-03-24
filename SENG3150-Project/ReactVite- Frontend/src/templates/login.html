@@ -1,0 +1,55 @@
+<!--
+Author: Harrison Armstrong
+Date: 24/03/2025
+Description:    This is the login page for the website. 
+                It is a simple form that takes in an email and password. 
+                The email and password are then sent to the server for authentication. 
+                If the user is authenticated, they are redirected to the dashboard. 
+                If the user is not authenticated, an error message is displayed.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Login-</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <script src="index.js"></script>
+    <div>
+        <div class="header">
+            <img src="logo.png" alt="Image Cannot be Loaded...">
+        </div>
+
+        <div class="form" id="loginForm">
+            <h1 class="title">Login</h1>
+            <form action="/" method="POST">
+                <div class="input">
+                    <label for="email">Email</label>
+                    <input type="text" name="email" id="emailLogin" placeholder="stuart.little@email.com" required>
+                </div>
+                <div class="input">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="passwordLogin" placeholder="password" required>
+                    <img src="eye-open.svg" alt="Error Loading Image..." id="hideButton" class="hideButton">
+                </div>
+
+                <div class="links">
+                    <a href="/forget-password" id="forgotPassword">Forgot Password?</a>
+                    <a href="/register" id="createAccount">Create An Account?</a>
+                </div>
+
+                <div class="input">
+                    <button type="submit">Login</button>
+                </div>
+        </div>
+
+        <div class="footer">
+
+        </div>
+    </div>
+  </body>
+</html>
