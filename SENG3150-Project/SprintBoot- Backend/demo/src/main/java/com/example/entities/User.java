@@ -11,10 +11,10 @@ public class User {
 
   public User(String firstName, String surname, String email, boolean verified, String password) {
     this.firstName = firstname;
-	this.surname = surname;
+	  this.surname = surname;
     this.email = email;
-	this.verified = false;
-	this.password = password;
+	  this.verified = false;
+	  this.password = password;
   }
 
   public String getFirstName() {
@@ -26,11 +26,11 @@ public class User {
   }
   
   public String getSurname(){
-	return surname;
+	  return surname;
   }
   
   public void setSurname(String surname){
-	this.surname = surname;
+	  this.surname = surname;
   }
 
   public String getEmail() {
@@ -42,18 +42,18 @@ public class User {
   }
   
   public boolean verified(){
-	return verified;
+	  return verified;
   }
   
   public void setVerified(boolean verified){
-	this.verified = verified;
+	  this.verified = verified;
   }
   
   public String getPassword(){
-	return password;
+	  return password;
   }
   
   public void setPassword(String password){
-	this.password = password;
+	  this.password = password;
   }
 }
