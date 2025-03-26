@@ -1,22 +1,36 @@
 package com.example.entities;
 
 public class User {
-  private String name;
+  private String firstName;
   private String email;
+  private String surname;
+  private boolean verified;
+  private String password;
 
   public User() {}
 
-  public User(String name, String email) {
-    this.name = name;
+  public User(String firstName, String surname, String email, boolean verified, String password) {
+    this.firstName = firstname;
+	this.surname = surname;
     this.email = email;
+	this.verified = false;
+	this.password = password;
   }
 
-  public String getName() {
-    return name;
+  public String getFirstName() {
+    return firstName;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+  
+  public String getSurname(){
+	return surname;
+  }
+  
+  public void setSurname(String surname){
+	this.surname = surname;
   }
 
   public String getEmail() {
@@ -25,5 +39,21 @@ public class User {
 
   public void setEmail(String email) {
     this.email = email;
+  }
+  
+  public boolean verified(){
+	return verified;
+  }
+  
+  public void setVerified(boolean verified){
+	this.verified = verified;
+  }
+  
+  public String getPassword(){
+	return password;
+  }
+  
+  public void setPassword(String password){
+	this.password = password;
   }
 }
