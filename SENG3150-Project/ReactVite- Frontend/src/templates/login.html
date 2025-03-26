@@ -19,6 +19,7 @@ Description:    This is the login page for the website.
   </head>
   <body>
     <script src="index.js"></script>
+    <script type="module" src="./validation-loader.js"></script>
     <div>
         <div class="header">
             <img src="logo.png" alt="Image Cannot be Loaded...">
@@ -26,7 +27,7 @@ Description:    This is the login page for the website.
 
         <div class="form" id="loginForm">
             <h1 class="title">Login</h1>
-            <form action="/" method="POST">
+            <form action="/" method="POST" onsubmit="return handleFormSubmit()">
                 <div class="input">
                     <label for="email">Email</label>
                     <input type="text" name="email" id="emailLogin" placeholder="stuart.little@email.com" required>
