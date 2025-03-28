@@ -10,7 +10,7 @@ public class User {
   public User() {}
 
   public User(String firstName, String surname, String email, boolean verified, String password) {
-    this.firstName = firstname;
+    this.firstName = firstName;
 	  this.surname = surname;
     this.email = email;
 	  this.verified = false;
