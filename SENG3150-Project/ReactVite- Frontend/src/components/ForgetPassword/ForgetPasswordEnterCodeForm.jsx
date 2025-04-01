@@ -1,3 +1,10 @@
+/**
+ * Author: Harrison Armstrong
+ * Date: 1/4/2025
+ * Description: This component is used to render the code entry form for the forget password feature.
+ * It allows the user to enter their unique code to reset their password.
+ */
+
 import React from 'react';
 import { useState, useEffect } from 'react';
 

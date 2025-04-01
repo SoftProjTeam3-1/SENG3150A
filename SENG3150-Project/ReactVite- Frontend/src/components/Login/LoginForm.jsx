@@ -1,5 +1,11 @@
-import { useState, useEffect } from 'react'
+/**
+ * Author: Harrison Armstrong
+ * Date: 1/4/2025
+ * Description: This component is used to render the login form for the application.
+ * It allows the user to enter their username and password to log in. 
+ */
 
+import { useState, useEffect } from 'react'
 import React from 'react'
 
 const LoginForm = () => {
