@@ -21,7 +21,7 @@ public class WebController {
 
   @GetMapping("/user")
   public User user() {
-    User user = new User("Mark Wallis", "mark.wallis@newcastle.edu.au");
+    User user = new User("Mark", "Wallis", "mark.wallis@email.com", true, "13672005");
     return user;
   }
 }
