@@ -8,6 +8,9 @@ import Login from './pages/Login';
 import EntryLayout from './layout/EntryLayout';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import ForgetPassword from './pages/ForgetPassword';
+import ForgetPasswordEnterCode from './pages/ForgetPasswordEnterCode';
+import ResetPassword from './pages/ResetPassword';
 
 
 const router = createBrowserRouter(
@@ -17,6 +20,9 @@ const router = createBrowserRouter(
       <Route path='/' element={<EntryLayout />}>
         <Route index element={<Login />} />
         <Route path='/register' element={<Register />} />
+        <Route path='/forget-password' element={<ForgetPassword />} />
+        <Route path='/forget-password-enter-code' element={<ForgetPasswordEnterCode />} />
+        <Route path='/reset-password' element={<ResetPassword/>}/>
       </Route>)
 
       <Route path='/dashboard' element={<Dashboard />} />
