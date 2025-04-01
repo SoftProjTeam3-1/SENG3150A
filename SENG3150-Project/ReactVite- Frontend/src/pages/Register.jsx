@@ -1,3 +1,10 @@
+/**
+ * Author: Harrison Armstrong (c3430852)
+ * Date: 2025-04-01
+ * Description: This component is used to render the register page.
+ * It includes the RegisterForm component which is used to register a new user.
+ */
+
 import React from 'react'
 import RegisterForm from '../components/Register/RegisterForm'
 

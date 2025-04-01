@@ -1,3 +1,10 @@
+/*
+  Author: Harrison Armstrong
+  Date: 1/4/2025
+  Description: This component is used to render the email entry form for the forget password feature.
+  It allows the user to enter their email address and submit it to receive a password reset link.
+*/
+
 import React from 'react';
 import { useState, useEffect } from 'react';
 

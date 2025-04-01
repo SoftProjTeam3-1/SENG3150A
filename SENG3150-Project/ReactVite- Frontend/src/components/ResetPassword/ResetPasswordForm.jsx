@@ -1,3 +1,10 @@
+/**
+ * Author: Harrison Armstrong 
+ * Date: 1/4/2025
+ * Description: This component is used to render the reset password form for the application.
+ * It allows the user to enter their new password and confirm it to reset their password.
+ */
+
 import React from 'react';
 import { useState, useEffect } from 'react'
 

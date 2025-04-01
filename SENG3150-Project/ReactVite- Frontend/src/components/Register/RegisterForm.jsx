@@ -1,3 +1,11 @@
+/**
+ * Author: Harrison Armstrong 
+ * Date: 1/4/2025
+ * Description: This component is used to render the registration form for the application.
+ * It allows the user to enter their first name, surname, username, password and confirm password to register their account.
+ * The form is submitted to the server for processing.
+ */
+
 import React from 'react';
 import { useState, useEffect } from 'react';
 
