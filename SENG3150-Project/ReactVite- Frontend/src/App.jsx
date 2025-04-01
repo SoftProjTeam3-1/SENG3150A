@@ -7,6 +7,7 @@ function App() {
 
 
   const [firstName, setFirstName] = useState('')
+  
   const [name, setName] = useState('')
 
   const [email, setEmail] = useState('')
