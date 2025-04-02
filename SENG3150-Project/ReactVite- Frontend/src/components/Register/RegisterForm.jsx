@@ -7,56 +7,32 @@
  */
 
 import React from 'react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 const RegisterForm = () => {
-    const [firstName, setFirstName] = useState('')
+  
+  
+      const [firstName, setFirstName] = useState('');
+      const [surname, setSurname] = useState('');
+      const [email, setEmail] = useState('');
+      const [password, setPassword] = useState('');
+    
+        const handleSubmit = async (e) => {
+      e.preventDefault();
+      try {
+        const response = await fetch('/api/user/submits', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ firstName, surname, email, password }),
+        });
+        const text = await response.text();
+        console.log(text);
+      } catch (err) {
+        console.error('Error submitting user:', err);
+      } 
 
-    const [name, setName] = useState('')
     
-    const [email, setEmail] = useState('')
       
-    const [password, setPassword] = useState('')
-    
-    const [message, setMessage] = useState('')
-    
-      const handleSubmit = async e => {
-    
-        e.preventDefault()
-        try {
-          const response = await fetch('api/user/submits', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ name, email })
-          })
-          const data = await response.json()
-          setMessage(data.message)
-        } catch (err) {
-          console.error('Error submitting user:', err)
-        }
-      }
-    
-      //Use effect runs every time the component is rendered
-      //The empty array at the end of the useEffect function means that it will only run once
-      useEffect(() => {
-        const fetchUser = async () => {
-          try {
-            const response = await fetch('api/user')
-            console.log(response)
-            const data = await response.json()
-            setName(data.firstName	)
-            setEmail(data.email)
-    
-          } catch (err) {
-            console.error('Error fetching user:', err)
-          }
-    
-        }
-    
-        fetchUser()
-      }, [message])
 
   return (
 <div>
@@ -76,8 +52,8 @@ const RegisterForm = () => {
                 <input
                     type="text"
                     placeholder="Joe"
-                    value={name}
-                    onChange={e => setName(e.target.value)}
+                    value={firstName}
+                    onChange={e => setFirstName(e.target.value)}
                     id="firstName"
                     name="firstName"
                     required
@@ -94,8 +70,8 @@ const RegisterForm = () => {
                 <input
                     type="text"
                     placeholder="Bloggs"
-                    value={name}
-                    onChange={e => setName(e.target.value)}
+                    value={surname}
+                    onChange={e => setSurname(e.target.value)}
                     id="firstName"
                     name="firstName"
                     required
@@ -112,8 +88,8 @@ const RegisterForm = () => {
                 <input
                     type="email"
                     placeholder="joe.bloggs@email.com"
-                    value={name}
-                    onChange={e => setName(e.target.value)}
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
                     id="email"
                     name="email"
                     required
@@ -128,8 +104,10 @@ const RegisterForm = () => {
               </label>
               <div className="mt-2">
                 <input
+                  onChange={e => setPassword(e.target.value)}
                   id="password"
                   name="password"
+                  value={password}
                   type="password"
                   placeholder='********'
                   required
@@ -158,7 +136,8 @@ const RegisterForm = () => {
 
           <div>
             <button
-              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+
+              className="flex w-full justify- center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               <a href="/">Back</a>
             </button>
