@@ -1,10 +1,11 @@
 /*
 Author: Oscar Scorgie
+Edits by: Harrison Armstrong (1/4/2025)
 Date: 26/03/2025
 Description: This is a file that loads the validations based on the type of form submitted.
 */
 
-import { validateLogin, validateRegister } from '../lib/validation.js';
+import { validateLogin, validateRegister } from './lib/validation.js';
 
 
 /*
@@ -19,11 +20,11 @@ window.handleFormSubmit = function () {
     const currentPage = window.location.pathname;
 
     //  Determines the page and which validation method to use
-    if (currentPage.includes("login.html")) {
+    if (currentPage.equals("")) {
         console.log("login ");
         return validateLogin("emailLogin", "passwordLogin");
-    } else if (currentPage.includes("register.html")) {
-        console.log("Register ");
+    } else if (currentPage.equals("register")) {
+        console.log("register ");
         return validateRegister("emailLogin", "passwordRegister", "confirmPasswordRegister");
     }
 };
