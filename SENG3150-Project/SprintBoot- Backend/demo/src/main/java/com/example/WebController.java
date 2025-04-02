@@ -1,12 +1,13 @@
 package com.example;
 
-import com.example.entities.User;
 import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.entities.User;
 
 @RestController
 public class WebController {
@@ -21,7 +22,7 @@ public class WebController {
 
   @GetMapping("/user")
   public User user() {
-    User user = new User("Mark Wallis", "mark.wallis@newcastle.edu.au");
+    User user = new User("Mark ", "wallius", "mark.wallis@newcastle.edu.au", false, null);
     return user;
   }
 }
