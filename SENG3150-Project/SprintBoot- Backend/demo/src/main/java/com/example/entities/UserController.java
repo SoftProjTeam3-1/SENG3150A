@@ -11,12 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class UserController {
+
     UserService userService = new UserService();
 
  
 
     @PostMapping("/api/user/submits")
-    public String register(@RequestBody User entity) {
+    public boolean  register(@RequestBody User entity) {
         User user = new User();
         user.setFirstName(entity.getFirstName());
         user.setSurname(entity.getSurname());
@@ -26,12 +27,33 @@ public class UserController {
 
         Boolean result = userService.registerUser(user);
         if (result) {
-            return "User registered successfully!";
+            return true;
         } else {
-            return "User already exists!";
+            return false;
         }
     }
 
+    
+
+    //login
+    @PostMapping("/api/user/login")
+    public boolean  login(@RequestBody User entity) {
+        User user = new User();
+        user.setEmail(entity.getEmail());
+        user.setPassword(entity.getPassword());
+
+        User result = userService.getUser(user.getEmail());
+        if (result != null && result.getPassword().equals(user.getPassword())) {
+            System.err.println("User found: " + result.getFirstName());
+            return true;
+
+        } else {
+            System.out.println("User not found " + user.getEmail() + " " + user.getPassword());
+            return false;
+        }
+       
+       
+    }
     
     @GetMapping("/api/user/getEmails")
     public String[] returrnEmails() {

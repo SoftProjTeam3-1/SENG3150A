@@ -21,12 +21,9 @@ public  class UserService {
 
             return false; // User already exists
         }
-        //ecnypt password
-        user.setPassword(encryptPassword(user.getPassword()));
         userStore.put(user.getEmail(), user);
         return true; // User registered successfully
     }
-
 
     public String[] getUserData() {
         List<String> userData = new ArrayList<>();
@@ -35,7 +32,7 @@ public  class UserService {
             userData.add(data);
         }
         return userData.toArray(new String[0]);
-      
+        
 
     }
 

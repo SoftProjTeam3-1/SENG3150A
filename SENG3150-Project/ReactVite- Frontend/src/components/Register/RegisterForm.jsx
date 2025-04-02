@@ -8,6 +8,8 @@
 
 import React from 'react';
 import { useState } from 'react';
+import { sha256 } from 'js-sha256';
+import { Route } from 'react-router-dom';
 
 const RegisterForm = () => {
   
@@ -16,26 +18,38 @@ const RegisterForm = () => {
       const [surname, setSurname] = useState('');
       const [email, setEmail] = useState('');
       const [password, setPassword] = useState('');
-    
-        const handleSubmit = async (e) => {
-      e.preventDefault();
-      try {
-        const response = await fetch('/api/user/submits', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ firstName, surname, email, password }),
-        });
-        const text = await response.text();
-        console.log(text);
-      } catch (err) {
-        console.error('Error submitting user:', err);
-      } 
+
+      const hashPassword = (password) => {
+        return sha256(password); // Hash the password using SHA-256
+      }
+
+      const handleSubmit = async (e) => {
+
+        e.preventDefault();
+        try {
+          const response = await fetch('/api/user/submits', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ firstName, surname, email, password: hashPassword(password) }),
+          });
+          const text = await response.text();
+          
+          console.log(text);
+          //route to the login page after successful registration
+          if (response.ok) {
+            console.log('User registered successfully!');
+            window.location.href = '/'; // Redirect to the login page
+          }
+        } catch (err) {
+          console.error('Error submitting user:', err);
+        }
+    };
 
     
       
 
   return (
-<div>
+  <div>
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
           Register
