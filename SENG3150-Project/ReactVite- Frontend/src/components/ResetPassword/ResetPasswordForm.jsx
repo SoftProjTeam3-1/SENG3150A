@@ -7,6 +7,7 @@
 
 import React from 'react';
 import { useState, useEffect } from 'react'
+import { matchingPasswords, validatePassword } from '../../lib/validation.js'
 
 const ResetPasswordForm = () => {
     //  public User(String firstName, String surname, String email, boolean verified, String password) {
@@ -21,6 +22,12 @@ const ResetPasswordForm = () => {
 
   const handleSubmit = async e => {
 
+    changeValidation(matchingPasswords(
+      {password1 : password , password2 : password2}).Valid);
+
+    changeValidation(validatePassword( 
+      { password : password } ).Valid );
+    
     e.preventDefault()
     try {
       const response = await fetch('api/user/submits', {
@@ -85,13 +92,13 @@ const ResetPasswordForm = () => {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm/6 font-medium text-gray-900">
+              <label htmlFor="password2" className="block text-sm/6 font-medium text-gray-900">
                 Confirm Password
               </label>
               <div className="mt-2">
                 <input
-                  id="password"
-                  name="password"
+                  id="password2"
+                  name="password2"
                   type="password"
                   placeholder='********'
                   required
