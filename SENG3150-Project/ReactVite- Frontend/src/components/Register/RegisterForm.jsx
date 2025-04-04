@@ -9,7 +9,8 @@
 import React from 'react';
 import { useState } from 'react';
 import { sha256 } from 'js-sha256';
-import { Route } from 'react-router-dom';
+import { Route } from 'react-router-dom'
+import {validateRegister} from "../../lib/validation.js";
 
 const RegisterForm = () => {
   
@@ -18,14 +19,21 @@ const RegisterForm = () => {
       const [surname, setSurname] = useState('');
       const [email, setEmail] = useState('');
       const [password, setPassword] = useState('');
+      const [confirmPassword, setConfirmPassword] = useState('');
 
       const hashPassword = (password) => {
         return sha256(password); // Hash the password using SHA-256
       }
 
+    let [viewValidation, changeValidation] = useState(false)
+
       const handleSubmit = async (e) => {
 
         e.preventDefault();
+
+        changeValidation(validateRegister(
+            {emailId:email, passwordId:password, confirmPasswordId:confirmPassword}));
+
         try {
           const response = await fetch('/api/user/submits', {
             method: 'POST',
@@ -36,7 +44,7 @@ const RegisterForm = () => {
           
           console.log(text);
           //route to the login page after successful registration
-          if (response.ok) {
+          if (response.ok && viewValidation) {
             console.log('User registered successfully!');
             window.location.href = '/'; // Redirect to the login page
           }
@@ -137,8 +145,10 @@ const RegisterForm = () => {
               </label>
               <div className="mt-2">
                 <input
+                    onChange={e => setConfirmPassword(e.target.value)}
                   id="password"
                   name="password"
+                  value={confirmPassword}
                   type="password"
                   placeholder='********'
                   required

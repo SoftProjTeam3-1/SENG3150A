@@ -15,9 +15,11 @@ Description: This is a file that contains all the validation functions.
         Returns:
         Returns false if validation fails with an array of the error log, true otherwise.
 */
-export function validateEmail(emailId) {
+export function validateEmail({email}) {
     //  Get the Element ID
-    const email = document.getElementById(emailId).value.trim();
+    //const email = document.getElementById(emailId).value.trim();
+
+
 
     //  Initialise the error log
     let errorLog = [];
@@ -30,7 +32,39 @@ export function validateEmail(emailId) {
     //  Test the email is valid via an @ symbol
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(email)) {
-        errorLog.push("- Please enter a valid email address");
+        errorLog.push("- Please enter a valid email address.");
+    }
+
+    //  Return false if there are errors else true
+    //  If there are errors returns error log
+    return {
+        Valid: errorLog.length === 0,
+        Data: errorLog
+    };
+}
+
+
+export function validateNumbers({numbers}) {
+    //  Get the Element ID
+    //const email = document.getElementById(emailId).value.trim();
+
+
+
+    //  Initialise the error log
+    let errorLog = [];
+
+    //  Test the email is not left blank
+    if (!numbers){
+        errorLog.push("Authentication code is required.");
+    }
+
+    if(numbers.length < 8){
+        errorLog.push("- Authentication code must be at least 8 characters.");
+    }
+
+    //  Test the authentication code is just numbers
+    if (!/^\d+$/.test(numbers)) {
+        errorLog.push("-- Authentication code must contain only numbers.");
     }
 
     //  Return false if there are errors else true
@@ -52,9 +86,9 @@ export function validateEmail(emailId) {
         Returns:
         Returns false if validation fails with an array of the error log, true otherwise.
 */
-export function validatePassword(passwordId) {
+export function validatePassword({password}) {
     //  Get the Element ID
-    const password = document.getElementById(passwordId).value.trim();
+    //const password = document.getElementById(passwordId).value.trim();
 
     //  Initialise the error log
     let errorLog = [];
@@ -101,10 +135,10 @@ export function validatePassword(passwordId) {
         Returns:
         Returns false if both passwords are not equal with an array of the error log, true otherwise.
 */
-export function matchingPasswords(passwordId1, passwordId2){
+export function matchingPasswords({password1, password2}){
 
-    const password1 = document.getElementById(passwordId1).value.trim();
-    const password2 = document.getElementById(passwordId2).value.trim();
+    //const password1 = document.getElementById(passwordId1).value.trim();
+    //const password2 = document.getElementById(passwordId2).value.trim();
 
     let errorLog = [];
 
@@ -130,10 +164,10 @@ export function matchingPasswords(passwordId1, passwordId2){
         Returns:
         Returns false if validation fails (and displays alert), true otherwise.
 */
-export function validateLogin(emailId, passwordId) {
+export function validateLogin({emailId, passwordId}) {
     //  Runs all validation functions
-    const emailResult = validateEmail(emailId);
-    const passwordResult = validatePassword(passwordId);
+    const emailResult = validateEmail({email:emailId});
+    const passwordResult = validatePassword({password:passwordId});
 
 
     //  Saves the data from the validation to
@@ -168,11 +202,13 @@ export function validateLogin(emailId, passwordId) {
         Returns:
         Returns false if validation fails (and displays alert), true otherwise.
 */
-export function validateRegister(emailId, passwordId, confirmPasswordId) {
+export function validateRegister({emailId, passwordId, confirmPasswordId}) {
     //  Runs all validation functions
-    const emailResult = validateEmail(emailId);
-    const passwordResult = validatePassword(passwordId);
-    const matchingPasswordsResult = matchingPasswords(passwordId,confirmPasswordId);
+    const emailResult = validateEmail({email:emailId});
+    const passwordResult = validatePassword({password:passwordId});
+    const matchingPasswordsResult = matchingPasswords(
+        {password1:passwordId, password2:confirmPasswordId});
+    //console.log(passwordId, confirmPasswordId);
 
     //  Saves the data from the validation to
     const emailValid = emailResult.Valid;
@@ -191,5 +227,41 @@ export function validateRegister(emailId, passwordId, confirmPasswordId) {
     //  Can be used as another form of verification
     //  if the alert lets the user through for some reason
     return emailValid && passwordValid && matchingPasswordsValid;
+}
+
+export function validateForgotPasswordEmail({emailId}){
+    const emailResult = validateEmail({email:emailId});
+
+    //  Saves the data from the validation to
+    const emailValid = emailResult.Valid;
+
+    //  Joins the error logs together
+    const errorLog = [...emailResult.Data]
+
+    //  Separates the error messages with a new line
+    if (errorLog.length > 0) {
+        alert(errorLog.join("\n"));
+    }
+
+    //  Returns a boolean of the decision
+    //  Can be used as another form of verification
+    //  if the alert lets the user through for some reason
+    return emailValid;
+}
+
+
+export function validateForgotPasswordNumbers({numbersId}){
+    const numbersResult = validateNumbers({numbers:numbersId});
+
+    const numbersValid = numbersResult.Valid;
+
+    const errorLog = [...numbersResult.Data]
+
+    //  Separates the error messages with a new line
+    if (errorLog.length > 0) {
+        alert(errorLog.join("\n"));
+    }
+
+    return numbersValid;
 }
 

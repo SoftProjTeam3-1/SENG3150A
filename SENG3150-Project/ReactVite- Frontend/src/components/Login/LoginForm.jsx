@@ -8,6 +8,7 @@
 import { useState, useEffect } from 'react'
 import React from 'react'
 import { sha256 } from 'js-sha256';
+import {validateLogin} from "../../lib/validation.js";
 
 
 const LoginForm = () => {
@@ -23,9 +24,13 @@ const LoginForm = () => {
         return sha256(password); // Hash the password using SHA-256
   }
 
-  const handleSubmit = async e => {
+  let [viewValidation, changeValidation] = useState(false)
 
+  const handleSubmit = async e => {
     e.preventDefault()
+
+    changeValidation(validateLogin({emailId:email,passwordId:password}));
+
     try {
       const response = await fetch('/api/user/login', {
         method: 'POST',
@@ -35,8 +40,8 @@ const LoginForm = () => {
         body: JSON.stringify({email, password: hashPassword(password) })
       })
       const data = await response.json()
-      
-      if(data == true){
+
+      if(data && viewValidation){
         console.log('User logged in successfully!')
         window.location.href = '/dashboard' // Redirect to the dashboard page
       }

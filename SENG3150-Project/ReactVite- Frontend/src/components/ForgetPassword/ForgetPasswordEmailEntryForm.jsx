@@ -7,6 +7,7 @@
 
 import React from 'react';
 import { useState, useEffect } from 'react';
+import {validateEmail, validateForgotPasswordEmail} from "../../lib/validation.js";
 
 const ForgetPasswordEmailEntryForm = () => {
     //  public User(String firstName, String surname, String email, boolean verified, String password) {
@@ -19,9 +20,14 @@ const ForgetPasswordEmailEntryForm = () => {
 
   const [message, setMessage] = useState('')
 
+  let [viewValidation, changeValidation] = useState(false)
+
   const handleSubmit = async e => {
 
     e.preventDefault()
+
+    changeValidation(validateForgotPasswordEmail({emailId:email}))
+
     try {
       const response = await fetch('api/user/submits', {
         method: 'POST',
@@ -31,6 +37,12 @@ const ForgetPasswordEmailEntryForm = () => {
         body: JSON.stringify({ name, email })
       })
       const data = await response.json()
+
+      if(data && viewValidation){
+        console.log('User logged in successfully!')
+        window.location.href = '/dashboard' // Redirect to the dashboard page
+      }
+
       setMessage(data.message)
     } catch (err) {
       console.error('Error submitting user:', err)
@@ -74,8 +86,8 @@ const ForgetPasswordEmailEntryForm = () => {
               <input
                 type="email"
                 placeholder="joe.bloggs@email.com"
-                value={name}
-                onChange={e => setName(e.target.value)}
+                value={email}
+                onChange={e => setEmail(e.target.value)}
                 id="email"
                 name="email"
                 required
@@ -86,7 +98,8 @@ const ForgetPasswordEmailEntryForm = () => {
 
           <div>
             <button
-              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                type="button"
+                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               <a href="/">Back</a>
             </button>

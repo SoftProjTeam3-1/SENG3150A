@@ -7,6 +7,7 @@
 
 import React from 'react';
 import { useState, useEffect } from 'react';
+import {validateForgotPasswordNumbers} from "../../lib/validation.js";
 
 const ForgetPasswordEnterCodeForm = () => {
 //  public User(String firstName, String surname, String email, boolean verified, String password) {
@@ -19,9 +20,13 @@ const ForgetPasswordEnterCodeForm = () => {
 
   const [message, setMessage] = useState('')
 
-  const handleSubmit = async e => {
+  let [viewValidation, changeValidation] = useState(false)
 
+  const handleSubmit = async e => {
     e.preventDefault()
+
+    changeValidation(validateForgotPasswordNumbers({numbersId:name}))
+
     try {
       const response = await fetch('api/user/submits', {
         method: 'POST',
@@ -31,6 +36,12 @@ const ForgetPasswordEnterCodeForm = () => {
         body: JSON.stringify({ name, email })
       })
       const data = await response.json()
+
+      if(data && viewValidation){
+        console.log('User logged in successfully!')
+        window.location.href = '/dashboard' // Redirect to the dashboard page
+      }
+
       setMessage(data.message)
     } catch (err) {
       console.error('Error submitting user:', err)
