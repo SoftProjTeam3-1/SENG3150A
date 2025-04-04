@@ -7,7 +7,7 @@
 
 import React from 'react';
 import { useState, useEffect } from 'react'
-import { matchingPasswords, validatePassword } from '../../lib/validation.js'
+import {matchingPasswords, validatePassword, validateResetPassword} from '../../lib/validation.js'
 
 const ResetPasswordForm = () => {
     //  public User(String firstName, String surname, String email, boolean verified, String password) {
@@ -18,15 +18,17 @@ const ResetPasswordForm = () => {
   
   const [password, setPassword] = useState('')
 
+  const [confirmPassword, setConfirmPassword] = useState('')
+
   const [message, setMessage] = useState('')
+
+  let [viewValidation, changeValidation] = useState(false)
 
   const handleSubmit = async e => {
 
-    changeValidation(matchingPasswords(
-      {password1 : password , password2 : password2}).Valid);
+    changeValidation(validateResetPassword(
+      {password1 : password , password2 : confirmPassword}));
 
-    changeValidation(validatePassword( 
-      { password : password } ).Valid );
     
     e.preventDefault()
     try {
@@ -38,6 +40,12 @@ const ResetPasswordForm = () => {
         body: JSON.stringify({ name, email })
       })
       const data = await response.json()
+
+      if(data && viewValidation){
+        console.log('User logged in successfully!')
+        window.location.href = '/dashboard' // Redirect to the dashboard page
+      }
+
       setMessage(data.message)
     } catch (err) {
       console.error('Error submitting user:', err)
@@ -80,8 +88,10 @@ const ResetPasswordForm = () => {
               </label>
               <div className="mt-2">
                 <input
+                    onChange={e => setPassword(e.target.value)}
                   id="password"
                   name="password"
+                  value={password}
                   type="password"
                   placeholder='********'
                   required
@@ -97,8 +107,10 @@ const ResetPasswordForm = () => {
               </label>
               <div className="mt-2">
                 <input
+                    onChange={e => setConfirmPassword(e.target.value)}
                   id="password2"
                   name="password2"
+                  value={confirmPassword}
                   type="password"
                   placeholder='********'
                   required

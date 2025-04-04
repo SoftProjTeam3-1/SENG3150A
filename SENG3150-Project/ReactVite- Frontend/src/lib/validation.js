@@ -265,3 +265,17 @@ export function validateForgotPasswordNumbers({numbersId}){
     return numbersValid;
 }
 
+export function validateResetPassword({password1, password2}){
+    const matchingResults = matchingPasswords({password1:password1,password2:password2})
+    const paswordValidatedRsults = validatePassword({password:password1})
+
+    const errorLog = [...matchingResults.Data, ...paswordValidatedRsults.Data]
+
+    //  Separates the error messages with a new line
+    if (errorLog.length > 0) {
+        alert(errorLog.join("\n"));
+    }
+
+    return matchingResults.Valid && paswordValidatedRsults.Valid;
+}
+
