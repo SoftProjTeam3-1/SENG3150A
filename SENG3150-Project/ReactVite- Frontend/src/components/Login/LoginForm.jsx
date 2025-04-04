@@ -9,6 +9,8 @@ import { useState, useEffect } from 'react'
 import React from 'react'
 import { sha256 } from 'js-sha256';
 import {validateLogin} from "../../lib/validation.js";
+import eyeOpenIcon from '../../assets/eye-open.svg';
+import eyeClosedIcon from '../../assets/eye-closed.svg';
 
 
 const LoginForm = () => {
@@ -118,6 +120,24 @@ const LoginForm = () => {
                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 onChange={e => setPassword(e.target.value)}
                 value={password}
+              >
+              </input>
+              <img 
+                src={eyeClosedIcon} 
+                alt='eye' 
+                id='hideButton' 
+                style={{ width: '5%', height: '5%' }}
+                onClick={() => {
+                  const passwordField = document.getElementById('password');
+                  const imageFile = document.getElementById('hideButton');
+                  if (passwordField.type === 'password') {
+                    passwordField.type = 'text'; // Show password
+                    imageFile.src = eyeOpenIcon; // Change image to open eye
+                  } else {
+                    passwordField.type = 'password'; // Hide password
+                    imageFile.src = eyeClosedIcon; // Change image to closed eye
+                  }
+                }}
               />
             </div>
           </div>

@@ -9,7 +9,12 @@ import ForgetPasswordEmailEntryForm from '../components/ForgetPassword/ForgetPas
 
 const ForgetPassword = () => {
   return (
-    <ForgetPasswordEmailEntryForm />
+    <>
+    <script type="module" src="../validation-loader.js"></script>
+    <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+      <ForgetPasswordEmailEntryForm/>
+    </div> 
+  </>
   )
 }
 
