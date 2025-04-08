@@ -10,13 +10,31 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
+import Logo from '../assets/logo.png';
+
 
 const EntryLayout = () => {
-  return (<>
-    <Header />
-    <Outlet />
-    <Footer />
-  </>
+  return (
+      <>
+        <div className="flex flex-col min-h-screen bg-[#f7fce8]">
+          <div className="flex justify-center items-center flex-1 bg-white-700 fit">
+
+          </div>
+
+          <Header/>
+
+
+          <main className="flex justify-center items-center flex-1 bg-white-700 fit">
+            <div className="flex flex-row items-center bg-gray-700 text-white rounded-lg p-6 w-95 max-w-4xl shadow-lg">
+              <Outlet/>
+            </div>
+          </main>
+          <div>
+
+          </div>
+          <Footer/>
+        </div>
+      </>
   )
 }
 

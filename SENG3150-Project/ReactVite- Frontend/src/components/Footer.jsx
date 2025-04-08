@@ -8,7 +8,9 @@ import React from 'react'
 
 const Footer = () => {
   return (
-    <></>
+    <>
+      <footer className="bg-green-700 w-full h-30 rounded-b-lg"></footer>
+    </>
   )
 }
 
