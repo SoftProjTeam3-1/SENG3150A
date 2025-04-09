@@ -1,3 +1,11 @@
+/**
+ * Author: Harrison Armstrong (c3430852)
+ * Date: 09042025
+ *  Description: This class represents an Activity entity in the database.
+ * * It contains fields for activityID, peopleRequired, name, description, favourite, and duration.
+ * *  It includes getters and setters for each field.
+ */
+
 package com.example.entities;
 
 import javax.persistence.Entity;
