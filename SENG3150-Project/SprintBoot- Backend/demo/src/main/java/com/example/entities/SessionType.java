@@ -1,3 +1,10 @@
+/*
+ * Author: Harrison Armstrong (c3430852)
+ * Date: 09042025
+ * Description: This class represents a SessionType entity in the database.
+ * It contains fields for sessionTypeID, name, and description.
+ */
+
 package com.example.entities;
 
 import javax.persistence.Entity;

@@ -1,3 +1,10 @@
+/*
+ * Author: Harrison Armstrong (c3430852)
+ * Date: 09042025
+ * Description: This class represents a Session entity in the database.
+ * It contains fields for sessionID and date.
+ */
+
 package com.example.entities;
 
 import java.sql.Date;

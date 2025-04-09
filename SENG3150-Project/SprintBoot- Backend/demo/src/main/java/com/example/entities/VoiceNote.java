@@ -1,3 +1,12 @@
+/*
+ * Author: Harrison Armstrong (c3430852)
+ * Date: 09042025
+ *  Description: This class represents a VoiceNote entity in the database.
+ * It contains fields for voiceNoteID and voiceFile.
+ * The voiceFile is represented as a File object.
+ */
+
+
 package com.example.entities;
 
 import java.io.File;
