@@ -23,4 +23,12 @@ public class Session {
     public void setSessionID(int sessionID) {
         this.sessionID = sessionID;
     }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
 }
