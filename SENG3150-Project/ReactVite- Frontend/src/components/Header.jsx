@@ -5,10 +5,20 @@
  */
 
 import React from 'react'
+import Logo from '../assets/logo.png';
 
 const Header = () => {
   return (
-    <></>
+    <>
+      {/* Grey Box + Logo */}
+      <div className="flex flex-col items-center bg-gray-700 rounded-t-lg">
+        <img
+            src={Logo}
+            alt="School Logo"
+            className="w-25 h-25 rounded-full "
+        />
+      </div>
+    </>
   )
 }
 
