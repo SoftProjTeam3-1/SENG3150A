@@ -7,7 +7,6 @@
 
 import { useState, useEffect } from 'react'
 import React from 'react'
-import { sha256 } from 'js-sha256';
 import {validateLogin} from "../../lib/validation.js";
 import eyeOpenIcon from '../../assets/eye-open.svg';
 import eyeClosedIcon from '../../assets/eye-closed.svg';
@@ -22,9 +21,7 @@ const LoginForm = () => {
 
   const [message, setMessage] = useState('')
 
-  const hashPassword = (password) => {
-        return sha256(password); // Hash the password using SHA-256
-  }
+
 
   let [viewValidation, changeValidation] = useState(false)
 
@@ -39,7 +36,7 @@ const LoginForm = () => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({email, password: hashPassword(password) })
+        body: JSON.stringify({email, password})
       })
       const data = await response.json()
 
@@ -121,6 +118,7 @@ const LoginForm = () => {
                 onChange={e => setPassword(e.target.value)}
                 value={password}
               >
+                
               </input>
               <img 
                 src={eyeClosedIcon} 

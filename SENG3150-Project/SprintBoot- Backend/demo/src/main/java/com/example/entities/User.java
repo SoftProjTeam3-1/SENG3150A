@@ -1,6 +1,8 @@
 package com.example.entities;
 
 public class User {
+
+  
   private String firstName;
   private String email;
   private String surname;
