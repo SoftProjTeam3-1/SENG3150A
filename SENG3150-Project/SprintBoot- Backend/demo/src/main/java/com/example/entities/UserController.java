@@ -12,53 +12,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserController {
 
-    UserService userService = new UserService();
+    private final UserService userService;
 
- 
-
-    @PostMapping("/api/user/submits")
-    public boolean  register(@RequestBody User entity) {
-        User user = new User();
-        user.setFirstName(entity.getFirstName());
-        user.setSurname(entity.getSurname());
-        user.setEmail(entity.getEmail());
-        user.setPassword(entity.getPassword());
-
-
-        Boolean result = userService.registerUser(user);
-        if (result) {
-            return true;
-        } else {
-            return false;
-        }
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
-
-    
 
     //login
     @PostMapping("/api/user/login")
-    public boolean  login(@RequestBody User entity) {
-        User user = new User();
-        user.setEmail(entity.getEmail());
-        user.setPassword(entity.getPassword());
+    public boolean login(@RequestBody User entity) {  return userService.loginUser(entity.getEmail(), entity.getPassword());}
 
-        User result = userService.getUser(user.getEmail());
-        if (result != null && result.getPassword().equals(user.getPassword())) {
-            System.err.println("User found: " + result.getFirstName());
-            return true;
+    
+    //register
+    @PostMapping("/api/user/register")
+    public boolean registerUser(@RequestBody User entity) { return userService.registerUser(entity); }
 
-        } else {
-            System.out.println("User not found " + user.getEmail() + " " + user.getPassword());
-            return false;
-        }
-       
-       
-    }
     
     @GetMapping("/api/user/getEmails")
-    public String[] returrnEmails() {
-        return userService.getUserData();
-    }
+    public String[] returrnEmails() {  return userService.getUserData(); }
 
       
     
