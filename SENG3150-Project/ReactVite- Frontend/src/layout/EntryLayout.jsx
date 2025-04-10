@@ -20,16 +20,22 @@ const EntryLayout = () => {
         <div className="flex flex-col min-h-screen bg-[#f7fce8]">
 
           {/* Box before header */}
-          <div className="flex justify-center items-center flex-1 bg-white-700 fit">
+          <div className="flex justify-center items-center flex-1 bg-white-700">
           </div>
 
           {/* Header */}
           <Header/>
 
           {/* Grey box for output */}
-          <main className="flex justify-center items-center flex-1 bg-white-700 fit">
-            <div className="flex flex-row items-center bg-gray-700 text-white rounded-lg p-6 w-95 max-w-4xl shadow-lg">
-              <Outlet/>
+          <main className="flex justify-center items-center flex-1 bg-white-700 ">
+            <div className="flex flex-row items-center bg-gray-700 text-white rounded-lg p-6 h-120 w-100 max-w-4xl shadow-lg"
+                 style={{marginBottom: '-1%'}}>
+
+              <div className={"text-white flex justify-center items-center flex-1"}
+                   style={{color: 'white'}}>
+                <Outlet/>
+              </div>
+
             </div>
           </main>
           <div>

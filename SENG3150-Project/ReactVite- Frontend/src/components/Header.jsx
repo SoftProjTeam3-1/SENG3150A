@@ -11,11 +11,12 @@ const Header = () => {
   return (
     <>
       {/* Grey Box + Logo */}
-      <div className="flex flex-col items-center bg-gray-700 rounded-t-lg">
+      <div className="flex flex-col items-center bg-gray-700 h-20 rounded-t-lg">
         <img
             src={Logo}
             alt="School Logo"
-            className="w-25 h-25 rounded-full "
+            className="w-30 h-30 rounded-full "
+            style={{marginLeft: "-90%", marginTop: "-1%"}}
         />
       </div>
     </>
