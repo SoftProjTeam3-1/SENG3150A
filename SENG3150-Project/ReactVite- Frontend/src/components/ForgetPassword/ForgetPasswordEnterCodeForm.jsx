@@ -8,6 +8,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import {validateForgotPasswordNumbers} from "../../lib/validation.js";
+import './forgotPassword.css';
 
 const ForgetPasswordEnterCodeForm = () => {
 //  public User(String firstName, String surname, String email, boolean verified, String password) {
@@ -70,16 +71,16 @@ const ForgetPasswordEnterCodeForm = () => {
 
 
   return (
-<div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+<div className="forgotPassword-card">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-            <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
+            <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">
             Reset Password
             </h2>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="Username" className="block text-sm/6 font-medium text-gray-900">
+            <label htmlFor="Username" className="block text-sm/6 font-medium text-white">
               Enter Code
             </label>
             <div className="mt-2">
@@ -98,16 +99,16 @@ const ForgetPasswordEnterCodeForm = () => {
 
           <div>
             <button
-              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              type="submit"
+              className="flex w-full justify-center rounded-md bg-orange-400 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-orange-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              <a href="/">Back</a>
+              Enter
             </button>
             <br></br>
             <button
-              type="submit"
-              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                className="flex w-full justify-center rounded-md bg-orange-400 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-orange-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              Enter
+              <a href="/">Back</a>
             </button>
           </div>
         </form>

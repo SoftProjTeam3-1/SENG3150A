@@ -10,42 +10,36 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
-import Logo from '../assets/logo.png';
 
 
 const EntryLayout = () => {
   return (
       <>
         {/* Big white box */}
-        <div className="flex flex-col min-h-screen bg-[#f7fce8]">
+        <div className="flex flex-col min-h-screen bg-white">
 
           {/* Box before header */}
-          <div className="flex justify-center items-center flex-1 bg-white-700">
+          <div className={"flex justify-center items-center bg-white h-15"}>
           </div>
 
           {/* Header */}
           <Header/>
 
           {/* Grey box for output */}
-          <main className="flex justify-center items-center flex-1 bg-white-700 ">
-            <div className="flex flex-row items-center bg-gray-700 text-white rounded-lg p-6 h-120 w-100 max-w-4xl shadow-lg"
-                 style={{marginBottom: '-1%'}}>
-
-              <div className={"text-white flex justify-center items-center flex-1"}
-                   style={{color: 'white'}}>
+            <div className={"flex justify-center"}>
+              <div>
                 <Outlet/>
               </div>
-
             </div>
-          </main>
-          <div>
-
+          <div className={"mt-auto"}>
             {/* Footer*/}
+            <Footer/>
           </div>
-          <Footer/>
         </div>
+
       </>
   )
 }
+
 
 export default EntryLayout

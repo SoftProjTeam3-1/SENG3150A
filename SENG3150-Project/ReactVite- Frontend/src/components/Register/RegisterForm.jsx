@@ -9,6 +9,7 @@
 import React, { useState } from 'react';
 import { sha256 } from 'js-sha256';
 import { validateRegister } from "../../lib/validation.js";
+import './register.css';
 
 const RegisterForm = () => {
 
@@ -82,9 +83,9 @@ const RegisterForm = () => {
   ];
 
   return (
-    <div>
+    <div className={"register-card"}>
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
+        <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">
           Register
         </h2>
       </div>
@@ -94,7 +95,7 @@ const RegisterForm = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* First Name */}
           <div>
-            <label htmlFor="firstName" className="block text-sm/6 font-medium text-gray-900">
+            <label htmlFor="firstName" className="block text-sm/6 font-medium text-white">
               First Name
             </label>
             <div className="mt-2">
@@ -113,7 +114,7 @@ const RegisterForm = () => {
 
           {/* Surname */}
           <div>
-            <label htmlFor="surname" className="block text-sm/6 font-medium text-gray-900">
+            <label htmlFor="surname" className="block text-sm/6 font-medium text-white">
               Surname
             </label>
             <div className="mt-2">
@@ -132,7 +133,7 @@ const RegisterForm = () => {
 
           {/* Username (Email) */}
           <div>
-            <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900">
+            <label htmlFor="email" className="block text-sm/6 font-medium text-white">
               Email
             </label>
             <div className="mt-2">
@@ -151,7 +152,7 @@ const RegisterForm = () => {
 
           {/* Password */}
           <div>
-            <label htmlFor="password" className="block text-sm/6 font-medium text-gray-900">
+            <label htmlFor="password" className="block text-sm/6 font-medium text-white">
               Password
             </label>
             <div className="mt-2">
@@ -171,7 +172,7 @@ const RegisterForm = () => {
 
           {/* Confirm Password */}
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm/6 font-medium text-gray-900">
+            <label htmlFor="confirmPassword" className="block text-sm/6 font-medium text-white">
               Confirm Password
             </label>
             <div className="mt-2">
@@ -213,18 +214,18 @@ const RegisterForm = () => {
           {/* Buttons */}
           <div>
             <button
-              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                type="submit"
+                className="flex w-full justify-center rounded-md bg-orange-400 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-orange-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              <a href="/">Back</a>
+              Enter
             </button>
           </div>
 
           <div>
             <button
-              type="submit"
-              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="flex w-full justify-center rounded-md bg-orange-400 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-orange-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              Enter
+              <a href="/">Back</a>
             </button>
           </div>
         </form>

@@ -10,6 +10,7 @@ import React from 'react'
 import {validateLogin} from "../../lib/validation.js";
 import eyeOpenIcon from '../../assets/eye-open.svg';
 import eyeClosedIcon from '../../assets/eye-closed.svg';
+import './login.css';
 
 
 const LoginForm = () => {
@@ -73,7 +74,7 @@ const LoginForm = () => {
   }, [message])
   
   return (
-    <div>
+    <div className={"login-card"}>
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">
           Login
@@ -106,7 +107,7 @@ const LoginForm = () => {
                 Password
               </label>
             </div>
-            <div className="mt-2">
+            <div className="mt-2 relative">
               <input
                 id="password"
                 name="password"
@@ -118,17 +119,16 @@ const LoginForm = () => {
                 onChange={e => setPassword(e.target.value)}
                 value={password}
               >
-                
               </input>
 
               <img 
                 src={eyeClosedIcon} 
                 alt='eye' 
-                id='hideButton' 
-                style={{ width: '7%', height: '7%' }}
+                id='hideButton'
                 onClick={() => {
                   const passwordField = document.getElementById('password');
                   const imageFile = document.getElementById('hideButton');
+
                   if (passwordField.type === 'password') {
                     passwordField.type = 'text'; // Show password
                     imageFile.src = eyeOpenIcon; // Change image to open eye
@@ -137,6 +137,7 @@ const LoginForm = () => {
                     imageFile.src = eyeClosedIcon; // Change image to closed eye
                   }
                 }}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer w-5 h-5"
               />
             </div>
           </div>

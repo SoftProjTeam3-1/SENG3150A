@@ -16,7 +16,7 @@ const Header = () => {
             src={Logo}
             alt="School Logo"
             className="w-30 h-30 rounded-full "
-            style={{marginLeft: "-90%", marginTop: "-1%"}}
+            style={{marginLeft: "-90%", marginTop: "-15.5px"}}
         />
       </div>
     </>
