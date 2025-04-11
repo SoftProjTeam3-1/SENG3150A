@@ -1,19 +1,27 @@
 /**
  * Author: Harrison Armstrong (c3430852)
- * Date: 09042025
+ * Date: 12042025
  *  Description: This class represents an Activity entity in the database.
  * * It contains fields for activityID, peopleRequired, name, description, favourite, and duration.
  * *  It includes getters and setters for each field.
+ * 
+ * * It includes a many-to-one relationship with the ActivityType entity.
+ * 
  */
 
 package com.example.entities;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Activity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int activityID;
 
     private int peopleRequired;
@@ -21,6 +29,10 @@ public class Activity {
     private String description;
     private boolean favourite;
     private String duration;
+
+    @ManyToOne
+    @JoinColumn(name = "activityTypeID")
+    private ActivityType activityType;
 
     public Activity(String name, String description, int peopleRequired, String duration) {
         this.name = name;
@@ -75,5 +87,13 @@ public class Activity {
 
     public void setDuration(String duration) {
         this.duration = duration;
+    }
+
+    public ActivityType getActivityType() {
+        return activityType;
+    }
+
+    public void setActivityType(ActivityType activityType) {
+        this.activityType = activityType;
     }
 }
