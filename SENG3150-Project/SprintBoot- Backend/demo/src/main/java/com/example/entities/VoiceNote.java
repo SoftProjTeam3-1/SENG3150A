@@ -32,7 +32,8 @@ public class VoiceNote {
     @JoinColumn(name = "sessionActivityID")
     private SessionActivity sessionActivity;
 
-    public VoiceNote(File voiceFile){
+    public VoiceNote(File voiceFile, SessionActivity sessionActivity) {
+        this.sessionActivity = sessionActivity;
         this.voiceFile = voiceFile;
     }
 

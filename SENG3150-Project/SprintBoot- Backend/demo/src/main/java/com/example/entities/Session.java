@@ -36,8 +36,10 @@ public class Session {
     private SessionType type;
 
 
-    public Session(Date date) {
+    public Session(Date date, User user, SessionType type) {
         this.date = date;
+        this.user = user;
+        this.type = type;
     }
 
     public int getSessionID() {

@@ -34,11 +34,12 @@ public class Activity {
     @JoinColumn(name = "activityTypeID")
     private ActivityType activityType;
 
-    public Activity(String name, String description, int peopleRequired, String duration) {
+    public Activity(String name, String description, int peopleRequired, String duration, ActivityType activityType) {
         this.name = name;
         this.description = description;
         this.peopleRequired = peopleRequired;
         this.duration = duration;
+        this.activityType = activityType;
     }
 
     public int getActivityID() {
