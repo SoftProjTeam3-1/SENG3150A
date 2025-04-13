@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
 .register-card {
-    @apply items-center bg-gray-700 text-white rounded-lg  h-210 w-100 max-w-4xl shadow-lg;
+    @apply items-center bg-gray-700 text-white rounded-lg  h-225 w-100 max-w-4xl shadow-lg;
     padding: 30px;
 }

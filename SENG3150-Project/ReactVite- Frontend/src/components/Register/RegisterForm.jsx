@@ -76,10 +76,11 @@ const RegisterForm = () => {
 
   } 
 
-  const passWordHints = [
-    "Password must be at least 8 characters",
-    "Password must contain at least one uppercase letter.",
-    "Password must include a special character."
+  const passwordHints = [
+    {text: "Password must be at least 8 characters", isValid: password.length >= 8},
+    {text: "Password must contain at least one uppercase letter.", isValid: /[A-Z]/.test(password)},
+    {text: "Password must include a special character.", isValid: /[!@#$%^&*(),.?":{}|<>]/.test(password)},
+    {text: "Passwords must match.", isValid: password === confirmPassword}
   ];
 
   return (
@@ -188,25 +189,22 @@ const RegisterForm = () => {
                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
               />
                   {/* Password Hints */}
-                  <ul className="space-y-1 text-sm text-gray-500 :text-neutral-500 mt-4">
-
-                  {passWordHints.map((hint, index) => (
-
+              <ul className="space-y-1 text-sm text-gray-300 text-neutral-500 mt-4">
+                {passwordHints.map((hint, index) => (
                     <li key={index} className="flex items-center">
-                        X
-                      <svg
-                        className="h-4 w-4 flex-shrink-0 text-gray-400"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                        aria-hidden="true"
-                      >
-                    
-                      </svg>
-                      <span className="ml-2">{hint}</span>
+                      {hint.isValid ? (
+                          <svg className="h-4 w-4 text-green-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-7.5 7.5a1 1 0 01-1.414 0l-3.5-3.5a1 1 0 011.414-1.414L8 11.086l6.793-6.793a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                      ) : (
+                          <svg className="h-4 w-4 text-red-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fillRule="evenodd" d="M10 8.586l4.95-4.95a1 1 0 011.414 1.414L11.414 10l4.95 4.95a1 1 0 01-1.414 1.414L10 11.414l-4.95 4.95a1 1 0 01-1.414-1.414L8.586 10l-4.95-4.95A1 1 0 015.05 3.636L10 8.586z" clipRule="evenodd" />
+                          </svg>
+                      )}
+                      <span className="ml-2">{hint.text}</span>
                     </li>
-                  ))}
-                  </ul>
+                ))}
+              </ul>
             </div>
            </div>
 
