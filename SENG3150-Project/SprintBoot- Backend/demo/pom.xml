@@ -24,11 +24,11 @@
         </dependency>
 
 
+        <!-- Add your dependencies here -->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>5.6.15.Final</version>
-            <type>pom</type>
         </dependency>
 
     
