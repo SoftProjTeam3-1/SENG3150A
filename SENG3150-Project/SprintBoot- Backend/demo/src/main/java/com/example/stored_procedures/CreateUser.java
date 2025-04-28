@@ -23,11 +23,18 @@ public class CreateUser {
         this.email = email;
         this.verified = verified;
         this.password = password;
-
-        processTransaction();
+    }
+    public CreateUser(User user){
+        // Constructor logic here
+        this.firstName = user.getFirstName();
+        this.surname = user.getSurname();
+        this.email = user.getEmail();
+        this.verified = user.verified();
+        this.password = user.getPassword();
     }
 
-    public void processTransaction(){
+
+    public boolean processTransaction(){
         Transaction transaction = null;
         Session session = null;
         Configuration configuration = new Configuration().configure("hibernate.cfg.xml");
@@ -51,13 +58,15 @@ public class CreateUser {
             System.out.println("Error has occurred: " + e.toString());
             if (transaction != null) {
                 transaction.rollback();
+                return false;
             }
             e.printStackTrace();
         } finally {
             if (session != null) {
                 session.close();
+                return true;
             }
         }
-
+        return false;
     }
 }

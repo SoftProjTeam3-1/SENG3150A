@@ -17,8 +17,9 @@ public class User {
   private boolean verified;
   private String password;
 
-  public User() {}
-
+  public User() {
+    
+  }
   public User(String firstName, String surname, String email, boolean verified, String password) {
     this.firstName = firstName;
 	  this.surname = surname;

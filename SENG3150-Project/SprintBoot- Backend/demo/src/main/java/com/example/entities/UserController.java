@@ -17,7 +17,7 @@ public class UserController {
  
 
     @PostMapping("/api/user/submits")
-    public boolean  register(@RequestBody User entity) {
+    public boolean register(@RequestBody User entity) {
         User user = new User();
         user.setFirstName(entity.getFirstName());
         user.setSurname(entity.getSurname());

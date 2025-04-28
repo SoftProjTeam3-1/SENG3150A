@@ -1,6 +1,5 @@
 package com.example.stored_procedures;
 
-import com.example.entities.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -8,18 +7,11 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
-public class ValidateUser {
+import com.example.entities.User;
 
-    private String email;
-    private String password;
+public class GetUser {
 
-    public ValidateUser(String email, String password) {
-        // Constructor logic here
-        this.email = email;
-        this.password = password;
-    }
-
-    public boolean validateUser(){
+    public User getUser(String email){
         Transaction transaction = null;
         Session session = null;
         Configuration configuration = new Configuration().configure("hibernate.cfg.xml");
@@ -34,13 +26,9 @@ public class ValidateUser {
             session = sessionFactory.openSession();
             transaction = session.beginTransaction();
             User retrievedUser = session.get(User.class, 1);
-
-            if(retrievedUser.getEmail().equals(email) && retrievedUser.getPassword().equals(password)){
-                System.out.println("User is valid");
-                return true;
-            } else {
-                System.out.println("User is invalid");
-                return false;
+            if (session != null) {
+                session.close();
+                return retrievedUser;
             }
         } catch(Exception e){
             System.out.println("Error has occurred: " + e.toString());
@@ -51,8 +39,10 @@ public class ValidateUser {
         } finally {
             if (session != null) {
                 session.close();
+                return null;
             }
         }
-        return false;
+        
+        return null;
     }
 }
