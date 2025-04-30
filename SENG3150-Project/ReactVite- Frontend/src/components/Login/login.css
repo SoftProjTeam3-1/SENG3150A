@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+.login-card {
+    @apply items-center bg-gray-700 text-white rounded-lg  h-130 w-100 max-w-4xl shadow-lg;
+    padding: 30px;
+}
