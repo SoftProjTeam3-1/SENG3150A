@@ -10,7 +10,7 @@ import { useState, useEffect } from 'react'
 import {matchingPasswords, validatePassword, validateResetPassword} from '../../lib/validation.js'
 
 const ResetPasswordForm = () => {
-    //  public User(String firstName, String surname, String email, boolean verified, String password) {
+    //  public  (String firstName, String surname, String email, boolean verified, String password) {
   const [firstName, setFirstName] = useState('')
   const [name, setName] = useState('')
 
@@ -24,34 +24,45 @@ const ResetPasswordForm = () => {
 
   let [viewValidation, changeValidation] = useState(false)
 
+  const [token, setToken] = useState(null);
+
+    useEffect(() => {
+      const query = new URLSearchParams(window.location.search);
+      const t = query.get('token');
+      setToken(t);
+    }, []);
+
   const handleSubmit = async e => {
-
-    changeValidation(validateResetPassword(
-      {password1 : password , password2 : confirmPassword}));
-
-    
-    e.preventDefault()
+    e.preventDefault();
+    changeValidation(validateResetPassword({ password1: password, password2: confirmPassword }));
+  
+    if (!token) {
+      setMessage("Invalid or missing token");
+      return;
+    }
+  
     try {
-      const response = await fetch('api/user/submits', {
+      const response = await fetch('/api/user/reset-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ name, email })
-      })
-      const data = await response.json()
-
-      if(data && viewValidation){
-        console.log('User logged in successfully!')
-        window.location.href = '/dashboard' // Redirect to the dashboard page
+        body: JSON.stringify({ token, newPassword: password })      });
+  
+      const data = await response.json();
+      setMessage(data.message || data.error);
+  
+      if (response.ok) {
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 1500);
       }
-
-      setMessage(data.message)
     } catch (err) {
-      console.error('Error submitting user:', err)
+      console.error('Error submitting password reset:', err);
+      setMessage("An error occurred");
     }
   }
-
+  
   //Use effect runs every time the component is rendered
   //The empty array at the end of the useEffect function means that it will only run once
   useEffect(() => {

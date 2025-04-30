@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import com.example.Model.User;
 
 @Service
 public  class UserService {
@@ -16,18 +19,7 @@ public  class UserService {
     private final Map<String, User> userStore = new HashMap<>();
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public Boolean registerUser(User user) {
-        if (userStore.containsKey(user.getEmail())) {
-            return false; // User already exists
-        }
 
-        // Encode the password before storing
-        String encodedPassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(encodedPassword);
-
-        userStore.put(user.getEmail(), user);
-        return true; // User registered successfully
-    }
     
 
    public boolean loginUser(String email, String password) {
@@ -56,6 +48,43 @@ public  class UserService {
     public User getUser(String email) {
         return userStore.get(email);
     }
+
+    
+
+    public boolean registerUser(User entity) {
+
+        if (userStore.containsKey(entity.getEmail())) {
+            return false; // User already exists
+        }
+        // Encode the password before storing
+        String encodedPassword = passwordEncoder.encode(entity.getPassword());
+        entity.setPassword(encodedPassword);
+
+        userStore.put(entity.getEmail(), entity);
+        return true; // User registered successfully
+    }
+
+
+
+
+
+    private final Map<String, String> tokenStore = new HashMap<>(); // Temporary storage; use DB for production
+    
+    
+    public Optional<User> findByEmail(String email) {
+        return Optional.ofNullable(userStore.get(email));
+    }
+    public void saveResetToken(String email, String token) {
+        tokenStore.put(token, email); 
+    }
+
+    public Optional<String> getEmailByToken(String token) {
+        return Optional.ofNullable(tokenStore.get(token));
+    }
+
+
+
+  
 
 
     

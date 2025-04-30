@@ -24,19 +24,20 @@ const ForgetPasswordEmailEntryForm = () => {
   let [viewValidation, changeValidation] = useState(false)
 
   const handleSubmit = async e => {
-
+    changeValidation(validateForgotPasswordEmail(
+      {email : email}));
+    
     e.preventDefault()
-
-    changeValidation(validateForgotPasswordEmail({emailId:email}))
-
     try {
-      const response = await fetch('api/user/submits', {
+      const response = await fetch('api/user/forgotpassword', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ name, email })
       })
+
+      
       const data = await response.json()
 
       if(data && viewValidation){
@@ -48,6 +49,7 @@ const ForgetPasswordEmailEntryForm = () => {
     } catch (err) {
       console.error('Error submitting user:', err)
     }
+
   }
 
   //Use effect runs every time the component is rendered

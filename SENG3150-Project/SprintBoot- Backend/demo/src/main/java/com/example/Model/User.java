@@ -1,4 +1,4 @@
-package com.example.entities;
+package com.example.Model;
 
 public class User {
 
@@ -8,6 +8,11 @@ public class User {
   private String surname;
   private boolean verified;
   private String password;
+
+  private String emailCode;
+  private String emailCodeSent;
+  private String emailCodeReceived;
+  private String emailCodeSentTo;
 
   public User() {}
 
@@ -58,4 +63,34 @@ public class User {
   public void setPassword(String password){
 	  this.password = password;
   }
+  
+  public String getEmailCode() {
+    return emailCode;
+  }
+
+  public void setEmailCode(String emailCode) {
+    this.emailCode = emailCode;
+  }
+
+  public String getEmailCodeSent() {
+    return emailCodeSent;
+  }
+  public void setEmailCodeSent(String emailCodeSent) {
+    this.emailCodeSent = emailCodeSent;
+  }
+  public String getEmailCodeReceived() {
+    return emailCodeReceived;
+  }
+  public void setEmailCodeReceived(String emailCodeReceived) {
+    this.emailCodeReceived = emailCodeReceived;
+  }
+  public String getEmailCodeSentTo() {
+    return emailCodeSentTo;
+  }
+  public void setEmailCodeSentTo(String emailCodeSentTo) {
+    this.emailCodeSentTo = emailCodeSentTo;
+  }
+
+
+
 }

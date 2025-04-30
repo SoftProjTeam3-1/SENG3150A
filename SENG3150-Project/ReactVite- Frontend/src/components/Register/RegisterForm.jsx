@@ -44,8 +44,7 @@ const RegisterForm = () => {
         }),
       });
 
-      setSubmitFailed(response);
-  
+      setSubmitFailed(!response.ok);  
 
       if (response.ok && viewValidation) {
         console.log('User registered successfully!');
