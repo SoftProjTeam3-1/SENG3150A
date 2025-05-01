@@ -1,6 +1,6 @@
 
 import optionsIMG from '../../assets/options.png'
-import {useState} from "react";
+import { useState, useEffect, useRef } from "react";
 
 
 
@@ -9,6 +9,11 @@ const HomeDashboard = () => {
     const [dateSelected, setDateSelected] = useState([])
     const [dateClicked, setDateClicked] = useState([])
     const [showOptions, setShowOptions] = useState(false);
+    const [showSessionType, setSessionType] = useState(false);
+
+    const optionsRef = useRef(null);
+    const sessionRef = useRef(null);
+    const iconRef = useRef(null);
 
     // Functionality for when the + button is clicked
     const handleAddDate = (newDate) =>{
@@ -35,6 +40,37 @@ const HomeDashboard = () => {
         setShowOptions(prev => !prev);
     }
 
+    const handleNewActivity = () =>{
+        setSessionType(prev => !prev);
+    }
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (
+                showOptions &&
+                optionsRef.current &&
+                !optionsRef.current.contains(event.target) &&
+                iconRef.current &&
+                !iconRef.current.contains(event.target)
+            ) {
+                setShowOptions(false);
+            }
+
+            if (
+                showSessionType &&
+                sessionRef.current &&
+                !sessionRef.current.contains(event.target)
+            ) {
+                setSessionType(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [showOptions, showSessionType]);
+
     return(
         <div className="w-full m-0 p-0">
 
@@ -42,6 +78,7 @@ const HomeDashboard = () => {
                 <div style={{display: 'flex'}}>
                     <img
                         src={optionsIMG}
+                        ref={iconRef}
                         alt={'Options'}
                         className="w-20 h-20 mr-10"
                         onClick={handleOptionsClick}
@@ -53,14 +90,21 @@ const HomeDashboard = () => {
             </div>
 
             {showOptions && (
-                <div className="absolute w-1/6 min-h-screen top-32 left-0 bg-gray-600 shadow p-5 text-gray-600 text-2xl text-center flex flex-col items-center">
+                <div className="absolute w-1/6 min-h-screen top-32 left-0 bg-gray-600 shadow p-5 text-gray-600 text-2xl text-center flex flex-col items-center" ref={optionsRef}>
                     <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center">Manage Activities</button><br></br>
                     <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center">Laptop</button><br></br>
                     <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center">Logout</button>
                 </div>
             )}
 
-            <div id="middleSegment" style={{display: 'flex'}} className="bg-emerald-200 min-h-screen">
+            {showSessionType &&(
+                <div className="absolute w-1/6 min-h-screen top-32 left-0 bg-gray-600 shadow p-5 text-gray-600 text-2xl text-center flex flex-col items-center" ref={sessionRef}>
+                    <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center">Training Session</button><br></br>
+                    <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center">Game Session</button><br></br>
+                </div>
+            )}
+
+            <div id="middleSegment" style={{display: 'flex'}} className="bg-emerald-100 min-h-screen">
                 <div id="verticalBar" className=" w-40 bg-gray-600 p-5 text-2xl">
                     <ul className="text-center flex flex-col items-center">
 
@@ -105,8 +149,11 @@ const HomeDashboard = () => {
                                     >
                                         <div className="text-xl w-full text-center py-3">{month} {day}</div>
 
-                                        <div id="activities">
-
+                                        <div id="activities" className="w-full h-24">
+                                            <button
+                                                className="mx-auto text-6xl w-70 h-full bg-emerald-100 shadow-lg rounded-2xl flex flex-col items-center justify-center "
+                                                onClick={handleNewActivity}
+                                            >+</button>
                                         </div>
                                     </div>
                                 );
