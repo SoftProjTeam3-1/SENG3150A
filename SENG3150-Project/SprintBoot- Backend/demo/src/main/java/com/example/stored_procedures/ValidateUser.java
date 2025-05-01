@@ -33,7 +33,7 @@ public class ValidateUser {
         try{
             session = sessionFactory.openSession();
             transaction = session.beginTransaction();
-            User retrievedUser = session.get(User.class, 1);
+            User retrievedUser = userRepository.findByEmail(email);
 
             if(retrievedUser.getEmail().equals(email) && retrievedUser.getPassword().equals(password)){
                 System.out.println("User is valid");

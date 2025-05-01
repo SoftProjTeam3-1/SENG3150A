@@ -25,7 +25,7 @@ public class GetUser {
         try{
             session = sessionFactory.openSession();
             transaction = session.beginTransaction();
-            User retrievedUser = session.get(User.class, 1);
+            User retrievedUser = userRepository.findByEmail(email);
             if (session != null) {
                 session.close();
                 return retrievedUser;

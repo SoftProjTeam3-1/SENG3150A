@@ -11,8 +11,6 @@ import com.example.stored_procedures.GetUser;
 
 import org.springframework.stereotype.Service;
 
-import com.google.common.hash.Hashing;
-
 @Service
 public  class UserService {
 
@@ -40,13 +38,6 @@ public  class UserService {
         
 
     } */
-
-    private String encryptPassword(String password) {
-        String sha256hex = Hashing.sha256()
-            .hashString(password, StandardCharsets.UTF_8)
-            .toString();
-        return sha256hex;
-    }
 
     
     public User getUser(String email) {
