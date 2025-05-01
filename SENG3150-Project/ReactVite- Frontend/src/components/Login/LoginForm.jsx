@@ -11,6 +11,8 @@ import {validateLogin} from "../../lib/validation.js";
 import eyeOpenIcon from '../../assets/eye-open.svg';
 import eyeClosedIcon from '../../assets/eye-closed.svg';
 import './login.css';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const LoginForm = () => {
@@ -25,11 +27,14 @@ const LoginForm = () => {
 
 
   let [viewValidation, changeValidation] = useState(false)
+  let [viewErrorLog, changeErrorLog] = useState("");
 
   const handleSubmit = async e => {
     e.preventDefault()
 
-    changeValidation(validateLogin({emailId:email,passwordId:password}));
+    let s = validateLogin({emailId:email,passwordId:password});
+    changeValidation(s.valid);
+    changeErrorLog(s.errors)
 
     try {
       const response = await fetch('/api/user/login', {
@@ -45,11 +50,39 @@ const LoginForm = () => {
         console.log('User logged in successfully!')
         window.location.href = '/dashboard' // Redirect to the dashboard page
       }
-
-   
       setMessage(data.message)
     } catch (err) {
       console.error('Error submitting user:', err)
+    }
+
+    if(viewErrorLog.length > 0){
+      toast.error(
+          <div>
+            <ul className="list-disc pl-5 text-left">
+              {viewErrorLog.map((err, i) => (
+                  <li key={i}>{err.replace(/^- /, '')}</li>  // removes any "- " at the start
+              ))}
+            </ul>
+          </div>,
+          {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: "colored",
+          });
+    }else{
+      toast.error("Unable to Login", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored",
+      })
     }
   }
 
@@ -61,7 +94,7 @@ const LoginForm = () => {
         const response = await fetch('api/user')
         console.log(response)
         const data = await response.json()
-        setName(data.firstName	)
+        setName(data.firstName)
         setEmail(data.email)
 
       } catch (err) {
@@ -75,6 +108,9 @@ const LoginForm = () => {
   
   return (
     <div className={"login-card"}>
+      <ToastContainer>
+
+      </ToastContainer>
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">
           Login

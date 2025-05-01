@@ -10,6 +10,8 @@ import React, { useState } from 'react';
 import { sha256 } from 'js-sha256';
 import { validateRegister } from "../../lib/validation.js";
 import './register.css';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const RegisterForm = () => {
 
@@ -18,19 +20,19 @@ const RegisterForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
   const [viewValidation, changeValidation] = useState(false);
-  const [submitFailed, setSubmitFailed] = useState(false);
+  let [viewErrorLog, changeErrorLog] = useState("");
 
   const hashPassword = (password) => sha256(password);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    changeValidation(validateRegister({
-      emailId: email,
-      passwordId: password,
-      confirmPasswordId: confirmPassword
-    }));
+    let s =validateRegister({emailId: email, passwordId: password, confirmPasswordId: confirmPassword});
+    changeValidation(s.valid);
+    changeErrorLog(s.errors);
+    console.log(s.errors);
 
     try {
       const response = await fetch('/api/user/register', {
@@ -44,36 +46,58 @@ const RegisterForm = () => {
         }),
       });
 
-      setSubmitFailed(!response.ok);  
+      //setSubmitFailed(!response.ok);
 
       if (response.ok && viewValidation) {
         console.log('User registered successfully!');
         window.location.href = '/';
       }
     } catch (err) {
+      console.log(viewErrorLog);
       console.error('Error submitting user:', err);
+    }
+    if(viewErrorLog.length > 0){
+      toast.error(
+          <div>
+            <ul className="list-disc pl-5 text-left">
+              {viewErrorLog.map((err, i) => (
+                  <li key={i}>{err.replace(/^- /, '')}</li>  // removes any "- " at the start
+              ))}
+            </ul>
+          </div>,
+          {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: "colored",
+          });
+    }else if(viewErrorLog.length == 0 && viewValidation){
+      toast.success("Registration successful!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }else{
+      toast.error("Unable to Register", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored",
+      });
     }
   };
 
-  const successfullRegistration = () => {
-
-    if(submitFailed){
-      return (
-        <div className="text-red-500 text-sm mt-2">
-          <p>Registration failed. Please try again.</p>
-        </div>
-      );
-    }
-    else if (viewValidation) {
-      return (
-        <div className="text-green-500 text-sm mt-2">
-          <p>Registration successful!</p>
-        </div>
-      );
-    }
-    return null;
-
-  } 
 
   const passwordHints = [
     {text: "Password must be at least 8 characters", isValid: password.length >= 8},
@@ -84,13 +108,14 @@ const RegisterForm = () => {
 
   return (
     <div className={"register-card"}>
+      <ToastContainer>
+
+      </ToastContainer>
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">
           Register
         </h2>
       </div>
-      {successfullRegistration()}
-
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* First Name */}

@@ -1,13 +1,20 @@
 
 import optionsIMG from '../../assets/options.png'
 import { useState, useEffect, useRef } from "react";
+import DatePicker from "react-datepicker";
+import { format } from 'date-fns';
+import "react-datepicker/dist/react-datepicker.css";
 
 
 
 const HomeDashboard = () => {
 
+    const [showCalendar, setShowCalendar] = useState(false);
+    const [newDate, setNewDate] = useState(null);
+
     const [dateSelected, setDateSelected] = useState([])
     const [dateClicked, setDateClicked] = useState([])
+
     const [showOptions, setShowOptions] = useState(false);
     const [showSessionType, setSessionType] = useState(false);
 
@@ -89,22 +96,8 @@ const HomeDashboard = () => {
 
             </div>
 
-            {showOptions && (
-                <div className="absolute w-1/6 min-h-screen top-32 left-0 bg-gray-600 shadow p-5 text-gray-600 text-2xl text-center flex flex-col items-center" ref={optionsRef}>
-                    <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center">Manage Activities</button><br></br>
-                    <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center">Laptop</button><br></br>
-                    <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center">Logout</button>
-                </div>
-            )}
-
-            {showSessionType &&(
-                <div className="absolute w-1/6 min-h-screen top-32 left-0 bg-gray-600 shadow p-5 text-gray-600 text-2xl text-center flex flex-col items-center" ref={sessionRef}>
-                    <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center">Training Session</button><br></br>
-                    <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center">Game Session</button><br></br>
-                </div>
-            )}
-
             <div id="middleSegment" style={{display: 'flex'}} className="bg-emerald-100 min-h-screen">
+
                 <div id="verticalBar" className=" w-40 bg-gray-600 p-5 text-2xl">
                     <ul className="text-center flex flex-col items-center">
 
@@ -131,9 +124,13 @@ const HomeDashboard = () => {
                         );
                         })}
                     </ul>
+
                     <button
                         className="mx-auto block text-6xl h-24 w-24 bg-white border-5 border-gray-600 rounded-2xl flex flex-col items-center justify-center "
-                        onClick={() => handleAddDate('April 28')}>+</button>
+                        onClick={() => setShowCalendar(true)}
+                    >
+                        +
+                    </button>
                 </div>
 
                 <div id="userDisplay">
@@ -162,7 +159,37 @@ const HomeDashboard = () => {
                 </div>
             </div>
 
+            {showCalendar && (
+                <div className="fixed inset-0 bg-opacity-30 backdrop-blur-sm flex justify-center items-center z-50">
+                    <div className="bg-white p-6 rounded-xl shadow-xl scale-150">
+                        <DatePicker
+                            inline
+                            selected={newDate}
+                            onChange={(date) => {
+                                setNewDate(date);
+                                const formatted = format(date, 'MMM dd');
+                                handleAddDate(formatted);
+                                setShowCalendar(false); // close after picking
+                            }}
+                        />
+                    </div>
+                </div>
+            )}
 
+            {showOptions && (
+                <div className="absolute w-1/6 min-h-screen top-32 left-0 bg-gray-600 shadow p-5 text-gray-600 text-2xl text-center flex flex-col items-center" ref={optionsRef}>
+                    <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center">Manage Activities</button><br></br>
+                    <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center">Laptop</button><br></br>
+                    <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center">Logout</button>
+                </div>
+            )}
+
+            {showSessionType &&(
+                <div className="absolute w-1/6 min-h-screen top-32 left-0 bg-gray-600 shadow p-5 text-gray-600 text-2xl text-center flex flex-col items-center" ref={sessionRef}>
+                    <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center">Training Session</button><br></br>
+                    <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center">Game Session</button><br></br>
+                </div>
+            )}
         </div>
             );
 };

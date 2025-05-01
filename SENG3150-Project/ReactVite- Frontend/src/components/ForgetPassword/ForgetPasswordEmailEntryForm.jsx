@@ -9,6 +9,8 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import {validateEmail, validateForgotPasswordEmail} from "../../lib/validation.js";
 import './forgotPassword.css';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ForgetPasswordEmailEntryForm = () => {
     //  public User(String firstName, String surname, String email, boolean verified, String password) {
@@ -22,12 +24,52 @@ const ForgetPasswordEmailEntryForm = () => {
   const [message, setMessage] = useState('')
 
   let [viewValidation, changeValidation] = useState(false)
+  let [viewErrorLog, changeErrorLog] = useState("");
 
   const handleSubmit = async e => {
-    changeValidation(validateForgotPasswordEmail(
-      {email : email}));
-    
-    e.preventDefault()
+    e.preventDefault();
+    let s = validateForgotPasswordEmail({email : email});
+
+    changeValidation(s.valid);
+    changeErrorLog(s.errors);
+
+    if(viewErrorLog.length > 0){
+      toast.error(
+          <div>
+            <ul className="list-disc pl-5 text-left">
+              {viewErrorLog.map((err, i) => (
+                  <li key={i}>{err.replace(/^- /, '')}</li>  // removes any "- " at the start
+              ))}
+            </ul>
+          </div>,
+          {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: "colored",
+          });
+    }else if(viewErrorLog.length == 0 && viewValidation){
+      toast.success("Password reset email sent successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+        theme: "colored"
+      });
+    }
+    else{
+      toast.error("Unable to Authenticate", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored",
+      });
+    }
+
     try {
       const response = await fetch('api/user/forgotpassword', {
         method: 'POST',
@@ -37,8 +79,11 @@ const ForgetPasswordEmailEntryForm = () => {
         body: JSON.stringify({ name, email })
       })
 
-      
-      const data = await response.json()
+
+      let data = {};
+      if (response.headers.get("content-length") !== "0") {
+        data = await response.json();
+      }
 
       if(data && viewValidation){
         console.log('User logged in successfully!')
@@ -49,6 +94,10 @@ const ForgetPasswordEmailEntryForm = () => {
     } catch (err) {
       console.error('Error submitting user:', err)
     }
+
+    console.log(viewErrorLog);
+    console.log(email);
+
 
   }
 

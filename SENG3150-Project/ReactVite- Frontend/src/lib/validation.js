@@ -3,7 +3,8 @@ Author: Oscar Scorgie
 Date: 26/03/2025
 Description: This is a file that contains all the validation functions.
 */
-
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 /*
     validateEmail(emailId):
@@ -177,15 +178,10 @@ export function validateLogin({emailId, passwordId}) {
     //  Joins the error logs together
     const errorLog = [...emailResult.Data, ...passwordResult.Data];
 
-    //  Separates the error messages with a new line
-    if (errorLog.length > 0) {
-        alert(errorLog.join("\n"));
-    }
-
     //  Returns a boolean of the decision
     //  Can be used as another form of verification
     //  if the alert lets the user through for some reason
-    return emailValid && passwordValid;
+    return { valid: emailValid && passwordValid, errors: errorLog };
 }
 
 
@@ -218,15 +214,10 @@ export function validateRegister({emailId, passwordId, confirmPasswordId}) {
     //  Joins the error logs together
     const errorLog = [...emailResult.Data, ...passwordResult.Data, ...matchingPasswordsResult.Data];
 
-    //  Separates the error messages with a new line
-    if (errorLog.length > 0) {
-        alert(errorLog.join("\n"));
-    }
-
     //  Returns a boolean of the decision
     //  Can be used as another form of verification
     //  if the alert lets the user through for some reason
-    return emailValid && passwordValid && matchingPasswordsValid;
+    return {valid: emailValid && passwordValid && matchingPasswordsValid, errors: errorLog};
 }
 
 export function validateForgotPasswordEmail({emailId}){
@@ -238,15 +229,10 @@ export function validateForgotPasswordEmail({emailId}){
     //  Joins the error logs together
     const errorLog = [...emailResult.Data]
 
-    //  Separates the error messages with a new line
-    if (errorLog.length > 0) {
-        alert(errorLog.join("\n"));
-    }
-
     //  Returns a boolean of the decision
     //  Can be used as another form of verification
     //  if the alert lets the user through for some reason
-    return emailValid;
+    return {valid: emailValid, errors: errorLog};
 }
 
 
@@ -259,7 +245,15 @@ export function validateForgotPasswordNumbers({numbersId}){
 
     //  Separates the error messages with a new line
     if (errorLog.length > 0) {
-        alert(errorLog.join("\n"));
+        toast.error(errorLog.join("\n"), {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: "colored",
+        });
     }
 
     return numbersValid;
@@ -273,7 +267,15 @@ export function validateResetPassword({password1, password2}){
 
     //  Separates the error messages with a new line
     if (errorLog.length > 0) {
-        alert(errorLog.join("\n"));
+        toast.error(errorLog.join("\n"), {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: "colored",
+        });
     }
 
     return matchingResults.Valid && paswordValidatedRsults.Valid;
