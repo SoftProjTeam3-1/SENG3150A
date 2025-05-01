@@ -6,10 +6,16 @@
  */
 
 import React from 'react'
+import HomeDashboard from '../components/Dashboard/HomeDashboard.jsx';
 
 const Dashboard = () => {
   return (
-    <div>Dashboard</div>
+      <>
+        <div className="flex flex-1 flex-col justify-center ">
+          <HomeDashboard/>
+        </div>
+      </>
+
   )
 }
 
