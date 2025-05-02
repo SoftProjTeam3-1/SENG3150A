@@ -1,6 +1,6 @@
 package com.example.repositories;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
