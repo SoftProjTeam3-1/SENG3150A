@@ -9,6 +9,9 @@ import "react-datepicker/dist/react-datepicker.css";
 
 const HomeDashboard = () => {
 
+    //Need to add variables for category's and activities
+    //Sync to user when they log in
+
     const [showCalendar, setShowCalendar] = useState(false);
     const [newDate, setNewDate] = useState(null);
 
@@ -81,42 +84,36 @@ const HomeDashboard = () => {
     return(
         <div className="w-full m-0 p-0">
 
-            <div id="header" className="bg-orange-400 text-white p-10 h-32 w-screen text-3xl flex items-center">
+            <div id="header" className="bg-orange-400 shadow text-white p-10 h-32 w-screen text-3xl flex items-center">
                 <div style={{display: 'flex'}}>
                     <img
                         src={optionsIMG}
                         ref={iconRef}
                         alt={'Options'}
-                        className="w-20 h-20 mr-10"
+                        className="w-20 h-20 mr-10 transition-transform duration-200 ease-in-out hover:scale-105"
                         onClick={handleOptionsClick}
-
                     />
                     <h1 className="flex items-center mr-4">Select Date</h1>
                 </div>
-
             </div>
 
             <div id="middleSegment" style={{display: 'flex'}} className="bg-emerald-100 min-h-screen">
-
                 <div id="verticalBar" className=" w-40 bg-gray-600 p-5 text-2xl">
                     <ul className="text-center flex flex-col items-center">
-
                         {dateSelected.map(({id, value}) => {
                             const [month, day] = value.split(' ');
                             const isClicked = dateClicked.includes(id);
-
                             return (
                             <button
                                 key={id}
-                                className={`h-24 w-24 border-5 rounded-2xl flex flex-col items-center justify-center leading-none
+                                className={`h-24 w-24 border-5 rounded-2xl flex flex-col items-center justify-center leading-none transition-transform duration-200 ease-in-out hover:scale-105
                                 ${isClicked ? 'bg-orange-300 border-orange-600' : 'bg-white border-gray-600'}`}
-
                                 onClick={() => handleClickAddDate(id)}
                                 onContextMenu={(e) => {
                                     e.preventDefault(); // prevent browser context menu
                                     handleRemoveDate(id);
-                                }}
-                            >
+                                }}>
+
                                 <div className="leading-none">{month}</div>
                                 <br/>
                                 <div className="leading-none -mt-3">{day}</div>
@@ -126,7 +123,7 @@ const HomeDashboard = () => {
                     </ul>
 
                     <button
-                        className="mx-auto block text-6xl h-24 w-24 bg-white border-5 border-gray-600 rounded-2xl flex flex-col items-center justify-center "
+                        className="mx-auto block text-6xl h-24 w-24 bg-white border-5 border-gray-600 rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
                         onClick={() => setShowCalendar(true)}
                     >
                         +
@@ -148,7 +145,7 @@ const HomeDashboard = () => {
 
                                         <div id="activities" className="w-full h-24">
                                             <button
-                                                className="mx-auto text-6xl w-70 h-full bg-emerald-100 shadow-lg rounded-2xl flex flex-col items-center justify-center "
+                                                className="mx-auto text-6xl w-70 h-full bg-emerald-100 shadow-lg rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
                                                 onClick={handleNewActivity}
                                             >+</button>
                                         </div>
@@ -177,17 +174,17 @@ const HomeDashboard = () => {
             )}
 
             {showOptions && (
-                <div className="absolute w-1/6 min-h-screen top-32 left-0 bg-gray-600 shadow p-5 text-gray-600 text-2xl text-center flex flex-col items-center" ref={optionsRef}>
-                    <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center">Manage Activities</button><br></br>
-                    <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center">Laptop</button><br></br>
-                    <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center">Logout</button>
+                <div className="absolute w-1/6 min-h-screen top-32 left-0 bg-gray-600 shadow p-5 text-gray-600 text-2xl text-center flex flex-col items-center " ref={optionsRef}>
+                    <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105">Manage Activities</button><br></br>
+                    <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105">Laptop</button><br></br>
+                    <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105">Logout</button>
                 </div>
             )}
 
             {showSessionType &&(
                 <div className="absolute w-1/6 min-h-screen top-32 left-0 bg-gray-600 shadow p-5 text-gray-600 text-2xl text-center flex flex-col items-center" ref={sessionRef}>
-                    <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center">Training Session</button><br></br>
-                    <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center">Game Session</button><br></br>
+                    <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105">Training Session</button><br></br>
+                    <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105">Game Session</button><br></br>
                 </div>
             )}
         </div>
