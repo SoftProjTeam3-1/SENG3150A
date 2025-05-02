@@ -8,6 +8,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
 import com.example.entities.User;
+import com.example.repositories.*;
 
 public class GetUser {
 
@@ -25,7 +26,8 @@ public class GetUser {
         try{
             session = sessionFactory.openSession();
             transaction = session.beginTransaction();
-            User retrievedUser = userRepository.findByEmail(email);
+            UserQueries userQuery = new UserQueries();
+            User retrievedUser = userQuery.findByEmail(email);
             if (session != null) {
                 session.close();
                 return retrievedUser;

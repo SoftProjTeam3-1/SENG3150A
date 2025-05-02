@@ -1,11 +1,12 @@
 package com.example.entities;
 
-import org.springframework.web.bind.annotation.GetMapping;
+//import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.hash.Hashing;
+import java.nio.charset.StandardCharsets;
 
 @RestController
 public class UserController {
@@ -59,10 +60,10 @@ public class UserController {
        
     }
     
-    @GetMapping("/api/user/getEmails")
+/*     @GetMapping("/api/user/getEmails")
     public String[] returrnEmails() {
         return userService.getUserData();
-    }
+    } */
 
       
     

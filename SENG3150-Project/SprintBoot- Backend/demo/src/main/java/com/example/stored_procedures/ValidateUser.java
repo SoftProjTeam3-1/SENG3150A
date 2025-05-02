@@ -8,6 +8,8 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
+import com.example.repositories.*;
+
 public class ValidateUser {
 
     private String email;
@@ -33,7 +35,8 @@ public class ValidateUser {
         try{
             session = sessionFactory.openSession();
             transaction = session.beginTransaction();
-            User retrievedUser = userRepository.findByEmail(email);
+            UserQueries userQuery = new UserQueries();
+            User retrievedUser = userQuery.findByEmail(email);
 
             if(retrievedUser.getEmail().equals(email) && retrievedUser.getPassword().equals(password)){
                 System.out.println("User is valid");

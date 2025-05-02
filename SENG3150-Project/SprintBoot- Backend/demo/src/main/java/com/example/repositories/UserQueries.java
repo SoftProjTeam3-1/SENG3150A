@@ -1,15 +1,21 @@
 package com.example.repositories;
 
+import javax.persistence.EntityManager;
+import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+
+import com.example.entities.User;
+
 public class UserQueries implements UserRepository {
-    @Autowired
+    @Autowired  
     private EntityManager entityManager;
 
     @Override
-    public List<User> findByEmail(String email) {
+    public User findByEmail(String email) {
         String query = "SELECT u FROM User u WHERE u.email = :email";
         return entityManager.createQuery(query, User.class)
                             .setParameter("email", email)
-                            .getResultList();
+                            .getSingleResult();
     }
 
     @Override
@@ -32,6 +38,12 @@ public class UserQueries implements UserRepository {
 
     @Override
     public List<User> findByPassword(String password) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<User> findById(int id) {
         // TODO Auto-generated method stub
         return null;
     }
