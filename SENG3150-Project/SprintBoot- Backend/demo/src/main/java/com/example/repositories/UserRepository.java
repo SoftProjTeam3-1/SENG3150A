@@ -1,11 +1,11 @@
 package com.example.repositories;
 
-//import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 import com.example.entities.User;
 
-public interface UserRepository /* extends JpaRepository<User, Integer>*/ {
+public interface UserRepository extends JpaRepository<User, Integer> {
     User findByEmail(String email);
     List<User> findByFirstName(String firstName);
     List<User> findBySurname(String surname);
