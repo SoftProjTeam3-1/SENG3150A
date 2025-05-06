@@ -1,11 +1,5 @@
 package com.example.entities;
 
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.example.stored_procedures.CreateUser;
 import com.example.stored_procedures.GetUser;
 

@@ -1,5 +1,6 @@
 package com.example.entities;
 
+import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -8,11 +9,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.common.hash.Hashing;
 import java.nio.charset.StandardCharsets;
 
+
 @RestController
 public class UserController {
 
-    UserService userService = new UserService();
-
+    @Autowired
+    UserService userService;
  
 
     @PostMapping("/api/user/submits")
