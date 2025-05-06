@@ -9,23 +9,23 @@ import java.util.Map;
 import com.example.stored_procedures.CreateUser;
 import com.example.stored_procedures.GetUser;
 
+import com.example.repositories.UserRepository;
+
 import org.springframework.stereotype.Service;
 
 @Service
 public  class UserService {
 
+    private final UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     public Boolean registerUser(User user) {
-        /*
-         * if (userStore.containsKey(user.getEmail())) {
-
-            return false; // User already exists
-        }
-        userStore.put(user.getEmail(), user);
-        return true; // User registered successfully
-         */
-
-        CreateUser newUser = new CreateUser(user);
-        return newUser.processTransaction();
+        CreateUser createUser = new CreateUser(userRepository);
+        boolean isCreated = createUser.createUser(user);
+        return isCreated;
     }
 
 /*     public String[] getUserData() {
@@ -41,10 +41,7 @@ public  class UserService {
 
     
     public User getUser(String email) {
-        GetUser getUserInstance = new GetUser();
+        GetUser getUserInstance = new GetUser(userRepository);
         return getUserInstance.getUser(email);
-    }
-
-
-    
+    }    
 }

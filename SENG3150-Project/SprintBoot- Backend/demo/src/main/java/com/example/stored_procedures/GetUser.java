@@ -1,50 +1,20 @@
 package com.example.stored_procedures;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.cfg.Configuration;
-
 import com.example.entities.User;
-import com.example.repositories.*;
+import com.example.repositories.UserRepository;
 
-public class GetUser {
+import org.springframework.stereotype.Service;
 
-    public User getUser(String email){
-        Transaction transaction = null;
-        Session session = null;
-        Configuration configuration = new Configuration().configure("hibernate.cfg.xml");
+@Service
+public class GetUser{
 
-        configuration.addAnnotatedClass(com.example.entities.User.class);
+    private final UserRepository userRepository;
 
-        StandardServiceRegistry serviceRegistry =
-            new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
-        SessionFactory sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+    public GetUser(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
-        try{
-            session = sessionFactory.openSession();
-            transaction = session.beginTransaction();
-            UserQueries userQuery = new UserQueries();
-            User retrievedUser = userQuery.findByEmail(email);
-            if (session != null) {
-                session.close();
-                return retrievedUser;
-            }
-        } catch(Exception e){
-            System.out.println("Error has occurred: " + e.toString());
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            e.printStackTrace();
-        } finally {
-            if (session != null) {
-                session.close();
-                return null;
-            }
-        }
-        
-        return null;
+    public User getUser(String email) {
+        return userRepository.findByEmail(email);
     }
 }
