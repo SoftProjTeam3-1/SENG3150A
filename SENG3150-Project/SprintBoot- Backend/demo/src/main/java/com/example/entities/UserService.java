@@ -18,6 +18,7 @@ public  class UserService {
 
     private final Map<String, User> userStore = new HashMap<>();
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final Map<String, String> resetCodeStore = new HashMap<>();
 
 
     
@@ -64,24 +65,32 @@ public  class UserService {
         return true; // User registered successfully
     }
 
-
-
-
-
-    private final Map<String, String> tokenStore = new HashMap<>(); // Temporary storage; use DB for production
     
     
     public Optional<User> findByEmail(String email) {
         return Optional.ofNullable(userStore.get(email));
     }
-    public void saveResetToken(String email, String token) {
-        tokenStore.put(token, email); 
-    }
 
-    public Optional<String> getEmailByToken(String token) {
-        return Optional.ofNullable(tokenStore.get(token));
-    }
 
+    // public Optional<String> getEmailByToken(String token) {
+    //     return Optional.ofNullable(resetCodeStore.get(token));
+    // }
+
+    public void saveResetToken(String email, String code) {
+        resetCodeStore.put(email, code);
+    }
+    
+    public String getResetToken(String email) {
+        return resetCodeStore.get(email);
+    }
+    
+    public void updatePassword(String email, String newPassword) {
+        User user = userStore.get(email);
+        if (user != null) {
+            String encodedPassword = passwordEncoder.encode(newPassword);
+            user.setPassword(encodedPassword);
+        }
+    }
 
 
   

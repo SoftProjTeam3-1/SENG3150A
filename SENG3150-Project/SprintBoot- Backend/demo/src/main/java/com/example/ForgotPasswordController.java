@@ -2,7 +2,6 @@ package com.example;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Model.User;
-import com.example.entities.UserService;    
+import com.example.entities.UserService;
 
 @RestController
 @RequestMapping("/api/user")
@@ -32,22 +31,34 @@ public class ForgotPasswordController {
         String email = payload.get("email");
 
         Optional<User> userOpt = userService.findByEmail(email);
-
         if (userOpt.isEmpty()) {
             return Map.of("error", "No account found for that email.");
         }
 
-        String token = UUID.randomUUID().toString();
-        userService.saveResetToken(email, token);
-
-        String resetLink = "http://localhost:3000/reset-password?token=" + token;
+        int code = (int) (Math.random() * 9000 + 1000); // random 4-digit code
+        userService.saveResetToken(email, String.valueOf(code));
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
-        message.setSubject("Password Reset");
-        message.setText("Hi, click the link to reset your password:\n" + resetLink);
+        message.setSubject("Password Reset Code");
+        message.setText("Your password reset code is: " + code);
         mailSender.send(message);
 
-        return Map.of("message", "Password reset link sent to " + email);
+        return Map.of("message", "Password reset code sent to " + email);
+    }
+
+    @PostMapping("/reset-password")
+    public Map<String, String> resetPassword(@RequestBody Map<String, String> payload) {
+        String email = payload.get("email");
+        String code = payload.get("code");
+        String newPassword = payload.get("newPassword");
+
+        String storedCode = userService.getResetToken(email);
+        if (storedCode == null || !storedCode.equals(code)) {
+            return Map.of("error", "Invalid or expired reset code.");
+        }
+
+        userService.updatePassword(email, newPassword);
+        return Map.of("message", "Password updated successfully.");
     }
 }

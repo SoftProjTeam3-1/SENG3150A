@@ -1,120 +1,127 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { validateForgotPasswordEmail } from "../../lib/validation.js";
 import './forgotPassword.css';
-import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const ForgetPasswordEmailEntryForm = () => {
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
+  const [newPassword, setNewPassword] = useState('');
   const [message, setMessage] = useState('');
   const [viewValidation, changeValidation] = useState(false);
-  const [showCodeInput, setShowCodeInput] = useState(false); // New state to toggle code input visibility
+  const [step, setStep] = useState(1); // 1 = email, 2 = code, 3 = password
 
-  const handleEmailSubmit = async e => {
+  const handleEmailSubmit = async (e) => {
     e.preventDefault();
-    const isValid = validateForgotPasswordEmail({ email });
-    changeValidation(isValid);
-
-    if (isValid) {
-      setShowCodeInput(true); // Show the code input field
-    } else {
-      setMessage('Invalid email address.');
-    }
-  };
-
-  const handleCodeSubmit = async e => {
-    e.preventDefault();
+    changeValidation(validateForgotPasswordEmail({ email }));
 
     try {
-      const response = await fetch('api/user/forgotpassword', {
+      const response = await fetch('/api/user/forgotpassword', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, code })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
       });
 
       const data = await response.json();
-
-      if (data && viewValidation) {
-        console.log('Password reset request submitted successfully!');
-        window.location.href = '/dashboard'; // Redirect to the dashboard page
-      }
-
       setMessage(data.message);
+      if (!data.error) setStep(2);
     } catch (err) {
-      console.error('Error submitting request:', err);
+      console.error('Error submitting email:', err);
+    }
+  };
+
+  const handleCodeSubmit = async (e) => {
+    e.preventDefault();
+    // You can skip this step if you verify in reset endpoint
+    setStep(3); // Assume code is valid
+  };
+
+  const handlePasswordReset = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch('/api/user/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, code, newPassword })
+      });
+
+      const data = await response.json();
+      setMessage(data.message);
+      if (!data.error) window.location.href = '/';
+    } catch (err) {
+      console.error('Error resetting password:', err);
     }
   };
 
   return (
     <div className="forgotPassword-card">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">
+        <h2 className="mt-10 text-center text-2xl font-bold tracking-tight text-white">
           Reset Password
         </h2>
       </div>
 
-      {!showCodeInput ? (
+      {step === 1 && (
         <form onSubmit={handleEmailSubmit} className="space-y-6">
           <div>
-            <label htmlFor="email" className="block text-sm/6 font-medium text-white">
+            <label htmlFor="email" className="block text-sm font-medium text-white">
               Email
             </label>
-            <div className="mt-2">
-              <input
-                type="email"
-                placeholder="joe.bloggs@email.com"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                id="email"
-                name="email"
-                required
-                className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-              />
-            </div>
+            <input
+              type="email"
+              placeholder="joe@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900"
+            />
           </div>
-
-          <div>
-            <button
-              type="submit"
-              className="flex w-full justify-center rounded-md bg-orange-400 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-orange-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              Submit Email
-            </button>
-          </div>
+          <button type="submit" className="w-full bg-orange-400 py-2 rounded-md text-white font-semibold">
+            Send Code
+          </button>
         </form>
-      ) : (
+      )}
+
+      {step === 2 && (
         <form onSubmit={handleCodeSubmit} className="space-y-6">
           <div>
-            <label htmlFor="code" className="block text-sm/6 font-medium text-white">
-              4-Digit Code
+            <label htmlFor="code" className="block text-sm font-medium text-white">
+              Enter 4-digit Code
             </label>
-            <div className="mt-2">
-              <input
-                type="text"
-                placeholder="1234"
-                value={code}
-                onChange={e => setCode(e.target.value)}
-                id="code"
-                name="code"
-                required
-                maxLength="4"
-                className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-              />
-            </div>
+            <input
+              type="text"
+              maxLength="4"
+              placeholder="1234"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              required
+              className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900"
+            />
           </div>
+          <button type="submit" className="w-full bg-orange-400 py-2 rounded-md text-white font-semibold">
+          Verify Code
+          </button>
+        </form>
+      )}
 
+      {step === 3 && (
+        <form onSubmit={handlePasswordReset} className="space-y-6">
           <div>
-            <button
-              type="submit"
-              className="flex w-full justify-center rounded-md bg-orange-400 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-orange-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              Submit Code
-            </button>
+            <label htmlFor="newPassword" className="block text-sm font-medium text-white">
+              New Password
+            </label>
+            <input
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              required
+              className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900"
+            />
           </div>
+          <button type="submit" className="w-full bg-orange-400 py-2 rounded-md text-white font-semibold">
+            Reset Password
+          </button>
         </form>
       )}
 
