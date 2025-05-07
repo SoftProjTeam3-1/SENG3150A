@@ -33,7 +33,7 @@ public  class UserService {
         CreateUser createUser = new CreateUser(userRepository);
         boolean isCreated = createUser.createUser(user);
         return isCreated;
-    
+    }
 
    public boolean loginUser(String email, String password) {
         User existingUser = userStore.get(email);
@@ -47,12 +47,7 @@ public  class UserService {
         }
     }
 
-<<<<<<<
-
-    public String[] getUserData() {
-=======
 /*     public String[] getUserData() {
->>>>>>>
         List<String> userData = new ArrayList<>();
         for (User user : userStore.values()) {
             String data = "Name: " + user.getFirstName() + " " + user.getSurname() + ", Email: " + user.getEmail() + ", Password: " + user.getPassword();
@@ -66,24 +61,7 @@ public  class UserService {
         return userStore.get(email);
     }
 
-<<<<<<<
-    
-
-    public boolean registerUser(User entity) {
-
-        if (userStore.containsKey(entity.getEmail())) {
-            return false; // User already exists
-        }
-        // Encode the password before storing
-        String encodedPassword = passwordEncoder.encode(entity.getPassword());
-        entity.setPassword(encodedPassword);
-
-        userStore.put(entity.getEmail(), entity);
-        return true; // User registered successfully
-    }
-=======
     } */
->>>>>>>
 
     
     
