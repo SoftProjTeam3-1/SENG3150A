@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.hash.Hashing;
 import java.nio.charset.StandardCharsets;
-import com.example.Model.User;
 
 
 @RestController
@@ -23,9 +22,9 @@ public class UserController {
     @Autowired
     UserService userService;
  
-
+    //TODO: CHECK if the method name is correct
     @PostMapping("/api/user/submits")
-    public boolean register(@RequestBody User entity) {
+    public boolean submits(@RequestBody User entity) {
         User user = new User();
         user.setFirstName(entity.getFirstName());
         user.setSurname(entity.getSurname());
@@ -39,7 +38,9 @@ public class UserController {
         } else {
             return false;
         }
-    private final UserService userService;
+    }
+    //TODO: CHECK if this is needed
+    //private final UserService userService;
 
     public UserController(UserService userService) {
         this.userService = userService;
@@ -60,7 +61,11 @@ public class UserController {
         user.setEmail(entity.getEmail());
         user.setPassword(encryptPassword(entity.getPassword()));
 
-    
+        //TODO: CHECK if this is coorect
+        return userService.loginUser(entity.getEmail(), entity.getPassword());
+
+    }
+
     @PostMapping("/api/user/register")   
     public ResponseEntity<?> register(@RequestBody User user) {
         boolean success = userService.registerUser(user);
@@ -71,8 +76,9 @@ public class UserController {
         }
     }
     
-    @GetMapping("/api/user/getEmails")
-    public String[] returrnEmails() {  return userService.getUserData(); }
+    //TODO: CHECK if this is needed
+    // @GetMapping("/api/user/getEmails")
+    // public String[] returrnEmails() {  return userService.getUserData(); }
 
   
 
