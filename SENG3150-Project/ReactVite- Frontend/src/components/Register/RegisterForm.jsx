@@ -103,7 +103,7 @@ const RegisterForm = () => {
     {text: "Password must be at least 8 characters", isValid: password.length >= 8},
     {text: "Password must contain at least one uppercase letter.", isValid: /[A-Z]/.test(password)},
     {text: "Password must include a special character.", isValid: /[!@#$%^&*(),.?":{}|<>]/.test(password)},
-    {text: "Passwords must match.", isValid: password === confirmPassword}
+    {text: "Passwords must match.", isValid: password != "" && password === confirmPassword}
   ];
 
   return (
