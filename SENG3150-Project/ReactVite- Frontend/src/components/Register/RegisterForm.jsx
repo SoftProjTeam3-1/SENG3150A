@@ -13,6 +13,8 @@ import { validateRegister } from "../../lib/validation.js";
 import './register.css';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import eyeOpenIcon from '../../assets/eye-open.svg';
+import eyeClosedIcon from '../../assets/eye-closed.svg';
 
 
 const RegisterForm = () => {
@@ -210,7 +212,6 @@ const RegisterForm = () => {
                   }}/>
               </div>
             </div>
-          </div>
 
             <div>
               <label htmlFor="password2" className="block text-sm/6 font-medium text-gray-900">
@@ -246,7 +247,6 @@ const RegisterForm = () => {
                   }}/>
               </div>
             </div>
-          </div>
 
           {/* Confirm Password */}
           <div>
