@@ -14,8 +14,6 @@ import com.example.repositories.UserRepository;
 
 import org.springframework.stereotype.Service;
 
-import com.example.Model.User;
-
 @Service
 public  class UserService {
 
