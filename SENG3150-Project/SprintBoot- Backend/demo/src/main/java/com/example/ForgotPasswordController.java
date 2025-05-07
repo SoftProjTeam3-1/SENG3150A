@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Model.User;
-import com.example.entities.UserService;
+import com.example.entities.UserService;    
 
 @RestController
 @RequestMapping("/api/user")
@@ -32,7 +32,7 @@ public class ForgotPasswordController {
         String email = payload.get("email");
 
         Optional<User> userOpt = userService.findByEmail(email);
-        
+
         if (userOpt.isEmpty()) {
             return Map.of("error", "No account found for that email.");
         }
