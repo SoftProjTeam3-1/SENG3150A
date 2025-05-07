@@ -29,7 +29,7 @@ const ForgetPasswordEnterCodeForm = () => {
     changeValidation(validateForgotPasswordNumbers({numbersId:name}))
 
     try {
-      const response = await fetch('api/user/forgotpassword/', {
+      const response = await fetch('api/user/submits', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -49,6 +49,25 @@ const ForgetPasswordEnterCodeForm = () => {
     }
   }
 
+  //Use effect runs every time the component is rendered
+  //The empty array at the end of the useEffect function means that it will only run once
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await fetch('api/user')
+        console.log(response)
+        const data = await response.json()
+        setName(data.firstName	)
+        setEmail(data.email)
+
+      } catch (err) {
+        console.error('Error fetching user:', err)
+      }
+
+    }
+
+    fetchUser()
+  }, [message])
 
 
   return (
@@ -97,4 +116,4 @@ const ForgetPasswordEnterCodeForm = () => {
   )
 }
 
-export default ForgetPasswordEnterCodeForm 
+export default ForgetPasswordEnterCodeForm
