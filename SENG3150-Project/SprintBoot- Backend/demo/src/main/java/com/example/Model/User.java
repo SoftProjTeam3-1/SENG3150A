@@ -1,8 +1,16 @@
 package com.example.Model;
 
-public class User {
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
-  
+@Entity
+public class User {
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private int id;
+
   private String firstName;
   private String email;
   private String surname;
@@ -13,15 +21,21 @@ public class User {
   private String emailCodeSent;
   private String emailCodeReceived;
   private String emailCodeSentTo;
-
   public User() {}
-
   public User(String firstName, String surname, String email, boolean verified, String password) {
     this.firstName = firstName;
 	  this.surname = surname;
     this.email = email;
 	  this.verified = false;
 	  this.password = password;
+  }
+
+  public int getId() {
+    return id;
+  }
+
+  public void setId(int id) {
+    this.id = id;
   }
 
   public String getFirstName() {

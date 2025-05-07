@@ -6,25 +6,63 @@ import java.util.Random;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.common.hash.Hashing;
+import java.nio.charset.StandardCharsets;
 import com.example.Model.User;
 
 
 @RestController
 public class UserController {
 
+    @Autowired
+    UserService userService;
+ 
+
+    @PostMapping("/api/user/submits")
+    public boolean register(@RequestBody User entity) {
+        User user = new User();
+        user.setFirstName(entity.getFirstName());
+        user.setSurname(entity.getSurname());
+        user.setEmail(entity.getEmail());
+        user.setPassword(encryptPassword(entity.getPassword()));
+
+
+        Boolean result = userService.registerUser(user);
+        if (result) {
+            return true;
+        } else {
+            return false;
+        }
     private final UserService userService;
 
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
+<<<<<<<
+
+=======
+    private String encryptPassword(String password) {
+        String sha256hex = Hashing.sha256()
+            .hashString(password, StandardCharsets.UTF_8)
+            .toString();
+        return sha256hex;
+    }
+    
+
+>>>>>>>
     //login
     @PostMapping("/api/user/login")
-    public boolean login(@RequestBody User entity) {  return userService.loginUser(entity.getEmail(), entity.getPassword());}
+    public boolean  login(@RequestBody User entity) {
+        User user = new User();
+        user.setEmail(entity.getEmail());
+        user.setPassword(encryptPassword(entity.getPassword()));
 
     
     @PostMapping("/api/user/register")   

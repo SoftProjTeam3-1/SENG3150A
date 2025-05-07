@@ -7,7 +7,11 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+<<<<<<< HEAD
 import com.example.Model.User;
+=======
+//import com.example.entities.User;
+>>>>>>> origin/63_Hibernate_Implementation
 
 @RestController
 public class WebController {
@@ -20,9 +24,9 @@ public class WebController {
     return map;
   }
 
-  @GetMapping("/user")
+/*   @GetMapping("/user")
   public User user() {
     User user = new User("Mark", "Wallis", "mark.wallis@email.com", true, "13672005");
     return user;
-  }
+  } */
 }
