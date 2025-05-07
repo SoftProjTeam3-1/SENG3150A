@@ -68,9 +68,7 @@ public class User {
     return emailCode;
   }
 
-  public void setEmailCode(String emailCode) {
-    this.emailCode = emailCode;
-  }
+
 
   public String getEmailCodeSent() {
     return emailCodeSent;
