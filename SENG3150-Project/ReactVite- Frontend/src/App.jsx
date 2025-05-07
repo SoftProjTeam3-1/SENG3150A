@@ -8,6 +8,7 @@ import Login from './pages/Login';
 import EntryLayout from './layout/EntryLayout';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import ManageActivities from './pages/ManageActivities';
 import ForgetPassword from './pages/ForgetPassword';
 import ForgetPasswordEnterCode from './pages/ForgetPasswordEnterCode';
 import ResetPassword from './pages/ResetPassword';
@@ -26,6 +27,7 @@ const router = createBrowserRouter(
       </Route>)
 
       <Route path='/dashboard' element={<Dashboard />} />
+      <Route path='/manage-activities' element={<ManageActivities />} />
     </>)
 );
 
