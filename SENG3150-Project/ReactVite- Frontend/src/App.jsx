@@ -11,6 +11,9 @@ import Dashboard from './pages/Dashboard';
 import ForgetPassword from './pages/ForgetPassword';
 import ForgetPasswordEnterCode from './pages/ForgetPasswordEnterCode';
 import ResetPassword from './pages/ResetPassword';
+import Attendance from "./pages/Attendance";
+
+
 
 
 const router = createBrowserRouter(
@@ -26,6 +29,7 @@ const router = createBrowserRouter(
       </Route>)
 
       <Route path='/dashboard' element={<Dashboard />} />
+        <Route path='/attendance' element={<Attendance />}/>
     </>)
 );
 

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import DatePicker from "react-datepicker";
 import { format } from 'date-fns';
 import "react-datepicker/dist/react-datepicker.css";
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -11,6 +12,8 @@ const HomeDashboard = () => {
 
     //Need to add variables for category's and activities
     //Sync to user when they log in
+
+    const navigate = useNavigate();
 
     const [selectedType, setSelectedType] = useState(null);
     //const [notes, setNotes] = useState({});
@@ -27,6 +30,19 @@ const HomeDashboard = () => {
     const optionsRef = useRef(null);
     const sessionRef = useRef(null);
     const iconRef = useRef(null);
+
+    const toAttendancePage = () => {
+        const navigate = useNavigate();
+
+        return (
+            <button
+                className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center"
+                onClick={() => navigate('/')}
+            >
+                Attendance
+            </button>
+        );
+    };
 
     // Functionality for when the + button is clicked
     const handleAddDate = (newDate) =>{
@@ -94,7 +110,7 @@ const HomeDashboard = () => {
     return(
         <div className="w-full m-0 p-0">
 
-            <div id="header" className="bg-orange-400 shadow text-white p-10 h-32 w-screen text-3xl flex items-center">
+            <div id="header" className="bg-orange-400 shadow text-white p-3 h-20 w-screen text-3xl flex items-center">
                 <div style={{display: 'flex'}}>
                     <img
                         src={optionsIMG}
@@ -207,7 +223,8 @@ const HomeDashboard = () => {
             {showOptions && (
                 <div className="absolute w-1/6 min-h-screen top-32 left-0 bg-gray-600 shadow p-5 text-gray-600 text-2xl text-center flex flex-col items-center " ref={optionsRef}>
                     <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105">Manage Activities</button><br></br>
-                    <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105">Laptop</button><br></br>
+                    <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
+                    onClick={() => navigate('/attendance')}>Attendance</button><br></br>
                     <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105">Logout</button>
                 </div>
             )}
