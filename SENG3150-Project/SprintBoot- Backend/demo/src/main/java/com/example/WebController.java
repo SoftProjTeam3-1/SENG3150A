@@ -7,11 +7,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-<<<<<<< HEAD
 import com.example.Model.User;
-=======
-//import com.example.entities.User;
->>>>>>> origin/63_Hibernate_Implementation
 
 @RestController
 public class WebController {

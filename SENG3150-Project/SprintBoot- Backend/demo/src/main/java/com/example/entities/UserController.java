@@ -45,9 +45,6 @@ public class UserController {
         this.userService = userService;
     }
 
-<<<<<<<
-
-=======
     private String encryptPassword(String password) {
         String sha256hex = Hashing.sha256()
             .hashString(password, StandardCharsets.UTF_8)
@@ -56,7 +53,6 @@ public class UserController {
     }
     
 
->>>>>>>
     //login
     @PostMapping("/api/user/login")
     public boolean  login(@RequestBody User entity) {
