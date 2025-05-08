@@ -5,13 +5,14 @@
  */
 
 import React from 'react'
-import ManageActivitiesPage from '../components/ManageActivities/ManageActivities.jsx';
+import Header from '../components/Header'
+import ActivityComponent from '../components/ManageActivities/ActivityComponent'
 
 const ManageActivities = () => {
   return (
       <>
         <div className="flex flex-1 flex-col justify-center ">
-          <ManageActivitiesPage/>
+          <ActivityComponent/>
         </div>
       </>
 
