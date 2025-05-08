@@ -1,10 +1,10 @@
 
-import optionsIMG from '../../assets/options.png'
 import { useState, useEffect, useRef } from "react";
 import DatePicker from "react-datepicker";
 import { format } from 'date-fns';
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from 'react-router-dom';
+import Header from "./Header.jsx";
 
 
 
@@ -30,19 +30,6 @@ const HomeDashboard = () => {
     const optionsRef = useRef(null);
     const sessionRef = useRef(null);
     const iconRef = useRef(null);
-
-    const toAttendancePage = () => {
-        const navigate = useNavigate();
-
-        return (
-            <button
-                className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center"
-                onClick={() => navigate('/')}
-            >
-                Attendance
-            </button>
-        );
-    };
 
     // Functionality for when the + button is clicked
     const handleAddDate = (newDate) =>{
@@ -110,18 +97,7 @@ const HomeDashboard = () => {
     return(
         <div className="w-full m-0 p-0">
 
-            <div id="header" className="bg-orange-400 shadow text-white p-3 h-20 w-screen text-3xl flex items-center">
-                <div style={{display: 'flex'}}>
-                    <img
-                        src={optionsIMG}
-                        ref={iconRef}
-                        alt={'Options'}
-                        className="w-20 h-20 mr-10 transition-transform duration-200 ease-in-out hover:scale-105"
-                        onClick={handleOptionsClick}
-                    />
-                    <h1 className="flex items-center mr-4">Select Date</h1>
-                </div>
-            </div>
+            <Header handleOptionsClick={handleOptionsClick} iconRef={iconRef}/>
 
             <div id="middleSegment" style={{display: 'flex'}} className="bg-emerald-100 min-h-screen">
                 <div id="verticalBar" className=" w-25 bg-gray-600  text-2xl flex flex-col items-center ">
