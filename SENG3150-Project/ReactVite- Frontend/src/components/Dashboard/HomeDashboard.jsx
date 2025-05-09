@@ -1,9 +1,10 @@
 
-import optionsIMG from '../../assets/options.png'
 import { useState, useEffect, useRef } from "react";
 import DatePicker from "react-datepicker";
 import { format } from 'date-fns';
 import "react-datepicker/dist/react-datepicker.css";
+import { useNavigate } from 'react-router-dom';
+import Header from "./Header.jsx";
 
 
 
@@ -11,6 +12,8 @@ const HomeDashboard = () => {
 
     //Need to add variables for category's and activities
     //Sync to user when they log in
+
+    const navigate = useNavigate();
 
     const [selectedType, setSelectedType] = useState(null);
     //const [notes, setNotes] = useState({});
@@ -94,18 +97,7 @@ const HomeDashboard = () => {
     return(
         <div className="w-full m-0 p-0">
 
-            <div id="header" className="bg-orange-400 shadow text-white p-10 h-32 w-screen text-3xl flex items-center">
-                <div style={{display: 'flex'}}>
-                    <img
-                        src={optionsIMG}
-                        ref={iconRef}
-                        alt={'Options'}
-                        className="w-20 h-20 mr-10 transition-transform duration-200 ease-in-out hover:scale-105"
-                        onClick={handleOptionsClick}
-                    />
-                    <h1 className="flex items-center mr-4">Select Date</h1>
-                </div>
-            </div>
+            <Header handleOptionsClick={handleOptionsClick} iconRef={iconRef}/>
 
             <div id="middleSegment" style={{display: 'flex'}} className="bg-emerald-100 min-h-screen">
                 <div id="verticalBar" className=" w-25 bg-gray-600  text-2xl flex flex-col items-center ">
@@ -205,15 +197,17 @@ const HomeDashboard = () => {
             )}
 
             {showOptions && (
-                <div className="absolute w-1/6 min-h-screen top-32 left-0 bg-gray-600 shadow p-5 text-gray-600 text-2xl text-center flex flex-col items-center " ref={optionsRef}>
-                    <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105">Manage Activities</button><br></br>
-                    <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105">Laptop</button><br></br>
+                <div className="absolute w-1/6 min-h-screen top-20 left-0 bg-gray-600 shadow p-5 text-gray-600 text-2xl text-center flex flex-col items-center " ref={optionsRef}>
+                    <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
+                            onClick={() => navigate('/manage-activities')}>Manage Activities</button><br></br>
+                    <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
+                    onClick={() => navigate('/attendance')}>Attendance</button><br></br>
                     <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105">Logout</button>
                 </div>
             )}
 
             {showSessionType &&(
-                <div className="absolute w-1/6 min-h-screen top-32 left-0 bg-gray-600 shadow p-5 text-gray-600 text-2xl text-center flex flex-col items-center" ref={sessionRef}>
+                <div className="absolute w-1/6 min-h-screen top-20 left-0 bg-gray-600 shadow p-5 text-gray-600 text-2xl text-center flex flex-col items-center" ref={sessionRef}>
                     <button onClick={() => handleSessionSelect('training')} className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105">Training Session</button><br></br>
                     <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105">Game Session</button><br></br>
                 </div>

@@ -8,10 +8,14 @@
 
 import React, { useState } from 'react';
 import { sha256 } from 'js-sha256';
+import { Route } from 'react-router-dom'
 import { validateRegister } from "../../lib/validation.js";
 import './register.css';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import eyeOpenIcon from '../../assets/eye-open.svg';
+import eyeClosedIcon from '../../assets/eye-closed.svg';
+
 
 const RegisterForm = () => {
 
@@ -103,7 +107,7 @@ const RegisterForm = () => {
     {text: "Password must be at least 8 characters", isValid: password.length >= 8},
     {text: "Password must contain at least one uppercase letter.", isValid: /[A-Z]/.test(password)},
     {text: "Password must include a special character.", isValid: /[!@#$%^&*(),.?":{}|<>]/.test(password)},
-    {text: "Passwords must match.", isValid: password === confirmPassword}
+    {text: "Passwords must match.", isValid: password != "" && password === confirmPassword}
   ];
 
   return (
@@ -156,44 +160,93 @@ const RegisterForm = () => {
             </div>
           </div>
 
-          {/* Username (Email) */}
-          <div>
-            <label htmlFor="email" className="block text-sm/6 font-medium text-white">
-              Email
-            </label>
-            <div className="mt-2">
-              <input
-                type="email"
-                placeholder="joe.bloggs@email.com"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                id="email"
-                name="email"
-                required
-                className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-              />
+            <div>
+                <label htmlFor="Username" className="block text-sm/6 font-medium text-gray-900">
+                Username
+                </label>
+                <div className="mt-2">
+                <input
+                    type="email"
+                    placeholder="joe.bloggs@email.com"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    id="email"
+                    name="email"
+                    required
+                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                />
+                </div>
             </div>
-          </div>
+            
+            <div>
+              <label htmlFor="password" className="block text-sm/6 font-medium text-gray-900">
+                Password
+              </label>
+              <div className="mt-2">
+                <input
+                  onChange={e => setPassword(e.target.value)}
+                  id="password"
+                  name="password"
+                  value={password}
+                  type="password"
+                  placeholder='********'
+                  required
+                  autoComplete="current-password"
+                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                />
+                <img 
+                  src={eyeClosedIcon} 
+                  alt='eye' 
+                  id='hideButton' 
+                  style={{ width: '5%', height: '5%' }}
+                  onClick={() => {
+                    const passwordField = document.getElementById('password');
+                    const imageFile = document.getElementById('hideButton');
+                    if (passwordField.type === 'password') {
+                      passwordField.type = 'text'; // Show password
+                      imageFile.src = eyeOpenIcon; // Change image to open eye
+                    } else {
+                      passwordField.type = 'password'; // Hide password
+                      imageFile.src = eyeClosedIcon; // Change image to closed eye
+                    }
+                  }}/>
+              </div>
+            </div>
 
-          {/* Password */}
-          <div>
-            <label htmlFor="password" className="block text-sm/6 font-medium text-white">
-              Password
-            </label>
-            <div className="mt-2">
-              <input
-                type="password"
-                placeholder="********"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                id="password"
-                name="password"
-                required
-                autoComplete="new-password"
-                className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-              />
+            <div>
+              <label htmlFor="password2" className="block text-sm/6 font-medium text-gray-900">
+                Confirm Password
+              </label>
+              <div className="mt-2">
+                <input
+                    onChange={e => setConfirmPassword(e.target.value)}
+                  id="password2"
+                  name="password2"
+                  value={confirmPassword}
+                  type="password"
+                  placeholder='********'
+                  required
+                  autoComplete="current-password"
+                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                />
+                <img 
+                  src={eyeClosedIcon} 
+                  alt='eye' 
+                  id='hideButton2' 
+                  style={{ width: '5%', height: '5%' }}
+                  onClick={() => {
+                    const passwordField = document.getElementById('password2');
+                    const imageFile = document.getElementById('hideButton2');
+                    if (passwordField.type === 'password') {
+                      passwordField.type = 'text'; // Show password
+                      imageFile.src = eyeOpenIcon; // Change image to open eye
+                    } else {
+                      passwordField.type = 'password'; // Hide password
+                      imageFile.src = eyeClosedIcon; // Change image to closed eye
+                    }
+                  }}/>
+              </div>
             </div>
-          </div>
 
           {/* Confirm Password */}
           <div>
@@ -249,6 +302,18 @@ const RegisterForm = () => {
             >
               <a href="/">Back</a>
             </button>
+            
+            <br></br>
+
+            <div>
+            <button
+
+              className="flex w-full justify-center rounded-md bg-white border-indigo-600 border-dash border-2 px-3 py-1.5 text-sm/6 font-semibold text-indigo-600 shadow-xs hover:border-indigo-500 hover:bg-indigo-500 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              <a href="/">Back</a>
+            </button>
+          </div>
+
           </div>
         </form>
       </div>
