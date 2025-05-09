@@ -25,11 +25,11 @@ public class TextNote {
     private String text;
 
     @ManyToOne
-    @JoinColumn(name = "sessionActiityID")
-    private SessionActivity sessionActivity;
+    @JoinColumn(name = "sessionID")
+    private Session session;
 
-    public TextNote(String text, SessionActivity sessionActivity) {
-        this.sessionActivity = sessionActivity;
+    public TextNote(String text, Session session) {
+        this.session = session;
         this.text = text;
     }
 
@@ -49,11 +49,11 @@ public class TextNote {
         this.text = text;
     }
 
-    public SessionActivity getSessionActivity() {
-        return sessionActivity;
+    public Session getSession() {
+        return session;
     }
 
-    public void setSessionActivity(SessionActivity sessionActivity) {
-        this.sessionActivity = sessionActivity;
+    public void setSession(Session session) {
+        this.session = session;
     }
 }
