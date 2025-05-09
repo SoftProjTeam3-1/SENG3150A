@@ -33,7 +33,7 @@ public  class UserService {
         return isCreated;
     }
 
-   public boolean loginUser(String email, String password) {
+/*    public boolean loginUser(String email, String password) {
         User existingUser = userStore.get(email);
 
         if (existingUser != null && passwordEncoder.matches(password, existingUser.getPassword())) {
@@ -43,7 +43,7 @@ public  class UserService {
             System.out.println("User not found " + email);
             return false;
         }
-    }
+    } */
 
 /*     public String[] getUserData() {
         List<String> userData = new ArrayList<>();
@@ -63,9 +63,9 @@ public  class UserService {
 
     
     
-    public Optional<User> findByEmail(String email) {
+/*     public Optional<User> findByEmail(String email) {
         return Optional.ofNullable(userStore.get(email));
-    }
+    } */
 
 
     // public Optional<String> getEmailByToken(String token) {
@@ -84,13 +84,13 @@ public  class UserService {
         return resetCodeStore.get(email);
     }
     
-    public void updatePassword(String email, String newPassword) {
+/*     public void updatePassword(String email, String newPassword) {
         User user = userStore.get(email);
         if (user != null) {
             String encodedPassword = passwordEncoder.encode(newPassword);
             user.setPassword(encodedPassword);
         }
-    }
+    } */
 
 
   

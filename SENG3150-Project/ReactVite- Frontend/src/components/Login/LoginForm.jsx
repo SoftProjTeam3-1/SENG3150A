@@ -19,9 +19,7 @@ const LoginForm = () => {
     //  public User(String firstName, String surname, String email, boolean verified, String password) {
 
   const [email, setEmail] = useState('')
-  
   const [password, setPassword] = useState('')
-
   const [message, setMessage] = useState('')
 
 
@@ -44,6 +42,7 @@ const LoginForm = () => {
         },
         body: JSON.stringify({email, password})
       })
+      
       const data = await response.json()
 
       if(data && viewValidation){
