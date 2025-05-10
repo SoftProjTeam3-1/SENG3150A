@@ -26,11 +26,11 @@ public class SessionType {
         this.description = description;
     }
 
-    public int getSessionTypeID() {
+    public int getId() {
         return sessionTypeID;
     }
 
-    public void setSessionTypeID(int sessionTypeID) {
+    public void setId(int sessionTypeID) {
         this.sessionTypeID = sessionTypeID;
     }
 

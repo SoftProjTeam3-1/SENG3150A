@@ -38,11 +38,11 @@ public class SessionActivity {
         this.activity = activity;
     }
 
-    public int getSessionActivityID() {
+    public int getId() {
         return sessionActivityID;
     }
 
-    public void setSessionActivityID(int sessionActivityID) {
+    public void setId(int sessionActivityID) {
         this.sessionActivityID = sessionActivityID;
     }
 

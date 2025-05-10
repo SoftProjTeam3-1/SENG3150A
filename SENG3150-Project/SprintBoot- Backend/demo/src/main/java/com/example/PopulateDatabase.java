@@ -7,7 +7,11 @@ import com.google.common.hash.Hashing;
 import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 
-public class PopulateDatabase {
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+
+@Component
+public class PopulateDatabase implements CommandLineRunner{
     private final ActivityTypeRepository activityTypeR;
     private final SessionTypeRepository sessionTypeR;
     private final PlayerRepository playerR;
@@ -44,7 +48,8 @@ public class PopulateDatabase {
             this.attendanceR = attendanceR;
         }
 
-    public void run(){
+    @Override
+    public void run(String... args){
         //clean the database
         attendanceR.deleteAll();
         rollR.deleteAll();

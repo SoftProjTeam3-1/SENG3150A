@@ -26,11 +26,11 @@ public class Player {
         this.position = position;
     }
 
-    public int getPlayerID() {
+    public int getId() {
         return playerID;
     }
 
-    public void setPlayerID(int playerID) {
+    public void setId(int playerID) {
         this.playerID = playerID;
     }
 

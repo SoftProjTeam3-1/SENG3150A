@@ -33,11 +33,11 @@ public class TextNote {
         this.text = text;
     }
 
-    public int getTextNoteID() {
+    public int getId() {
         return textNoteID;
     }
 
-    public void setTextNoteID(int textNoteID) {
+    public void setId(int textNoteID) {
         this.textNoteID = textNoteID;
     }
 

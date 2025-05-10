@@ -37,11 +37,11 @@ public class VoiceNote {
         this.voiceFile = voiceFile;
     }
 
-    public int getVoiceNoteID() {
+    public int getId() {
         return voiceNoteID;
     }
 
-    public void setVoiceNoteID(int voiceNoteID) {
+    public void setId(int voiceNoteID) {
         this.voiceNoteID = voiceNoteID;
     }
 
@@ -57,7 +57,7 @@ public class VoiceNote {
         return session;
     }
 
-    public void setSession(Session session) {
+    public void setSessionActivity(Session session) {
         this.session = session;
     }
 }

@@ -27,11 +27,11 @@ public class ActivityType {
         this.description = description;
     }
 
-    public int getActivityTypeID() {
+    public int getId() {
         return activityTypeID;
     }
 
-    public void setActivityTypeID(int activityTypeID) {
+    public void setId(int activityTypeID) {
         this.activityTypeID = activityTypeID;
     }
 

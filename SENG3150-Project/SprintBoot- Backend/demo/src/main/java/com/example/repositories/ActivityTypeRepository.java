@@ -5,7 +5,7 @@ import java.util.List;
 import com.example.entities.ActivityType;
 
 public interface ActivityTypeRepository extends JpaRepository<ActivityType, Integer> {
-    ActivityType findByID(int id);
+    ActivityType findById(int id);
     List<ActivityType> findByName(String name);
     List<ActivityType> findByDescription(String description);
 }

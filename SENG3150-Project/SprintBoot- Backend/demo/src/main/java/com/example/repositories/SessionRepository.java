@@ -10,8 +10,8 @@ import com.example.entities.SessionType;
 import com.example.entities.User;
 
 public interface SessionRepository extends JpaRepository<Session, Integer>{
-    Session findByID(int id);
+    Session findById(int id);
     List<Session> findByDate(Date date);
     List<Session> findByUser(User user);
-    List<Session> findBySessionType(SessionType type);
+    List<Session> findByType(SessionType type);
 }

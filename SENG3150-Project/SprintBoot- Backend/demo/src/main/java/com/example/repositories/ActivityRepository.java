@@ -6,7 +6,7 @@ import com.example.entities.Activity;
 import com.example.entities.ActivityType;
 
 public interface ActivityRepository extends JpaRepository<Activity, Integer>{
-    Activity findByID(int id);
+    Activity findById(int id);
     List<Activity> findByName(String name);
     List<Activity> findByDescription(String description);
     List<Activity> findByPeopleRequired(int peopleRequired);

@@ -42,11 +42,11 @@ public class Activity {
         this.activityType = activityType;
     }
 
-    public int getActivityID() {
+    public int getId() {
         return activityID;
     }
 
-    public void setActivityID(int activityID) {
+    public void setId(int activityID) {
         this.activityID = activityID;
     }
 

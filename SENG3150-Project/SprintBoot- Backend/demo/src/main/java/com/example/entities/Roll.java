@@ -30,11 +30,11 @@ public class Roll {
         this.session = session;
     }
 
-    public int getRollID() {
+    public int getId() {
         return rollID;
     }
 
-    public void setRollID(int rollID) {
+    public void setId(int rollID) {
         this.rollID = rollID;
     }
 

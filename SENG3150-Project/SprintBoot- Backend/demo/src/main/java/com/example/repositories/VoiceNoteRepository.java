@@ -6,10 +6,10 @@ import java.util.List;
 import java.io.File;
 
 import com.example.entities.VoiceNote;
-import com.example.entities.SessionActivity;
+import com.example.entities.Session;
 
 public interface VoiceNoteRepository extends JpaRepository<VoiceNote, Integer>{
-    File findByID(int id);
+    File findById(int id);
     List<VoiceNote> findByVoiceFile(File voiceFile);
-    List<VoiceNote> findBySessionActivity(SessionActivity sessionActivity);
+    List<VoiceNote> findBySession(Session session);
 }

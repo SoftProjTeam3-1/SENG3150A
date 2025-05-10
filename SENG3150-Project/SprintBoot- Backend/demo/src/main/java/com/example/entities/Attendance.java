@@ -39,11 +39,11 @@ public class Attendance {
         this.roll = roll;
     }
 
-    public int getAttendanceID() {
+    public int getId() {
         return attendanceID;
     }
 
-    public void setAttendanceID(int attendanceID) {
+    public void setId(int attendanceID) {
         this.attendanceID = attendanceID;
     }
 

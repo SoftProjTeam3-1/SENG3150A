@@ -57,17 +57,6 @@ public class UserController {
        
        
     }
-    
-/*     @GetMapping("/api/user/getEmails")
-    public String[] returrnEmails() {
-        return userService.getUserData();
-    } */
-
-      
-    
-  
-    
-
 }
 
 
