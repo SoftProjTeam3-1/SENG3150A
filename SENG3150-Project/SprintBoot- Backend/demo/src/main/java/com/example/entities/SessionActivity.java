@@ -33,6 +33,7 @@ public class SessionActivity {
     @JoinColumn(name = "activityID")
     private Activity activity;
 
+    public SessionActivity(){}
     public SessionActivity(Session session, Activity activity) {
         this.session = session;
         this.activity = activity;

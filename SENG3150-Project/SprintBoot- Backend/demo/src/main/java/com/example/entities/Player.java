@@ -21,6 +21,7 @@ public class Player {
     private String playerName;
     private String position;
 
+    public Player(){}
     public Player(String playerName, String position) {
         this.playerName = playerName;
         this.position = position;

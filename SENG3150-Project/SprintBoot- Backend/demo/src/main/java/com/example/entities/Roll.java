@@ -26,6 +26,7 @@ public class Roll {
     @JoinColumn(name = "sessionID")
     private Session session;
 
+    public Roll(){}
     public Roll(Session session) {
         this.session = session;
     }

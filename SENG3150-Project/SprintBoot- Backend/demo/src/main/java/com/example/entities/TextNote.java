@@ -28,6 +28,7 @@ public class TextNote {
     @JoinColumn(name = "sessionID")
     private Session session;
 
+    public TextNote(){}
     public TextNote(String text, Session session) {
         this.session = session;
         this.text = text;

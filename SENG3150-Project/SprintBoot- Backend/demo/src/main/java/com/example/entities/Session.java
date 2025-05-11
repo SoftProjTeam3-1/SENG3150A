@@ -35,7 +35,7 @@ public class Session {
     @JoinColumn(name = "sessionTypeID")
     private SessionType type;
 
-
+    public Session(){}
     public Session(Date date, User user, SessionType type) {
         this.date = date;
         this.user = user;
