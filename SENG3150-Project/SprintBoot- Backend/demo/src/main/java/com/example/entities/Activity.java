@@ -34,6 +34,7 @@ public class Activity {
     @JoinColumn(name = "activityTypeID")
     private ActivityType activityType;
 
+    public Activity(){}
     public Activity(String name, String description, int peopleRequired, String duration, ActivityType activityType) {
         this.name = name;
         this.description = description;
@@ -42,11 +43,11 @@ public class Activity {
         this.activityType = activityType;
     }
 
-    public int getActivityID() {
+    public int getId() {
         return activityID;
     }
 
-    public void setActivityID(int activityID) {
+    public void setId(int activityID) {
         this.activityID = activityID;
     }
 

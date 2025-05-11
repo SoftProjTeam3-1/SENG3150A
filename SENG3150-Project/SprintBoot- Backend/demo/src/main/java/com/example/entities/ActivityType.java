@@ -22,16 +22,17 @@ public class ActivityType {
     private String name;
     private String description;
 
+    public ActivityType(){}
     public ActivityType(String name, String description) {
         this.name = name;
         this.description = description;
     }
 
-    public int getActivityTypeID() {
+    public int getId() {
         return activityTypeID;
     }
 
-    public void setActivityTypeID(int activityTypeID) {
+    public void setId(int activityTypeID) {
         this.activityTypeID = activityTypeID;
     }
 

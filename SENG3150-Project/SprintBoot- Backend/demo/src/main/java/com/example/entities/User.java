@@ -21,7 +21,8 @@ public class User {
   private String emailCodeSent;
   private String emailCodeReceived;
   private String emailCodeSentTo;
-  public User() {}
+  
+  public User(){}
   public User(String firstName, String surname, String email, boolean verified, String password) {
     this.firstName = firstName;
 	  this.surname = surname;

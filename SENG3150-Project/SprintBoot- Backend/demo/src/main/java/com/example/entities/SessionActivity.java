@@ -33,17 +33,17 @@ public class SessionActivity {
     @JoinColumn(name = "activityID")
     private Activity activity;
 
-    public SessionActivity(int sessionActivityID, Session session, Activity activity) {
-        this.sessionActivityID = sessionActivityID;
+    public SessionActivity(){}
+    public SessionActivity(Session session, Activity activity) {
         this.session = session;
         this.activity = activity;
     }
 
-    public int getSessionActivityID() {
+    public int getId() {
         return sessionActivityID;
     }
 
-    public void setSessionActivityID(int sessionActivityID) {
+    public void setId(int sessionActivityID) {
         this.sessionActivityID = sessionActivityID;
     }
 

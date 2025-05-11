@@ -33,17 +33,18 @@ public class Attendance {
     @JoinColumn(name = "rollID")
     private Roll roll;
 
+    public Attendance(){}
     public Attendance(boolean attended, Player player, Roll roll) {
         this.attended = attended;
         this.player = player;
         this.roll = roll;
     }
 
-    public int getAttendanceID() {
+    public int getId() {
         return attendanceID;
     }
 
-    public void setAttendanceID(int attendanceID) {
+    public void setId(int attendanceID) {
         this.attendanceID = attendanceID;
     }
 

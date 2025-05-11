@@ -1,4 +1,4 @@
-package com.example;
+/* package com.example;
 
 import java.util.Map;
 import java.util.Optional;
@@ -26,12 +26,13 @@ public class ForgotPasswordController {
     @Autowired
     private UserService userService;
 
+
     @PostMapping("/forgotpassword")
     public Map<String, String> forgotPassword(@RequestBody Map<String, String> payload) {
         String email = payload.get("email");
 
-        Optional<User> userOpt = userService.findByEmail(email);
-        if (userOpt.isEmpty()) {
+        User user = userRepository.findByEmail(email);
+        if (user.isEmpty()) {
             return Map.of("error", "No account found for that email.");
         }
 
@@ -62,3 +63,4 @@ public class ForgotPasswordController {
         return Map.of("message", "Password updated successfully.");
     }
 }
+ */

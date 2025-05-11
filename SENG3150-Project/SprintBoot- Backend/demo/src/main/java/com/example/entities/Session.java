@@ -35,18 +35,18 @@ public class Session {
     @JoinColumn(name = "sessionTypeID")
     private SessionType type;
 
-
+    public Session(){}
     public Session(Date date, User user, SessionType type) {
         this.date = date;
         this.user = user;
         this.type = type;
     }
 
-    public int getSessionID() {
+    public int getId() {
         return sessionID;
     }
 
-    public void setSessionID(int sessionID) {
+    public void setId(int sessionID) {
         this.sessionID = sessionID;
     }
 
@@ -66,11 +66,11 @@ public class Session {
         this.user = user;
     }
 
-    public SessionType getSessionType() {
+    public SessionType getType() {
         return type;
     }
 
-    public void setSessionType(SessionType type) {
+    public void setType(SessionType type) {
         this.type = type;
     }
 }

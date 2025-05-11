@@ -21,16 +21,17 @@ public class Player {
     private String playerName;
     private String position;
 
+    public Player(){}
     public Player(String playerName, String position) {
         this.playerName = playerName;
         this.position = position;
     }
 
-    public int getPlayerID() {
+    public int getId() {
         return playerID;
     }
 
-    public void setPlayerID(int playerID) {
+    public void setId(int playerID) {
         this.playerID = playerID;
     }
 

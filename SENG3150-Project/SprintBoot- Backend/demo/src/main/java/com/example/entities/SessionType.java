@@ -21,16 +21,17 @@ public class SessionType {
     private String name;
     private String description;    
 
+    public SessionType(){}
     public SessionType(String name, String description){
         this.name = name;
         this.description = description;
     }
 
-    public int getSessionTypeID() {
+    public int getId() {
         return sessionTypeID;
     }
 
-    public void setSessionTypeID(int sessionTypeID) {
+    public void setId(int sessionTypeID) {
         this.sessionTypeID = sessionTypeID;
     }
 

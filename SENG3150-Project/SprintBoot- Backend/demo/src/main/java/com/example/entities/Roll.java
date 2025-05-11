@@ -26,16 +26,16 @@ public class Roll {
     @JoinColumn(name = "sessionID")
     private Session session;
 
-    public Roll(int rollID, Session session) {
-        this.rollID = rollID;
+    public Roll(){}
+    public Roll(Session session) {
         this.session = session;
     }
 
-    public int getRollID() {
+    public int getId() {
         return rollID;
     }
 
-    public void setRollID(int rollID) {
+    public void setId(int rollID) {
         this.rollID = rollID;
     }
 

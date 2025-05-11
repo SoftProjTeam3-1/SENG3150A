@@ -46,7 +46,7 @@ const RegisterForm = () => {
           firstName,
           surname,
           email,
-          password 
+          hashPassword 
         }),
       });
 

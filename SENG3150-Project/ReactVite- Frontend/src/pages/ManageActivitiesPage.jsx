@@ -7,16 +7,19 @@
 import React from 'react'
 import Header from '../components/Header'
 import ActivityComponent from '../components/ManageActivities/ActivityComponent'
+import CategoryComponent from '../components/ManageActivities/CategoryComponent'
+import SessionWindowFrame from '../components/ManageActivities/SessionWindowFrame'
 
-const ManageActivities = () => {
+const ManageActivitiesPage = () => {
   return (
       <>
         <div className="flex flex-1 flex-col justify-center ">
           <ActivityComponent/>
+          <SessionWindowFrame/>
         </div>
       </>
 
   )
 }
 
-export default ManageActivities
+export default ManageActivitiesPage

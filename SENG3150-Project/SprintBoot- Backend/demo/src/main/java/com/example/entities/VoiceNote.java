@@ -29,19 +29,20 @@ public class VoiceNote {
     private File voiceFile;
 
     @ManyToOne
-    @JoinColumn(name = "sessionActivityID")
-    private SessionActivity sessionActivity;
+    @JoinColumn(name = "sessionID")
+    private Session session;
 
-    public VoiceNote(File voiceFile, SessionActivity sessionActivity) {
-        this.sessionActivity = sessionActivity;
+    public VoiceNote(){}
+    public VoiceNote(File voiceFile, Session session) {
+        this.session = session;
         this.voiceFile = voiceFile;
     }
 
-    public int getVoiceNoteID() {
+    public int getId() {
         return voiceNoteID;
     }
 
-    public void setVoiceNoteID(int voiceNoteID) {
+    public void setId(int voiceNoteID) {
         this.voiceNoteID = voiceNoteID;
     }
 
@@ -53,11 +54,11 @@ public class VoiceNote {
         this.voiceFile = voiceFile;
     }
 
-    public SessionActivity getSessionActivity() {
-        return sessionActivity;
+    public Session getSession() {
+        return session;
     }
 
-    public void setSessionActivity(SessionActivity sessionActivity) {
-        this.sessionActivity = sessionActivity;
+    public void setSessionActivity(Session session) {
+        this.session = session;
     }
 }
