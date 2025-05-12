@@ -7,6 +7,7 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import '@progress/kendo-theme-default/dist/all.css';
+import './TileLayoutContainer.css';
 
 const TileBody = ({ categoryName }) => {
 
@@ -14,14 +15,45 @@ const TileBody = ({ categoryName }) => {
   const [activityList, setActivityList] = useState([
     'Run Laps', 'Stretches', 'Hurdles', 'Other',
   ]);
+  //Stored activity description and time for each activity
+  const [activityDescriptionList, setActivityDescriptionList] = useState([
+    'Activity description goes here',
+    'Activity description goes here',
+    'Activity description goes here',
+    'Activity description goes here',
+  ]);
+  const [activityTimeList, setActivityTimeList] = useState([
+    10,
+    20,
+    30,
+    40,
+  ]);
 
   // State to manage the visibility of the form
   const [showForm, setShowForm] = useState(false);
+  // State to manage the visibility of the activity information
+  const [showActivityInfo, setShowActivityInfo] = useState(false);
   // State to manage the new activity input
   const [newActivity, setNewActivity] = useState('');
+  // State to manage the new activity description input
+  const [newActivityDescription, setNewActivityDescription] = useState('');
+  // State to manage the new activity time input
+  const [newActivityTime, setNewActivityTime] = useState(0);
+
+  //Variables to store selected activity
+  const [selectedActivity, setSelectedActivity] = useState(null);
+  const [selectedActivityDescription, setSelectedActivityDescription] = useState(null);
+  const [selectedActivityTime, setSelectedActivityTime] = useState(null);
 
   // Method handler for when an activity is clicked
-  const handleClick = (item) => alert(`You clicked: ${item}`);
+  const handleClick = (item) => {
+    // Set the selected activity and its description
+    setSelectedActivity(item);
+    setSelectedActivityDescription(activityDescriptionList[activityList.indexOf(item)]);
+    setSelectedActivityTime(activityTimeList[activityList.indexOf(item)]);
+    // Show the activity information
+    setShowActivityInfo(true);
+  }
   // Method to handle adding a new activity
   const handleAddActivity = () => {
         // Check if the input is not empty
@@ -29,7 +61,11 @@ const TileBody = ({ categoryName }) => {
         if (newActivity.trim() !== '') {
           //TODO: Add the new activity to the list with POST
           setActivityList([...activityList, newActivity.trim()]);
+          setActivityDescriptionList([...activityDescriptionList, newActivityDescription.trim()]);
+          setActivityTimeList([...activityTimeList, newActivityTime]);
           setNewActivity('');// Clear the input
+          setNewActivityDescription('');// Clear the input
+          setNewActivityTime(0);// Clear the input
           // Close the form
           setShowForm(false);
         }
@@ -89,9 +125,38 @@ const TileBody = ({ categoryName }) => {
             Add Activity
         </button> 
       </div>
+      
+      {/* Show activity information */}
+      {/* TODO: Change to a form where user can edit and save changes */}
+      {showActivityInfo && ReactDOM.createPortal(
+        // Popup for activity information
+        <>
+        <div className='popup-position'>
+          <div className='popup-container'>
+            <h3>{selectedActivity}</h3>
+            <p>{selectedActivityDescription}</p>
+            <p>Time: {selectedActivityTime} minutes</p>
+            <button
+              onClick={() => setShowActivityInfo(false)}
+              style={{
+                marginRight: '10px',
+                padding: '6px 12px',
+                border: 'none',
+                borderRadius: '4px',
+                backgroundColor: '#ccc',
+                cursor: 'pointer',
+              }}
+            >
+              Close
+            </button>
+          </div>
+          </div>
+        {/* Make it pop up above everything */}
+        </>, document.getElementById('form-root')
+      )}
 
       {showForm && ReactDOM.createPortal(
-      <form
+      <form className='popup-position'
         onSubmit={(e) => {
           e.preventDefault(); // Prevent page refresh
         
@@ -102,28 +167,8 @@ const TileBody = ({ categoryName }) => {
         
           // TODO: Add the new activity to the list with POST
           handleAddActivity();
-        }}
-        style={{ //Styles for the form to be displayed and hover
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          backgroundColor: 'rgba(0,0,0,0.5)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 1000,
         }}>     
-        <div
-          style={{ //Styles for the form container
-            backgroundColor: 'white',
-            padding: '20px',
-            borderRadius: '8px',
-            width: '300px',
-            boxShadow: '0 2px 10px rgba(0, 0, 0, 0.2)',
-          }}
-        >
+        <div className='popup-container'>
           {/* The form inputs */}
           <h3>Add New Activity</h3>
           <input
@@ -144,6 +189,8 @@ const TileBody = ({ categoryName }) => {
           {/* Textbox input for a description */}
           <textarea
             placeholder="Enter activity description"
+            onChange={(e) => setNewActivityDescription(e.target.value)}
+            value={newActivityDescription}
             style={{
               width: '100%',
               padding: '8px',
@@ -157,6 +204,8 @@ const TileBody = ({ categoryName }) => {
           <input
             type="number"
             placeholder="Enter time in minutes"
+            onChange={(e) => setNewActivityTime(e.target.value)}
+            value={newActivityTime}
             style={{
               width: '100%',
               padding: '8px',
@@ -199,7 +248,8 @@ const TileBody = ({ categoryName }) => {
             </button>
           </div>
         </div>
-      </form>, document.getElementById('form-root'))}
+      </form>, document.getElementById('form-root')
+      )}
     </>
   );
 };  
