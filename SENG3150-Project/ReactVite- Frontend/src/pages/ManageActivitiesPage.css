@@ -1,0 +1,11 @@
+
+/* The container for the tiles spanning the whole page */
+.tilelayoutcontainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgba(175, 210, 187, 1);
+}

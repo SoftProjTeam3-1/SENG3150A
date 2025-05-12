@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@progress/kendo-react-layout": "^10.2.0",
+    "@progress/kendo-theme-default": "^11.0.0",
     "@tailwindcss/vite": "^4.0.17",
     "js-sha256": "^0.11.0",
     "react": "^19.0.0",
