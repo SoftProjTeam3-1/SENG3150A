@@ -1,7 +1,7 @@
 /* Styles for TileLayout */
 .k-tilelayout {
     background-color: rgba(175, 210, 187, 1) !important;
-    height: 100vh;
+    height: fit-content;
     width: 100vw;
 }
 

@@ -6,8 +6,6 @@
 
 import React from 'react'
 import Header from '../components/Dashboard/Header'
-import CategoryComponent from '../components/ManageActivities/CategoryComponent'
-import {TileLayout} from '@progress/kendo-react-layout';
 import '@progress/kendo-theme-default/dist/all.css';
 import './ManageActivitiesPage.css';
 import TileLayoutContainer from '../components/ManageActivities/TileLayoutContainer';
