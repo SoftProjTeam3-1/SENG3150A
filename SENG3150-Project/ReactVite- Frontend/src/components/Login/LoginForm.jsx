@@ -12,6 +12,7 @@ import eyeOpenIcon from '../../assets/eye-open.svg';
 import eyeClosedIcon from '../../assets/eye-closed.svg';
 import './login.css';
 import { toast, ToastContainer } from 'react-toastify';
+import { sha256 } from 'js-sha256';
 import 'react-toastify/dist/ReactToastify.css';
 
 
@@ -21,49 +22,42 @@ const LoginForm = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState('')
-
+  const hashPassword = (password) => sha256(password);
 
 
   let [viewValidation, changeValidation] = useState(false)
   let [viewErrorLog, changeErrorLog] = useState("");
 
-  const handleSubmit = async e => {
-    e.preventDefault()
-
-    let s = validateLogin({emailId:email,passwordId:password});
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    let s = validateLogin({ emailId: email, passwordId: password });
     changeValidation(s.valid);
-    changeErrorLog(s.errors)
-
+    changeErrorLog(s.errors);
+  
+    if (!s.valid) {
+      // skip login if validation fails
+      return;
+    }
+  
     try {
       const response = await fetch('/api/user/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({email, password})
-      })
-      
-      const data = await response.json()
-
-      if(data && viewValidation){
-        console.log('User logged in successfully!')
-        window.location.href = '/dashboard' // Redirect to the dashboard page
-      }
-      setMessage(data.message)
-    } catch (err) {
-      console.error('Error submitting user:', err)
-    }
-
-    if(viewErrorLog.length > 0){
-      toast.error(
-          <div>
-            <ul className="list-disc pl-5 text-left">
-              {viewErrorLog.map((err, i) => (
-                  <li key={i}>{err.replace(/^- /, '')}</li>  // removes any "- " at the start
-              ))}
-            </ul>
-          </div>,
-          {
+        body: JSON.stringify({
+          email,
+          password: hashPassword(password)
+        })
+      });
+  
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Login response:', result);
+  
+        if (result === true) {
+          toast.success("Login Successful", {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -72,8 +66,25 @@ const LoginForm = () => {
             draggable: true,
             theme: "colored",
           });
-    }else{
-      toast.error("Unable to Login", {
+          window.location.href = '/dashboard';
+        } else {
+          toast.error("Invalid credentials", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: "colored",
+          });
+        }
+      } else {
+        throw new Error('Non-200 response');
+      }
+  
+    } catch (error) {
+      console.error('Error logging in:', error);
+      toast.error("Login Failed", {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -81,29 +92,10 @@ const LoginForm = () => {
         pauseOnHover: true,
         draggable: true,
         theme: "colored",
-      })
+      });
     }
-  }
-
-  //Use effect runs every time the component is rendered
-  //The empty array at the end of the useEffect function means that it will only run once
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await fetch('api/user')
-        console.log(response)
-        const data = await response.json()
-        setName(data.firstName)
-        setEmail(data.email)
-
-      } catch (err) {
-        console.error('Error fetching user:', err)
-      }
-
-    }
-
-    fetchUser()
-  }, [message])
+  };
+  
   
   return (
     <div className={"login-card"}>
@@ -190,7 +182,6 @@ const LoginForm = () => {
 
           <div>
             <button
-              onClick={handleSubmit}
               type="submit"
               className="flex w-full justify-center rounded-md bg-orange-400 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-orange-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
