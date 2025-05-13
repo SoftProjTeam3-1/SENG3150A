@@ -19,8 +19,8 @@ public  class UserService {
 
     private final UserRepository userRepository;
 
-    private final Map<String, User> userStore = new HashMap<>();
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+/*     private final Map<String, User> userStore = new HashMap<>();
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(); */
     private final Map<String, String> resetCodeStore = new HashMap<>();
 
     public UserService(UserRepository userRepository) {
