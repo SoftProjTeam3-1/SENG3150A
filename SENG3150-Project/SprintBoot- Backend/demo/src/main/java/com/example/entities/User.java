@@ -1,5 +1,6 @@
 package com.example.entities;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,7 +13,10 @@ public class User {
   private int id;
 
   private String firstName;
+
+  @Column(unique = true)
   private String email;
+
   private String surname;
   private boolean verified;
   private String password;
@@ -56,13 +60,11 @@ public class User {
   }
 
   public String getEmail() {
-    return email;
+      return email;
   }
-
   public void setEmail(String email) {
-    this.email = email;
+      this.email = email;
   }
-  
   public boolean verified(){
 	  return verified;
   }
