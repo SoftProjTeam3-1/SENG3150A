@@ -12,14 +12,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) // For API use without CSRF token (OK for development)
+            .csrf(csrf -> csrf.disable()) // Disable CSRF (fine for JSON APIs during dev)
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/user/register", "/api/user/forgotpassword", "/api/user/reset-password", "/api/user/login").permitAll() // ✅ Public endpoints
                 .anyRequest().authenticated() // Other endpoints require login
             )
-            .httpBasic(Customizer.withDefaults()); // Use basic auth if needed (for testing)
+            .httpBasic(httpBasic -> httpBasic.disable()); // ✅ Disable browser basic auth popup
 
         return http.build();
     }
-    
 }
+

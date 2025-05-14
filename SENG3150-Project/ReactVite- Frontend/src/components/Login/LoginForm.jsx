@@ -12,6 +12,7 @@ import eyeOpenIcon from '../../assets/eye-open.svg';
 import eyeClosedIcon from '../../assets/eye-closed.svg';
 import './login.css';
 import { toast, ToastContainer } from 'react-toastify';
+import { sha256 } from 'js-sha256';
 import 'react-toastify/dist/ReactToastify.css';
 import { sha256 } from 'js-sha256';
 
@@ -77,18 +78,20 @@ const LoginForm = () => {
             draggable: true,
             theme: "colored",
           });
-    }else{
-      toast.error("Unable to Login", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "colored",
+    } 
+    else {
+      toast.error("Login Failed", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      theme: "colored",
       })
     }
   }
+  
   
   return (
     <div className={"login-card"}>

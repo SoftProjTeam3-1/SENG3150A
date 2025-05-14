@@ -33,6 +33,21 @@ public  class UserService {
         return isCreated;
     }
 
+    public User getUser(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    public boolean updatePassword(String email, String newPassword) {
+        User user = userRepository.findByEmail(email);
+        if (user != null) {
+            user.setPassword(newPassword); // Already hashed from frontend
+            userRepository.save(user); // Persist change
+            return true;
+        }
+        return false;
+    }
+    
+
 /*    public boolean loginUser(String email, String password) {
         User existingUser = userStore.get(email);
 
@@ -75,11 +90,9 @@ public  class UserService {
     public void saveResetToken(String email, String code) {
         resetCodeStore.put(email, code);
     }
-    
-    public User getUser(String email) {
-        GetUser getUserInstance = new GetUser(userRepository);
-        return getUserInstance.getUser(email);
-    }    
+
+
+
     public String getResetToken(String email) {
         return resetCodeStore.get(email);
     }

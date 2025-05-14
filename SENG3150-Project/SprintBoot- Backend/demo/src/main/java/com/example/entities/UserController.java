@@ -16,8 +16,8 @@ public class UserController {
 
     @Autowired
     UserService userService;
- 
 
+    
     @PostMapping("api/user/register")
     public ResponseEntity<RegisterResponse> register(@RequestBody User entity) {
         User user = new User();
@@ -26,7 +26,7 @@ public class UserController {
         user.setEmail(entity.getEmail());
         user.setPassword(entity.getPassword());
 
-        System.out.println("User: " + user.getFirstName() + " " + user.getSurname() + " " + user.getEmail() + " " + user.getPassword());
+        System.out.println("User object created: " + user);
 
         Boolean result = userService.registerUser(user);
         if (result) {
@@ -35,9 +35,8 @@ public class UserController {
             return new ResponseEntity<>(new RegisterResponse(false, "User registration failed"), HttpStatus.OK);
         }
     }
-    
 
-    //login
+    // login
     @PostMapping("/api/user/login")
     public ResponseEntity<LoginResponse> login(@RequestBody User entity) {
         User user = new User();
@@ -58,8 +57,6 @@ public class UserController {
             LoginResponse loginResponse = new LoginResponse(false, "Login failed");
             return new ResponseEntity<>(loginResponse, HttpStatus.OK);
         }
-       
-       
     }
 }
 
