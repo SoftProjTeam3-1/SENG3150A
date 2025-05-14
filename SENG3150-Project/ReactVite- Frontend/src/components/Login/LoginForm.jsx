@@ -14,87 +14,83 @@ import './login.css';
 import { toast, ToastContainer } from 'react-toastify';
 import { sha256 } from 'js-sha256';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { sha256 } from 'js-sha256';
 
 const LoginForm = () => {
     //  public User(String firstName, String surname, String email, boolean verified, String password) {
 
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [plainTextPassword, setPassword] = useState('')
   const [message, setMessage] = useState('')
-  const hashPassword = (password) => sha256(password);
 
-
-  let [viewValidation, changeValidation] = useState(false)
+  let [viewValidation, changeValidation] = useState(false);
   let [viewErrorLog, changeErrorLog] = useState("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-  
-    let s = validateLogin({ emailId: email, passwordId: password });
+  const handleSubmit = async e => {
+    e.preventDefault()
+
+    let s = validateLogin({emailId:email,passwordId:plainTextPassword});
     changeValidation(s.valid);
-    changeErrorLog(s.errors);
-  
-    if (!s.valid) {
-      // skip login if validation fails
-      return;
-    }
-  
+    changeErrorLog(s.errors)
+
+    const password = sha256(plainTextPassword)
+
     try {
       const response = await fetch('/api/user/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          email,
-          password: hashPassword(password)
-        })
-      });
-  
-      if (response.ok) {
-        const result = await response.json();
-        console.log('Login response:', result);
-  
-        if (result === true) {
-          toast.success("Login Successful", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            theme: "colored",
-          });
-          window.location.href = '/dashboard';
-        } else {
-          toast.error("Invalid credentials", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            theme: "colored",
-          });
-        }
-      } else {
-        throw new Error('Non-200 response');
+        body: JSON.stringify({email, password})
+      })
+      
+      const object = await response.text();
+      const data = JSON.parse(object);
+
+      console.log(data);
+      console.log(data.response);
+      console.log(viewValidation);
+
+      if(data.response && viewValidation){
+        console.log('User logged in successfully!')
+        window.location.href = '/dashboard' // Redirect to the dashboard page
       }
-  
-    } catch (error) {
-      console.error('Error logging in:', error);
-      toast.error("Login Failed", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "colored",
-      });
+      setMessage(data.message)
+    } catch (err) {
+      console.error('Error submitting user:', err)
     }
-  };
+
+    if(viewErrorLog.length > 0){
+      toast.error(
+          <div>
+            <ul className="list-disc pl-5 text-left">
+              {viewErrorLog.map((err, i) => (
+                  <li key={i}>{err.replace(/^- /, '')}</li>  // removes any "- " at the start
+              ))}
+            </ul>
+          </div>,
+          {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: "colored",
+          });
+    } 
+    else {
+      toast.error("Login Failed", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      theme: "colored",
+      })
+    }
+  }
   
   
   return (
@@ -144,7 +140,7 @@ const LoginForm = () => {
                 autoComplete="current-password"
                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 onChange={e => setPassword(e.target.value)}
-                value={password}
+                value={plainTextPassword}
               >
               </input>
 

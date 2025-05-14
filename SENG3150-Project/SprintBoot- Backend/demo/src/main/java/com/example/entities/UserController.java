@@ -1,10 +1,14 @@
 package com.example.entities;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 //import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import com.example.responses.RegisterResponse;
+import com.example.responses.LoginResponse;
 
 
 @RestController
@@ -15,10 +19,7 @@ public class UserController {
 
     
     @PostMapping("api/user/register")
-    public boolean register(@RequestBody User entity) {
-        System.out.println("Register endpoint hit");
-        System.out.println("Received user details: " + entity);
-
+    public ResponseEntity<RegisterResponse> register(@RequestBody User entity) {
         User user = new User();
         user.setFirstName(entity.getFirstName());
         user.setSurname(entity.getSurname());
@@ -29,39 +30,32 @@ public class UserController {
 
         Boolean result = userService.registerUser(user);
         if (result) {
-            System.out.println("User registration successful");
-            return true;
+            return new ResponseEntity<>(new RegisterResponse(true, "User registered successfully"), HttpStatus.OK);
         } else {
-            System.out.println("User registration failed");
-            return false;
+            return new ResponseEntity<>(new RegisterResponse(false, "User registration failed"), HttpStatus.OK);
         }
     }
 
     // login
     @PostMapping("/api/user/login")
-    public boolean login(@RequestBody User entity) {
-        System.out.println("Login endpoint hit");
-        System.out.println("Received login details: " + entity);
-        System.out.println("Email received: " + entity.getEmail());
-        String email = entity.getEmail();
-        String hashedPassword = entity.getPassword(); // Already hashed in frontend
+    public ResponseEntity<LoginResponse> login(@RequestBody User entity) {
+        User user = new User();
+        user.setEmail(entity.getEmail());
+        user.setPassword(entity.getPassword());
 
-        System.out.println("Fetching user from database for email: " + email);
-        User result = userService.getUser(email); // Fetch user from DB
-        System.out.println("User fetched from database: " + result);
+        System.out.println("Login Temp User: " + user.getEmail() + " " + user.getPassword());
 
-        if (result != null) {
-            System.out.println("User found in database: " + result);
-            if (result.getPassword().equals(hashedPassword)) {
-                System.out.println("Password match. User logged in: " + result.getEmail());
-                return true;
-            } else {
-                System.out.println("Password mismatch for user: " + email);
-                return false;
-            }
+        User result = userService.getUser(user.getEmail());
+
+        if (result != null && result.getPassword().equals(user.getPassword())) {
+            System.err.println("User found: " + result.getFirstName());
+            LoginResponse loginResponse = new LoginResponse(true, "Login successful");
+            return new ResponseEntity<>(loginResponse, HttpStatus.OK);
+
         } else {
-            System.out.println("No user found with email: " + email);
-            return false;
+            System.out.println("User not found " + user.getEmail() + " " + user.getPassword());
+            LoginResponse loginResponse = new LoginResponse(false, "Login failed");
+            return new ResponseEntity<>(loginResponse, HttpStatus.OK);
         }
     }
 }
