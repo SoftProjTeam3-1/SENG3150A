@@ -12,7 +12,7 @@ const createTile = (categoryName) => ({
     header: (<>{categoryName}</>),
     body: <ActivityTileBody categoryName={categoryName} />,
     reorderable: false,
-    resizable: true,
+    resizable: false,
 });
 
 export default createTile;

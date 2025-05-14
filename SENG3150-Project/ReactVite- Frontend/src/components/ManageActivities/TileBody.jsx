@@ -33,6 +33,7 @@ const TileBody = ({ categoryName }) => {
   const [showForm, setShowForm] = useState(false);
   // State to manage the visibility of the activity information
   const [showActivityInfo, setShowActivityInfo] = useState(false);
+  
   // State to manage the new activity input
   const [newActivity, setNewActivity] = useState('');
   // State to manage the new activity description input
