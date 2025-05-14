@@ -14,7 +14,7 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable()) // For API use without CSRF token (OK for development)
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/user/register", "/api/user/forgotpassword", "/api/user/reset-password").permitAll() // ✅ Public endpoints
+                .requestMatchers("/api/user/register", "/api/user/forgotpassword", "/api/user/reset-password", "/api/user/login").permitAll() // ✅ Public endpoints
                 .anyRequest().authenticated() // Other endpoints require login
             )
             .httpBasic(Customizer.withDefaults()); // Use basic auth if needed (for testing)

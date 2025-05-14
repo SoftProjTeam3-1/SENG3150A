@@ -22,18 +22,18 @@ const RegisterForm = () => {
   const [firstName, setFirstName] = useState('');
   const [surname, setSurname] = useState('');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [plainTextPassword, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const [viewValidation, changeValidation] = useState(false);
   let [viewErrorLog, changeErrorLog] = useState("");
 
-  const hashPassword = (password) => sha256(password);
+  const password = sha256(plainTextPassword);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let s =validateRegister({emailId: email, passwordId: password, confirmPasswordId: confirmPassword});
+    let s = validateRegister({emailId: email, passwordId: plainTextPassword, confirmPasswordId: confirmPassword});
     changeValidation(s.valid);
     changeErrorLog(s.errors);
     console.log(s.errors);
@@ -46,13 +46,18 @@ const RegisterForm = () => {
           firstName,
           surname,
           email,
-          hashPassword 
+          password 
         }),
       });
 
+      const object = await response.text();
+      const data = JSON.parse(object);
+      console.log(data);
+      console.log(viewValidation);
+
       //setSubmitFailed(!response.ok);
 
-      if (response.ok && viewValidation) {
+      if (data.response && viewValidation) {
         console.log('User registered successfully!');
         window.location.href = '/';
       }
@@ -104,10 +109,10 @@ const RegisterForm = () => {
 
 
   const passwordHints = [
-    {text: "Password must be at least 8 characters", isValid: password.length >= 8},
-    {text: "Password must contain at least one uppercase letter.", isValid: /[A-Z]/.test(password)},
-    {text: "Password must include a special character.", isValid: /[!@#$%^&*(),.?":{}|<>]/.test(password)},
-    {text: "Passwords must match.", isValid: password != "" && password === confirmPassword}
+    {text: "Password must be at least 8 characters", isValid: plainTextPassword.length >= 8},
+    {text: "Password must contain at least one uppercase letter.", isValid: /[A-Z]/.test(plainTextPassword)},
+    {text: "Password must include a special character.", isValid: /[!@#$%^&*(),.?":{}|<>]/.test(plainTextPassword)},
+    {text: "Passwords must match.", isValid: plainTextPassword != "" && plainTextPassword === confirmPassword}
   ];
 
   return (
@@ -187,7 +192,7 @@ const RegisterForm = () => {
                   onChange={e => setPassword(e.target.value)}
                   id="password"
                   name="password"
-                  value={password}
+                  value={plainTextPassword}
                   type="password"
                   placeholder='********'
                   required

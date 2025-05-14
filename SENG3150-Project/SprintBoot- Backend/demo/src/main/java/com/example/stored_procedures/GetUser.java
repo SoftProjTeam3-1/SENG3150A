@@ -15,6 +15,17 @@ public class GetUser{
     }
 
     public User getUser(String email) {
-        return userRepository.findByEmail(email);
+        try{
+            // Check if the user exists in the database
+            User user = userRepository.findByEmail(email);
+            if (user == null) {
+                System.out.println("User not found: " + email);
+                return null;
+            }
+            return user;
+        } catch (Exception e) {
+            System.out.println("Error retrieving user: " + e.getMessage());
+            return null;
+        }
     }
 }
