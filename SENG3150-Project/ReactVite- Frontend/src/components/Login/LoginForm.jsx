@@ -14,7 +14,6 @@ import './login.css';
 import { toast, ToastContainer } from 'react-toastify';
 import { sha256 } from 'js-sha256';
 import 'react-toastify/dist/ReactToastify.css';
-import { sha256 } from 'js-sha256';
 
 const LoginForm = () => {
     //  public User(String firstName, String surname, String email, boolean verified, String password) {
