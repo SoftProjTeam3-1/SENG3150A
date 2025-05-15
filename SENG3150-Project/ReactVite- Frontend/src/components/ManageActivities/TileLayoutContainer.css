@@ -1,7 +1,7 @@
 /* Styles for TileLayout */
 .k-tilelayout {
     background-color: rgba(175, 210, 187, 1) !important;
-    height: fit-content;
+    height: 100vh;
     width: 100vw;
 }
 
@@ -15,7 +15,7 @@
 /* Css for the whole card */
 .k-card {
     background-color: rgba(245, 251, 239, 1);
-    max-height: 250px;
+    max-height: 80vh;
 }
 
 /* Card Body Css */
