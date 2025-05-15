@@ -42,7 +42,11 @@ const TileLayoutContainer = () => {
                                 type="button"
                                 onClick={() => {
                                     if (newCategoryName.trim() !== '') {
-                                        addCategory(newCategoryName);
+
+
+
+
+                                        loadNewCategory();
                                         setNewCategoryName('');
                                     }else {
                                         alert('Please enter a valid category name.');
@@ -81,15 +85,7 @@ const TileLayoutContainer = () => {
     ];
 
     //Method to add a new category
-    const addCategory = (categoryName) => {
-        // Create a new tile with the category name
-        const newTile = createTile(categoryName);
-        // delete the add category tile
-        tiles.pop();
-        // Add the new tile to the tiles array
-        tiles.push(newTile);
-        // Add the add category tile back to the tiles array
-        tiles.push(AddCategoryTile());
+    const loadNewCategory = () => {
         // Refresh the tile layout TODO
         // This is a workaround to force the tile layout to re-render
         // It is not the best way to do this, but it works
