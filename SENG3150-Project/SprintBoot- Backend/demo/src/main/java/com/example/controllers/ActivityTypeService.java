@@ -1,10 +1,13 @@
 package com.example.controllers;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.example.entities.ActivityType;
 import com.example.repositories.ActivityTypeRepository;
 import com.example.stored_procedures.CreateActivityType;
+import com.example.stored_procedures.GetActivityTypes;
 
 
 @Service
@@ -20,5 +23,11 @@ public class ActivityTypeService {
         CreateActivityType createActivityType = new CreateActivityType(activityTypeRepository);
         boolean isCreated = createActivityType.createActivityType(activityType);
         return isCreated;
+    }
+
+    public List<ActivityType> getAllActivityTypes(){
+        GetActivityTypes getActivityTypes = new GetActivityTypes(activityTypeRepository);
+        List<ActivityType> activityTypes = getActivityTypes.getAll();
+        return activityTypes;
     }
 }

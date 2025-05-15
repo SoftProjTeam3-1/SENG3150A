@@ -1,8 +1,11 @@
 package com.example.stored_procedures;
 
+import org.springframework.stereotype.Service;
+
 import com.example.entities.ActivityType;
 import com.example.repositories.ActivityTypeRepository;
 
+@Service
 public class CreateActivityType {
     
     private final ActivityTypeRepository activityTypeRepository;
