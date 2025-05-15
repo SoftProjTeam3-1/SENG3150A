@@ -1,11 +1,11 @@
 package com.example.responses;
 
-public class CreateActivityResponse {
-    
+public class CreateActivityTypeResponse{
+
     private boolean response;
     private String message;
 
-    public CreateActivityResponse(boolean response, String message) {
+    public CreateActivityTypeResponse(boolean response, String message) {
         this.response = response;
         this.message = message;
     }
@@ -26,3 +26,4 @@ public class CreateActivityResponse {
         this.message = message;
     }
 }
+
