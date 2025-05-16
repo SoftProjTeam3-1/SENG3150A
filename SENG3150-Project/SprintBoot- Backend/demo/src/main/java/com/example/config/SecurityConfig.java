@@ -14,14 +14,7 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable()) // Disable CSRF (fine for JSON APIs during dev)
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/user/register", 
-                    "/api/user/forgotpassword", 
-                    "/api/user/reset-password", 
-                    "/api/user/login",
-                    "/api/activityType/getAll",
-                    "/api/activityType/create",
-                    "/api/activity/create",
-                    "/api/activity/getAll").permitAll() // ✅ Public endpoints
+                .requestMatchers("/api/user/register", "/api/user/forgotpassword", "/api/user/reset-password", "/api/user/login").permitAll() // ✅ Public endpoints
                 .anyRequest().authenticated() // Other endpoints require login
             )
             .httpBasic(httpBasic -> httpBasic.disable()); // ✅ Disable browser basic auth popup
