@@ -44,7 +44,9 @@ const LoginForm = () => {
       })
       
       const object = await response.text();
+      console.log(object);
       const data = JSON.parse(object);
+      console.log(data);
 
       console.log(data);
       console.log(data.response);
