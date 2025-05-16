@@ -81,22 +81,33 @@ const TileLayoutContainer = () => {
         createTile('Endurance'),
         createTile('Flexibility'),
         createTile('Speed'),
-        AddCategoryTile(),
     ];
 
-    //Method to add a new category
-    const loadNewCategory = () => {
-        // Refresh the tile layout TODO
-        // This is a workaround to force the tile layout to re-render
-        // It is not the best way to do this, but it works
-        const tileLayout = document.getElementById('form-root');
-        if (tileLayout) {
-            tileLayout.style.display = 'none';
-            setTimeout(() => {
-                tileLayout.style.display = 'block';
-            }, 0);
+    async function getData(){
+        try{
+            const response = await fetch('/api/activityType/getAll',{
+                method: 'GET',
+                headers:{
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify()
+            });
+            const data = await response.text();
+            console.log(data);
+            const jsonData = JSON.parse(data);
+            console.log(jsonData);
+            return jsonData;
         }
-    };
+        catch(error){
+            console.error('Error fetching data:', error)
+        }
+    }
+
+    const jsonData = getData();
+    const tiles = [];
+    for(let i = 0; i < 10; i++){
+        tiles.push(createTile(jsonData.activityTypes[i].name))
+    }
 
     return (
         <>

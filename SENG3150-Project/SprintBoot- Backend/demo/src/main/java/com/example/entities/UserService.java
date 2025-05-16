@@ -1,21 +1,14 @@
 package com.example.entities;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import com.example.stored_procedures.CreateUser;
-import com.example.stored_procedures.GetUser;
-
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import com.example.repositories.UserRepository;
 
 import org.springframework.stereotype.Service;
 
 @Service
-public  class UserService {
+public class UserService {
 
     private final UserRepository userRepository;
 
@@ -27,7 +20,7 @@ public  class UserService {
         this.userRepository = userRepository;
     }
 
-    public Boolean registerUser(User user) {
+    public boolean registerUser(User user) {
         CreateUser createUser = new CreateUser(userRepository);
         boolean isCreated = createUser.createUser(user);
         return isCreated;
