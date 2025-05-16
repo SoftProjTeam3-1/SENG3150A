@@ -6,7 +6,10 @@ import {useNavigate} from "react-router-dom";
 
 // The header needs references to the const iconRef and handleOptionsClick function to work.
 // iconRef is a reference to the to options
-const Header = () => {
+const Header = (headerLabel) => {
+
+    //if the headerLabel is not passed in, default to "Header"
+    headerLabel = headerLabel.headerLabel || "Select Date";
 
     const navigate = useNavigate();
 
@@ -52,7 +55,7 @@ const Header = () => {
                         className="w-20 h-20 mr-10 transition-transform duration-200 ease-in-out hover:scale-105"
                         onClick={handleOptionsClick}
                     />
-                    <h1 className="flex items-center mr-4">Select Date</h1>
+                    <h1 className="flex items-center mr-4">{headerLabel}</h1>
                 </div>
             </div>
 

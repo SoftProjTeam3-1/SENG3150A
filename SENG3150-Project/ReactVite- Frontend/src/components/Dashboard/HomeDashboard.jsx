@@ -137,7 +137,7 @@ const HomeDashboard = () => {
     return(
         <div className="w-full m-0 p-0">
 
-            <Header/>
+            <Header headerLabel={"Home"}/>
 
             <div id="middleSegment" style={{display: 'flex'}} className="bg-emerald-100 min-h-screen">
                 <div id="verticalBar" className=" w-25 bg-gray-600  text-2xl flex flex-col items-center ">

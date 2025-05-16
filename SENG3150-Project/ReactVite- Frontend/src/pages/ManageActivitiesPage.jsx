@@ -21,22 +21,12 @@ import TileLayoutContainer from '../components/ManageActivities/TileLayoutContai
     },
   ];
 
-  // Sample of Category as tiles
-  //Methods to create a tile using category name
-  // tiles.push(CategoryComponent("hehehaha"));
-  // tiles.push(CategoryComponent("Category 1"));
-  // tiles.push(CategoryComponent("Category 2"));
-  // tiles.push(CategoryComponent("Category 3"));
-  // tiles.push(CategoryComponent("Category 4"));
-  // tiles.push(CategoryComponent("Category 5"));
-  // tiles.push(CategoryComponent("Category 6"));
-  // tiles.push(CategoryComponent("Category 7"));
-
 const ManageActivitiesPage = () => {
   return (
     <>
       {/* <Header with options side bar/> */}
-      <Header/>
+      <Header headerLabel={"Manage Activities"}/>
+      {/* Main Container for the page */}
       <div className='tilelayoutcontainer'>
 
           {/* Tile Container for Categories */}
