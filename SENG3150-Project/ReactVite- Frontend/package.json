@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@progress/kendo-react-layout": "^10.2.0",
+    "@progress/kendo-theme-default": "^11.0.1",
     "@tailwindcss/vite": "^4.0.17",
     "js-sha256": "^0.11.0",
     "react": "^19.0.0",
@@ -17,7 +19,8 @@
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.4.1",
     "react-toastify": "^11.0.5",
-    "tailwindcss": "^4.0.17"
+    "tailwindcss": "^4.0.17",
+    "vite-plugin-mkcert": "^1.17.8"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",

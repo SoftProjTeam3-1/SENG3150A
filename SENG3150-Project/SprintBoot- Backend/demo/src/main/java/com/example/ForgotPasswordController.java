@@ -1,16 +1,11 @@
-/* package com.example;
+package com.example;
 
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.entities.User;
 import com.example.entities.UserService;
@@ -26,17 +21,16 @@ public class ForgotPasswordController {
     @Autowired
     private UserService userService;
 
-
     @PostMapping("/forgotpassword")
     public Map<String, String> forgotPassword(@RequestBody Map<String, String> payload) {
         String email = payload.get("email");
 
-        User user = userRepository.findByEmail(email);
-        if (user.isEmpty()) {
+        User user = userService.getUser(email);
+        if (user == null) {
             return Map.of("error", "No account found for that email.");
         }
 
-        int code = (int) (Math.random() * 9000 + 1000); // random 4-digit code
+        int code = (int) (Math.random() * 9000 + 1000); // 4-digit code
         userService.saveResetToken(email, String.valueOf(code));
 
         SimpleMailMessage message = new SimpleMailMessage();
@@ -59,8 +53,11 @@ public class ForgotPasswordController {
             return Map.of("error", "Invalid or expired reset code.");
         }
 
-        userService.updatePassword(email, newPassword);
+        boolean updated = userService.updatePassword(email, newPassword);
+        if (!updated) {
+            return Map.of("error", "Failed to update password.");
+        }
+
         return Map.of("message", "Password updated successfully.");
     }
 }
- */
