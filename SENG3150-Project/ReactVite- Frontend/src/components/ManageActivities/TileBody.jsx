@@ -4,30 +4,51 @@
     Also holds the list of activities in that category.
     The body of the tile is a list of activities in that category and a button to add a new activity.
 */
-import React, { useState } from 'react';
+import React, { useState, useEffect, act } from 'react';
 import ReactDOM from 'react-dom';
 import '@progress/kendo-theme-default/dist/all.css';
 import './TileLayoutContainer.css';
 
 const TileBody = ({ categoryName }) => {
 
+  useEffect(() => {
+      async function fetchData() {
+          try {
+              const response = await fetch('/api/activity/getByActivityType', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ activityType: categoryName }),
+              });
+
+              if (!response.ok) {
+                  throw new Error(`HTTP error! Status: ${response.status}`);
+              }
+
+              const parsedData = await response.json();
+              console.log(parsedData);
+              const activities = parsedData.activities;
+
+              const activityNames = activities.map(activities => activities.name);
+              const activityDescriptions = activities.map(activities => activities.description);
+              const activityTimes = activities.map(activities => activities.duration);
+              setActivityList(activityNames);
+              setActivityDescriptionList(activityDescriptions);
+              setActivityTimeList(activityTimes);
+
+          } catch (error) {
+              console.error('Error fetching data:', error);
+          }
+      }
+      fetchData();
+  }, []);
+
   //TODO: Below is testing variables for the activity list
-  const [activityList, setActivityList] = useState([
-    'Run Laps', 'Stretches', 'Hurdles', 'Other',
-  ]);
+  const [activityList, setActivityList] = useState([]);
   //Stored activity description and time for each activity
-  const [activityDescriptionList, setActivityDescriptionList] = useState([
-    'Activity description goes here',
-    'Activity description goes here',
-    'Activity description goes here',
-    'Activity description goes here',
-  ]);
-  const [activityTimeList, setActivityTimeList] = useState([
-    10,
-    20,
-    30,
-    40,
-  ]);
+  const [activityDescriptionList, setActivityDescriptionList] = useState([]);
+  const [activityTimeList, setActivityTimeList] = useState([]);
 
   // State to manage the visibility of the form
   const [showForm, setShowForm] = useState(false);

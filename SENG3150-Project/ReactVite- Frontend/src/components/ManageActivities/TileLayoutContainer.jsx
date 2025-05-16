@@ -3,14 +3,15 @@
     It contains the tile layout for the categories of activities
 */
 import {TileLayout} from '@progress/kendo-react-layout';
+import React, { useState, useEffect } from 'react';
 import createTile from './Tile.jsx';
 import '@progress/kendo-theme-default/dist/all.css';
 import './TileLayoutContainer.css';
-import React, { useState } from 'react';
 
 const TileLayoutContainer = () => {
     //variable to store the new category name
     const [newCategoryName, setNewCategoryName] = useState('');
+    const [tiles, setTiles] = useState([]);
 
     //Method to create an add tile
     const AddCategoryTile = () => {
@@ -71,18 +72,35 @@ const TileLayoutContainer = () => {
     };
 
     // Sample of Categories as tiles
-    const tiles = [
-        createTile('Track'),
-        createTile('Stretching'),
-        createTile('Warmups'),
-        createTile('Strength'),
-        createTile('Cardio'),
-        createTile('Agility'),
-        createTile('Endurance'),
-        createTile('Flexibility'),
-        createTile('Speed'),
-        AddCategoryTile(),
-    ];
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const response = await fetch('/api/activityType/getAll', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const parsedData = await response.json();
+
+                const loadedTiles = parsedData.activityTypes.map((activityTypes) =>
+                    createTile(activityTypes.name)
+                );
+
+                loadedTiles.push(AddCategoryTile());
+                setTiles(loadedTiles);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+        fetchData();
+    }, []);
 
     //Method to add a new category
     const loadNewCategory = () => {
