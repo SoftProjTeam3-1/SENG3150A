@@ -21,7 +21,7 @@ public class ActivityController {
     @Autowired
     ActivityService activityService;
 
-    @PostMapping("/api/activity/create")
+    @PostMapping(value="/api/activity/create")
     public ResponseEntity<CreateActivityResponse> createActivity(@RequestBody Activity entity){
         Activity newActivity = new Activity();
         newActivity.setName(entity.getName());
@@ -41,7 +41,7 @@ public class ActivityController {
         }
     }
 
-    @GetMapping("/api/activity/getAll")
+    @GetMapping(value="/api/activity/getAll")
     public ResponseEntity<GetActivityResponse> getAllActivities(){
         List<Activity> activities = activityService.getAllActivities();
         return new ResponseEntity<>(new GetActivityResponse(activities, "Activities returned"), HttpStatus.OK);

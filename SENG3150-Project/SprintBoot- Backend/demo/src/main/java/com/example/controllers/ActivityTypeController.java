@@ -40,8 +40,9 @@ public class ActivityTypeController {
         }
     }
 
-    @GetMapping("/api/activityType/getAll")
+    @GetMapping(value="/api/activityType/getAll")
     public ResponseEntity<GetActivityTypeResponse> getAllActivityTypes() {
+        System.out.println("REACHED APPPROPERIATE GET MAPPING");
         List<ActivityType> activityTypes = activityTypeService.getAllActivityTypes();
         return new ResponseEntity<>(new GetActivityTypeResponse(activityTypes, "Activity types returned"), HttpStatus.OK);
     }

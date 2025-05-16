@@ -9,17 +9,32 @@ import './TileLayoutContainer.css';
 
 const TileLayoutContainer = () => {
     // Sample of Categories as tiles
-    const tiles = [
-        createTile('Track'),
-        createTile('Stretching'),
-        createTile('Warmups'),
-        createTile('Strength'),
-        createTile('Cardio'),
-        createTile('Agility'),
-        createTile('Endurance'),
-        createTile('Flexibility'),
-        createTile('Speed'),
-    ];
+
+    async function getData(){
+        try{
+            const response = await fetch('/api/activityType/getAll',{
+                method: 'GET',
+                headers:{
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify()
+            });
+            const data = await response.text();
+            console.log(data);
+            const jsonData = JSON.parse(data);
+            console.log(jsonData);
+            return jsonData;
+        }
+        catch(error){
+            console.error('Error fetching data:', error)
+        }
+    }
+
+    const jsonData = getData();
+    const tiles = [];
+    for(let i = 0; i < 10; i++){
+        tiles.push(createTile(jsonData.activityTypes[i].name))
+    }
 
     return (
         <>

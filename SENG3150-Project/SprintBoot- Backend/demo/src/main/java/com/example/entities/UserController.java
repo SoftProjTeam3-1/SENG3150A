@@ -20,7 +20,7 @@ public class UserController {
     UserService userService;
 
     
-    @PostMapping("api/user/register")
+    @PostMapping(value="api/user/register")
     public ResponseEntity<RegisterResponse> register(@RequestBody User entity) {
         User user = new User();
         user.setFirstName(entity.getFirstName());
@@ -39,7 +39,7 @@ public class UserController {
     }
 
     // login
-    @PostMapping("/api/user/login")
+    @PostMapping(value="/api/user/login")
     public ResponseEntity<LoginResponse> login(@RequestBody User entity) {
         User user = new User();
         user.setEmail(entity.getEmail());
