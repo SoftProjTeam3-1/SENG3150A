@@ -7,3 +7,7 @@ Software Project 1
 3. Run the npm i to install react
     3a. May have to install other packages using npm install ____ if mising mopdules
 4. Run npm run dev to start react
+
+# Emails
+stuart.mendes@gmail.com
+SENG3150isfun!
