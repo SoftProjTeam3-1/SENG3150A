@@ -12,10 +12,6 @@ import Header from "./Header.jsx";
 
 const HomeDashboard = () => {
 
-    //Need to add variables for category's and activities
-    //Sync to user when they log in
-
-
 
     // Temporary session which holds data before creation to db
     const [temporarySession, setTemporarySession] = useState({ id:null, date:null, type:null, activities:[], notes:""});
@@ -26,15 +22,71 @@ const HomeDashboard = () => {
     // Stores selected local sessions the user has clicked
     const [selectedSessions, setSelectedSessions] = useState([]);
 
+
+
+    // Temporary category which holds data before being added to categories list
+    const [temporaryCategory, setTemporaryCategory] = useState({name:null, activities:[]});
+
+    //Stores the categories
+    const [Categories, setCategories] = useState([]);
+
+
+
+    // Temporary activity to be stored inside categories
+    const [temporaryActivity, setTemporaryActivity] = useState({name: null, description: null, time: null, category: null, duration: 0});
+
+
+
     // Used to show user menus
-    const [showActivitieScreen, setShowActivitieScreen] = useState(false);
+    const [showActivityScreen, setShowActivityScreen] = useState(false);
+    const [showEditDurationScreen, setShowEditDurationScreen] = useState(false);
     const [showCalendar, setShowCalendar] = useState(false);
     const [showSessionTypeScreen, setSessionTypeScreen] = useState(false);
 
 
     // Used to determine if user clicks off menu
     const sessionRef = useRef(null);
+    const activityRef = useRef(null);
+    const editRef = useRef(null);
 
+
+    // Category Menu Functions
+    const [openCategory, setOpenCategory] = useState(null);
+
+    const toggleCategory = (categoryName) => {
+        console.log(categoryName);
+        setOpenCategory(prev => (prev === categoryName ? null : categoryName));
+        console.log(categoryName);
+        console.log(Categories);
+    };
+
+
+    // Sets the temporary category name
+    const setTemporaryCategoryName = (name) => {
+        setTemporaryCategory(prev => ({...prev, name}));
+    }
+
+    // Creates a category and adds it to the category collections
+    const createCategory = () => {
+        const newCategory = {...temporaryCategory};
+        setCategories(prev => [...prev, newCategory]);
+
+        setTemporaryCategory({name:null, activities:[]});
+    }
+
+    // Adds an activity to category based on the name given\
+    const addActivityToCategory = (categoryName, activity) => {
+        setCategories(prevCategories =>
+            prevCategories.map(category => {
+                if (category.name === categoryName){
+                    return {
+                        ...category, activities: [...category.activities, activity]
+                    };
+                }
+                return category;
+            })
+        );
+    };
 
     //Functions for setting a temporary session
     const setTemporarySessionID = () => {
@@ -108,9 +160,82 @@ const HomeDashboard = () => {
         );
     };
 
-    const handleActivitieScreenClick = () => {
-        setShowActivitieScreen(prev => ! prev);
+    const handleActivityScreenClick = (id) => {
+        setShowActivityScreen(prev => ! prev);
+        // Sets the ID so we know which box to add the activity to
+        setSingleSelectedSession(id);
     }
+
+    // Handles Adding the Activity to the session
+
+    const [singleSelectedSession, setSingleSelectedSession] = useState(); // Sets session ID in order to know where to add the activity to
+
+    const handleClickActivity = (activity) => {
+
+        setSessions(prev =>
+        prev.map(session =>
+        session.id === singleSelectedSession ? { ...session, activities: [...session.activities, activity]} : session
+            )
+        );
+
+    };
+
+
+    // Handles Duration of Activity Functions
+
+    const [durationInput, setDurationInput] = useState(0);
+
+    const handleEditDuration = () => {
+        setShowEditDurationScreen(prev => !prev);
+    }
+
+    const handleRemoveActivityFromSession = (sessionId, activityIndex) => {
+        setSessions(prev =>
+            prev.map(session =>
+                session.id === sessionId
+                    ? {
+                        ...session,
+                        activities: session.activities.filter((_, i) => i !== activityIndex),
+                    }
+                    : session
+            )
+        );
+    };
+
+
+
+    useEffect(() => {
+        console.log("Sessions updated:", sessions);
+    }, [sessions]);
+
+    // Populates the categories
+    const populateDefaultCategories = () => {
+        const defaultCategories = [
+            {
+                name: "Warm Up",
+                activities: [
+                    { name: "Jogging", description: "Light jogging to warm up", duration: 30 },
+                    { name: "Dynamic Stretches", description: "Full body stretches", duration: 20 },
+                ]
+            },
+            {
+                name: "Skills Practice",
+                activities: [
+                    { name: "Passing", description: "Short and long passes", duration: 20 },
+                    { name: "Dribbling", description: "Cone dribbling drills", duration: 30 },
+                ]
+            },
+            {
+                name: "Games",
+                activities: [
+                    { name: "Small-sided Game", description: "4v4 half-pitch game", duration: 15 },
+                    { name: "Scrimmage", description: "Full team practice match", duration: 30 },
+                ]
+            }
+        ];
+
+        setCategories(defaultCategories);
+    };
 
     useEffect(() => {
         // fetch('http://localhost:8080/api/sessions')
@@ -126,13 +251,25 @@ const HomeDashboard = () => {
             ) {
                 setSessionTypeScreen(false);
             }
+            if (
+                showActivityScreen &&
+                activityRef.current &&
+                !activityRef.current.contains(event.target)
+            ) {
+                setShowActivityScreen(false);
+            }
         };
 
         document.addEventListener("mousedown", handleClickOutside);
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [showSessionTypeScreen]);
+    }, [showSessionTypeScreen, showActivityScreen]);
+
+
+    useEffect(() => {
+        populateDefaultCategories();
+    }, []);
 
     return(
         <div className="w-full m-0 p-0">
@@ -182,18 +319,19 @@ const HomeDashboard = () => {
                             .map(({ id, date, type, notes }) => {
                                 const [month, day] = date.split(' ');
                                 return (
-                                    <div className="flex flex-col gap-y-5">
+                                    <div className="flex flex-col gap-y-5 ">
 
+                                        {/* Determines if game or training was selected */}
                                         {type === 'game' ? (
                                             <>
                                             <div
                                                 key={id}
-                                                className="w-75 h-140 bg-white rounded-2xl flex flex-col items-center text-black"
+                                                className="w-75 h-140 bg-white rounded-2xl flex flex-col items-center text-black "
                                             >
                                                 <div className="text-xl w-full text-center py-3">{month} {day}</div>
 
                                                 <div
-                                                    className="text-l py-3 w-75 h-125 bg-white rounded-2xl flex flex-col items-center text-black"
+                                                    className="text-l py-3 w-75 h-125 bg-white rounded-2xl flex flex-col items-center text-black overflow-y-auto"
                                                 >
                                                     Notes
                                                     <div>
@@ -211,22 +349,49 @@ const HomeDashboard = () => {
                                             <>
                                                 <div
                                                     key={id}
-                                                    className="w-75 h-140 bg-white rounded-2xl flex flex-col items-center text-black"
+                                                    className="gap-y-3 w-75 h-140 bg-white rounded-2xl flex flex-col items-center text-black  pb-3 overflow-y-auto"
                                                 >
                                                     <div className="text-xl w-full text-center py-3">{month} {day}</div>
 
-                                                    <div id="activities" className="w-full h-24 flex items-center justify-center">
+
+                                                    {/* Display Activities Selected */}
+                                                    <div className="w-68 ">
+                                                        <div className="grid grid-cols-2 sm:grid-cols-2 gap-2 w-full ">
+                                                            {sessions.find(s => s.id === id)?.activities.map((activity, index) => (
+                                                                <div
+                                                                    key={index}
+                                                                    className="relative group bg-blue-100 px-4 py-2 rounded shadow text-center select-none transition-transform duration-200 ease-in-out hover:scale-105"
+                                                                >
+                                                                    {/* Remove button (hidden until hover) */}
+                                                                    <button
+                                                                        className="absolute top-0 right-1 text-red-600 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                                                                        onClick={() => handleRemoveActivityFromSession(id, index)}
+                                                                    >
+                                                                        ×
+                                                                    </button>
+
+                                                                    <div>{activity.name}</div>
+                                                                    <div>{activity.duration + " minutes"}</div>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Plus Button */}
+                                                    <div id={`$activities-{id}$`} className="w-64 h-24 flex items-center justify-center ">
                                                         <button
                                                             className=" text-6xl w-70 h-24 bg-emerald-100 shadow-lg rounded-2xl flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
-                                                            onClick={() => handleActivitieScreenClick()}
+                                                            onClick={() => handleActivityScreenClick(id)}
                                                         >
                                                             <div className="leading-none -mt-2">
                                                                 +
                                                             </div>
                                                         </button>
                                                     </div>
+
                                                 </div>
 
+                                                {/* Notes */}
                                                 <div
                                                     className="text-l py-3 w-75 h-125 bg-white rounded-2xl flex flex-col items-center text-black"
                                                 >
@@ -249,9 +414,77 @@ const HomeDashboard = () => {
                 </div>
             </div>
 
-            {showActivitieScreen && (
-                <div className="absolute w-1/6 min-h-screen top-20 left-0 bg-red-400 shadow p-5 text-gray-600 text-2xl text-center flex flex-col items-center">
-                    hello
+            {showEditDurationScreen && (
+                <div className="absolute w-1/6 min-h-screen top-20 left-0 bg-gray-600 shadow p-5 text-white text-2xl text-center flex flex-col items-center"
+                     ref={editRef}>
+                    <div className="text-m"> Edit Duration (Minutes): </div>
+
+                    <input
+                        type="number"
+                        className="w-20 h-10 rounded text-white text-center border-2 border-white"
+                        value={durationInput}
+                        onChange={(e) => setDurationInput(e.target.value)}
+                    />
+                    <button
+                        className="mt-4 bg-white text-gray-800 rounded px-4 py-2 hover:bg-gray-300"
+                        onClick={() => {
+
+                            handleEditDuration()
+
+                            const activityWithDuration = { ...temporaryActivity, duration: durationInput };
+
+                            handleClickActivity(activityWithDuration);
+
+                            // Resets the temporary Category
+                            setTemporaryActivity({name: null, description: null, time: null, category: null, duration: 0});
+                        }}
+                    >
+                        Confirm
+                    </button>
+
+                </div>
+            )}
+
+            {showActivityScreen && (
+                <div className="absolute w-1/6 min-h-screen top-20 left-0 bg-gray-600 shadow p-5 text-gray-600 text-2xl text-center flex flex-col items-center"
+                     ref={activityRef}>
+                    <ul className="w-full text-center flex flex-col items-center relative space-y-4">
+                        {Categories.map((category) => (
+
+                            <div key={category.name} className="w-full">
+                                <button
+                                    className="w-full h-20 bg-white text-gray-600 rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
+                                    onClick={() => toggleCategory(category.name)}
+                                >
+                                    <div>{category.name}</div>
+                                </button>
+
+                                {/* Drop Down Menu */}
+                                {openCategory === category.name && (
+                                    category.activities.length > 0 ? (
+                                        <div className="flex flex-col gap-2 mt-2 w-full">
+                                            {category.activities.map((activity, aIndex) => (
+                                            <div key={`$aIndex-activity.name$`} className="w-full h-10 bg-white text-gray-600 rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105">
+                                                <button className="text-xs select-none"
+                                                onClick={() => {
+
+                                                    // Sets the activity to the temporary var to hold
+                                                    setShowActivityScreen(false);
+                                                    setTemporaryActivity(activity);
+                                                    handleEditDuration();
+
+                                                }}>{activity.name}</button>
+
+                                            </div>
+                                        ))}
+                                        </div>
+                                    ) : null
+                                )}
+                            </div>
+                        )
+                        )
+                        }
+                    </ul>
                 </div>
             )}
 
@@ -275,12 +508,14 @@ const HomeDashboard = () => {
                 </div>
             )}
 
-            {showSessionTypeScreen &&(
-                <div className="absolute w-1/6 min-h-screen top-20 left-0 bg-gray-600 shadow p-5 text-gray-600 text-2xl text-center flex flex-col items-center" ref={sessionRef}>
+            {showSessionTypeScreen && (
+                <div className="absolute w-1/6 min-h-screen top-20 left-0 bg-gray-600 shadow p-5 text-gray-600 text-2xl text-center flex flex-col items-center"
+                     ref={sessionRef}>
                     <button onClick={() => handleSessionSelect('training')} className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105">Training Session</button><br></br>
                     <button onClick={() => handleSessionSelect('game')} className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105">Game Session</button><br></br>
                 </div>
             )}
+
         </div>
             );
 };
