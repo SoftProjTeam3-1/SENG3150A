@@ -65,6 +65,8 @@ const Header = (headerLabel) => {
                             onClick={() => navigate('/manage-activities')}>Manage Activities</button><br></br>
                     <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
                             onClick={() => navigate('/attendance')}>Attendance</button><br></br>
+                            <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
+                            onClick={() => navigate('/dashboard')}>Dashboard</button><br></br>
                     <button className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105">Logout</button>
                 </div>
             )}
