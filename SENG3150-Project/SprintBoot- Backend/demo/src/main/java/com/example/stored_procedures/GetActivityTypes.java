@@ -25,4 +25,14 @@ public class GetActivityTypes {
             return null;
         }
     }
+
+    public ActivityType getDistinctByName(String name){
+        try {
+            return activityTypeRepository.findDistinctByName(name);
+        } catch (Exception e) {
+            System.out.println("Error while fetching activity type by name: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

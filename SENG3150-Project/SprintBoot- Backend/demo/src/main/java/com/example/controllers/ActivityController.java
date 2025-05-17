@@ -13,24 +13,31 @@ import java.util.List;
 
 import com.example.responses.CreateActivityResponse;
 import com.example.responses.GetActivityResponse;
+import com.example.stored_procedures.GetActivityTypes;
 import com.example.entities.Activity;
+import com.example.entities.ActivityType;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:5173") // Adjust to match your frontend origin
 @RequestMapping("/api/activity")
 public class ActivityController {
+
     @Autowired
     ActivityService activityService;
+    @Autowired
+    ActivityTypeService activityTypeService;
 
     @PostMapping(value="/create")
     public ResponseEntity<CreateActivityResponse> createActivity(@RequestBody Activity entity){
+        System.out.println("REACHED APPPROPRIATE POST MAPPING?!");
         Activity newActivity = new Activity();
         newActivity.setName(entity.getName());
         newActivity.setDescription(entity.getDescription());
         newActivity.setPeopleRequired(entity.getPeopleRequired());
         newActivity.setDuration(entity.getDuration());
-        newActivity.setActivityType(entity.getActivityType());
+        newActivity.setActivityType(activityTypeService.getDistinctByName(entity.getActivityType().getName()));
 
         System.out.println("Activity object created: " + newActivity.getName());
 

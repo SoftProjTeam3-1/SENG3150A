@@ -33,9 +33,11 @@ const TileBody = ({ categoryName }) => {
               const activityNames = activities.map(activities => activities.name);
               const activityDescriptions = activities.map(activities => activities.description);
               const activityTimes = activities.map(activities => activities.duration);
+              const activityPeopleRequired = activities.map(activities => activities.peopleRequired);
               setActivityList(activityNames);
               setActivityDescriptionList(activityDescriptions);
               setActivityTimeList(activityTimes);
+              setActivityPeopleRequiredList(activityPeopleRequired);
 
           } catch (error) {
               console.error('Error fetching data:', error);
@@ -49,6 +51,7 @@ const TileBody = ({ categoryName }) => {
   //Stored activity description and time for each activity
   const [activityDescriptionList, setActivityDescriptionList] = useState([]);
   const [activityTimeList, setActivityTimeList] = useState([]);
+  const [activityPeopleRequiredList, setActivityPeopleRequiredList] = useState([]);
 
   // State to manage the visibility of the form
   const [showForm, setShowForm] = useState(false);
@@ -61,11 +64,14 @@ const TileBody = ({ categoryName }) => {
   const [newActivityDescription, setNewActivityDescription] = useState('');
   // State to manage the new activity time input
   const [newActivityTime, setNewActivityTime] = useState(0);
+  // State to manage the new activity people required input
+  const [newActivityPeopleRequired, setNewActivityPeopleRequired] = useState(0);
 
   //Variables to store selected activity
   const [selectedActivity, setSelectedActivity] = useState(null);
   const [selectedActivityDescription, setSelectedActivityDescription] = useState(null);
   const [selectedActivityTime, setSelectedActivityTime] = useState(null);
+  const [selectedActivityPeopleRequired, setSelectedActivityPeopleRequired] = useState(null);
 
   // Method handler for when an activity is clicked
   const handleClick = (item) => {
@@ -73,28 +79,62 @@ const TileBody = ({ categoryName }) => {
     setSelectedActivity(item);
     setSelectedActivityDescription(activityDescriptionList[activityList.indexOf(item)]);
     setSelectedActivityTime(activityTimeList[activityList.indexOf(item)]);
+    setSelectedActivityPeopleRequired(activityPeopleRequiredList[activityList.indexOf(item)]);
     // Show the activity information
     setShowActivityInfo(true);
   }
   // Method to handle adding a new activity
-  const handleAddActivity = () => {
-        // Check if the input is not empty
-        // If not empty, add the activity to the list
-        if (newActivity.trim() !== '') {
-          //TODO: Add the new activity to the list with POST
-          setActivityList([...activityList, newActivity.trim()]);
-          setActivityDescriptionList([...activityDescriptionList, newActivityDescription.trim()]);
-          setActivityTimeList([...activityTimeList, newActivityTime]);
-          setNewActivity('');// Clear the input
-          setNewActivityDescription('');// Clear the input
-          setNewActivityTime(0);// Clear the input
-          // Close the form
-          setShowForm(false);
+  async function handleAddActivity(){
+    // Check if the input is not empty
+    // If not empty, add the activity to the list
+    if (newActivity.trim() !== '') {
+      //TODO: Add the new activity to the list with POST
+      try{
+        const response = await fetch('/api/activity/create',{
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: newActivity.trim(),
+            description: newActivityDescription.trim(),
+            duration: newActivityTime,
+            peopleRequired: newActivityPeopleRequired,
+            activityType:{
+              name: categoryName,
+              description: null
+            }
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        else {
-            alert('Please enter a valid activity name.'); //TODO: Replace with actual functionality
-        }
-  };
+
+        const parsedData = await response.json();
+        console.log(parsedData.response);
+
+        location.reload();
+      }
+      catch(error){
+        console.error('Error adding activity:', error);
+      }
+      /*      
+      setActivityList([...activityList, newActivity.trim()]);
+      setActivityDescriptionList([...activityDescriptionList, newActivityDescription.trim()]);
+      setActivityTimeList([...activityTimeList, newActivityTime]); 
+      */
+      setNewActivity('');// Clear the input
+      setNewActivityDescription('');// Clear the input
+      setNewActivityTime(0);// Clear the input */
+      setNewActivityPeopleRequired(0);// Clear the input
+      // Close the form
+      setShowForm(false);
+    }
+    else {
+        alert('Please enter a valid activity name.'); //TODO: Replace with actual functionality
+    }
+  }
 
   return (
     <>
@@ -157,6 +197,7 @@ const TileBody = ({ categoryName }) => {
           <div className='popup-container'>
             <h3>{selectedActivity}</h3>
             <p>{selectedActivityDescription}</p>
+            <p>People Required: {selectedActivityPeopleRequired}</p>
             <p>Time: {selectedActivityTime} minutes</p>
             <button
               onClick={() => setShowActivityInfo(false)}
@@ -222,6 +263,21 @@ const TileBody = ({ categoryName }) => {
             }}
             rows="4"
           ></textarea>
+          {/* Number input for time in mins */}
+          <input
+            type="number"
+            placeholder="Enter the number of people required to run this activity"
+            onChange={(e) => setNewActivityPeopleRequired(e.target.value)}
+            value={newActivityPeopleRequired}
+            style={{
+              width: '100%',
+              padding: '8px',
+              marginBottom: '10px',
+              borderRadius: '4px',
+              border: '1px solid #ccc',
+            }}
+            min="1"
+          />
           {/* Number input for time in mins */}
           <input
             type="number"
