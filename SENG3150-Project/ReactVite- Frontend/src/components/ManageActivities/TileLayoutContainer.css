@@ -82,3 +82,18 @@
     color: white;
     cursor: pointer;
 }
+
+/* Activity button hover css */
+.activity-item {
+  padding: 8px;
+  margin-bottom: 4px;
+  background: #ffffff;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  position: relative;
+}
+
+.activity-item:hover {
+  background-color: #e0e0e0;
+}

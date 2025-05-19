@@ -8,6 +8,7 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import '@progress/kendo-theme-default/dist/all.css';
 import './TileLayoutContainer.css';
+import { X } from 'lucide-react'; // You can use any icon you prefer
 
 const TileBody = ({ categoryName }) => {
 
@@ -46,6 +47,14 @@ const TileBody = ({ categoryName }) => {
   const [selectedActivityDescription, setSelectedActivityDescription] = useState(null);
   const [selectedActivityTime, setSelectedActivityTime] = useState(null);
 
+
+  // State to manage the visibility of the confirmation window
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [confirmationMessage, setConfirmationMessage] = useState('');
+  // Sae activity to delete
+  const [activityToDelete, setActivityToDelete] = useState(null);
+
+
   // Method handler for when an activity is clicked
   const handleClick = (item) => {
     // Set the selected activity and its description
@@ -75,6 +84,12 @@ const TileBody = ({ categoryName }) => {
         }
   };
 
+  //method to handle deleting an activity
+  const handleDeleteActivity = (item) => {
+    // TODO: Add the delete activity functionality
+    alert(`Activity "${item}" deleted.`); //TODO: Replace with actual functionality
+  };
+
   return (
     <>
       {/* Scrollable Div */}
@@ -95,17 +110,85 @@ const TileBody = ({ categoryName }) => {
               // The method to call when the activity is clicked
               onClick={() => handleClick(item)}
               style={{
-                padding: '8px',
                 marginBottom: '4px',
                 background: '#fff',
                 borderRadius: '4px',
                 cursor: 'pointer',
               }}
-              // Adding hover effect
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#e0e0e0'}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ffffff'}
             >
-              {item}
+                <div className="relative group px-2 py-1 a activity-item">
+                    <span>{item}</span>
+                    <button
+                        className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                        onClick={(e) => {
+                          e.stopPropagation(); // prevent event bubbling
+                          setShowConfirmation(true);
+                          setConfirmationMessage(`Are you sure you want to delete "${item}"?`);
+                          setActivityToDelete(item);
+                        }}
+                        title="Remove"
+                    >
+                        <X className="w-4 h-4 text-gray-500 hover:text-red-500" />
+                    </button>
+                </div>
+                {/* Show the confirmation window */}
+                {/* TODO: Change to a form where user can edit and save changes */}
+                {showConfirmation && ReactDOM.createPortal(
+                  // Popup for activity information
+                  <>
+                  <div className='popup-position'>
+                    <div className='popup-container'>
+                        <h3
+                            style={{
+                                marginBottom: '10px',
+                                fontSize: '18px',
+                                color: '#202C39',
+                            }}
+                        >{confirmationMessage}</h3>
+                        {/* Cancel button hides window*/}
+                        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation(); // prevent event bubbling
+                                  setShowConfirmation(false)
+                                }}
+                                style={{
+                                    marginRight: '40%',
+                                    padding: '6px 12px',
+                                    border: 'none',
+                                    borderRadius: '4px',
+                                    backgroundColor: '#ccc',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                            Cancel
+                            </button>
+                            {/* Submit button */}
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.stopPropagation(); // prevent event bubbling
+                                    handleDeleteActivity(activityToDelete);
+                                    setShowConfirmation(false);
+                                }}
+                                style={{
+                                    padding: '6px 12px',
+                                    border: 'none',
+                                    borderRadius: '4px',
+                                    backgroundColor: '#202C39',
+                                    color: 'white',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                            Confirm
+                            </button>
+                        </div>
+                    </div>
+                    </div>
+                  {/* Make it pop up above everything */}
+                  </>, document.getElementById('form-root')
+                )}
             </li>
           ))}
         </ul>
