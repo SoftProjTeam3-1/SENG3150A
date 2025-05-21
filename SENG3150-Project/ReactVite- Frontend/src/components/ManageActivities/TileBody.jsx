@@ -74,12 +74,12 @@ const TileBody = ({ categoryName }) => {
   const [selectedActivityTime, setSelectedActivityTime] = useState(null);
   const [selectedActivityPeopleRequired, setSelectedActivityPeopleRequired] = useState(null);
 
-
   // State to manage the visibility of the confirmation window
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [confirmationMessage, setConfirmationMessage] = useState('');
   // Sae activity to delete
   const [activityToDelete, setActivityToDelete] = useState(null);
+
 
 
   // Method handler for when an activity is clicked
