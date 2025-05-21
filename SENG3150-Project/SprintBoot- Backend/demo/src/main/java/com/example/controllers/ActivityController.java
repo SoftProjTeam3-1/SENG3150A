@@ -13,6 +13,7 @@ import java.util.List;
 
 import com.example.responses.CreateActivityResponse;
 import com.example.responses.GetActivityResponse;
+import com.example.responses.DeleteActivityResponse;
 import com.example.stored_procedures.GetActivityTypes;
 import com.example.entities.Activity;
 import com.example.entities.ActivityType;
@@ -57,5 +58,18 @@ public class ActivityController {
         System.out.println("This is the activity type name recovered "+activityTypeName);
         List<Activity> activities = activityService.getActivitiesByType(activityTypeName);
         return new ResponseEntity<>(new GetActivityResponse(activities, "Activities returned"), HttpStatus.OK);
+    }
+
+    @PostMapping(value="/delete")
+    public ResponseEntity<DeleteActivityResponse> deleteActivity(@RequestBody Activity activity){
+        System.out.println("REACHED APPPROPRIATE DELETE MAPPING?!");
+        String activityName = activity.getName();
+        System.out.println("This is the activity ID recovered "+activityName);
+        boolean result = activityService.deleteActivity(activityName);
+        if(result){
+            return new ResponseEntity<>(new DeleteActivityResponse(true, "Activity deleted successfully"), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new DeleteActivityResponse(false, "Activity deletion failed"), HttpStatus.OK);
+        }
     }
 }

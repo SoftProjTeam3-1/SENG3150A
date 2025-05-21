@@ -51,4 +51,21 @@ public class ActivityService {
             return null;
         }
     }
+
+    public boolean deleteActivity(String activityName) {
+        try {
+            Activity activity = activityRepository.findDistinctByName(activityName);
+            if (activity != null) {
+                activityRepository.delete(activity);
+                return true;
+            } else {
+                System.out.println("Activity not found with ID: " + activityName);
+                return false;
+            }
+        } catch (Exception e) {
+            System.out.println("Error while deleting activity: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
