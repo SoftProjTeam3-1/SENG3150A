@@ -74,12 +74,12 @@ const TileBody = ({ categoryName }) => {
   const [selectedActivityTime, setSelectedActivityTime] = useState(null);
   const [selectedActivityPeopleRequired, setSelectedActivityPeopleRequired] = useState(null);
 
-
   // State to manage the visibility of the confirmation window
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [confirmationMessage, setConfirmationMessage] = useState('');
   // Sae activity to delete
   const [activityToDelete, setActivityToDelete] = useState(null);
+
 
 
   // Method handler for when an activity is clicked
@@ -144,12 +144,6 @@ const TileBody = ({ categoryName }) => {
         alert('Please enter a valid activity name.'); //TODO: Replace with actual functionality
     }
   }
-
-  //method to handle deleting an activity
-  const handleDeleteActivity = (item) => {
-    // TODO: Add the delete activity functionality
-    alert(`Activity "${item}" deleted.`); //TODO: Replace with actual functionality
-  };
 
   return (
     <>
@@ -295,6 +289,7 @@ const TileBody = ({ categoryName }) => {
                   <div className='popup-container'>
                     {/* The form inputs */}
                     <h3>Activity Information</h3>
+                    <p>People Required: {selectedActivityPeopleRequired}</p>
                     <input
                       type="text"
                       onChange={(e) => setNewActivity(e.target.value)}
