@@ -3,18 +3,20 @@
     It contains the tile layout for the categories of activities
 */
 import {TileLayout} from '@progress/kendo-react-layout';
+import React, { useState, useEffect } from 'react';
 import createTile from './Tile.jsx';
 import '@progress/kendo-theme-default/dist/all.css';
 import './TileLayoutContainer.css';
-import React, { useState } from 'react';
+//import AddCategoryTile from './AddTile.jsx';
 
 const TileLayoutContainer = () => {
     //variable to store the new category name
     const [newCategoryName, setNewCategoryName] = useState('');
+    const [newCategoryDescription, setNewCategoryDescription] = useState('');
+    const [tiles, setTiles] = useState([]);
 
     //Method to create an add tile
     const AddCategoryTile = () => {
-        
         return {
             defaultPosition: { colSpan: 1, rowSpan: 1 },
             header: (<>New Category</>),
@@ -36,22 +38,27 @@ const TileLayoutContainer = () => {
                                 }}
                             />
                         </div>
+                        <div style={{ textAlign: 'center', paddingBottom: '5px' }}>
+                            <input
+                                type="text"
+                                placeholder="Enter a Description"
+                                onChange={(e) => setNewCategoryDescription(e.target.value)}
+                                value={newCategoryDescription}
+                                style={{
+                                    width: '100%',
+                                    borderRadius: '4px',
+                                    border: '1px solid #ccc',
+                                    height: '30px',
+                                    textAlign: 'left',
+                                    paddingLeft: '5px',
+                                }}
+                            />
+                        </div>  
                         <div style={{ textAlign: 'center', paddingBottom: '5px', marginTop: '10px' }}>
                             {/* TODO */}
                             <button
                                 type="button"
-                                onClick={() => {
-                                    if (newCategoryName.trim() !== '') {
-
-
-
-
-                                        loadNewCategory();
-                                        setNewCategoryName('');
-                                    }else {
-                                        alert('Please enter a valid category name.');
-                                    }//TODO make proper alert
-                                }}
+                                onClick={loadNewCategory}
                                 style={{
                                     backgroundColor: '#202C39',
                                     color: 'white',
@@ -71,30 +78,63 @@ const TileLayoutContainer = () => {
     };
 
     // Sample of Categories as tiles
-    const tiles = [
-        createTile('Track'),
-        createTile('Stretching'),
-        createTile('Warmups'),
-        createTile('Strength'),
-        createTile('Cardio'),
-        createTile('Agility'),
-        createTile('Endurance'),
-        createTile('Flexibility'),
-        createTile('Speed'),
-        AddCategoryTile(),
-    ];
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const response = await fetch('/api/activityType/getAll', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const parsedData = await response.json();
+
+                const loadedTiles = parsedData.activityTypes.map((activityTypes) =>
+                    createTile(activityTypes.name)
+                );
+                setTiles(loadedTiles);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+        fetchData();
+    }, []);
 
     //Method to add a new category
-    const loadNewCategory = () => {
-        // Refresh the tile layout TODO
-        // This is a workaround to force the tile layout to re-render
-        // It is not the best way to do this, but it works
-        const tileLayout = document.getElementById('form-root');
-        if (tileLayout) {
-            tileLayout.style.display = 'none';
-            setTimeout(() => {
-                tileLayout.style.display = 'block';
-            }, 0);
+    async function loadNewCategory(){
+        if (newCategoryName.trim() === '' || newCategoryDescription.trim() === '') {
+            alert('Please enter a category name and description.');
+            return;
+        }
+        try{
+            const response = await fetch('/api/activityType/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name : newCategoryName,
+                    description: newCategoryDescription
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+            console.log('Category added successfully:', data);
+            setNewCategoryName(''); // Clear the input field after successful addition
+            setNewCategoryDescription('');
+            location.reload(); // Reload the page to see the new category
+        }
+        catch(error){
+            console.error('Error adding category:', error);
         }
     };
 
@@ -107,7 +147,7 @@ const TileLayoutContainer = () => {
                  columns={6}
                     //rowHeight={100}
                     gap={{ rows: 20, columns: 20 }}
-                    items={tiles}
+                    items={[...tiles, AddCategoryTile()]}
                     autoFlow='row dense'
                />
             </div>

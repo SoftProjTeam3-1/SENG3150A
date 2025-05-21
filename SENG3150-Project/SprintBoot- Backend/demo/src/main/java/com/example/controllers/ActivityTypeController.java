@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -15,6 +16,7 @@ import com.example.entities.ActivityType;
 import com.example.responses.CreateActivityTypeResponse;
 import com.example.responses.GetActivityTypeResponse;
 
+@CrossOrigin(origins = "http://localhost:5173") // Adjust to match your frontend origin
 @RestController
 @RequestMapping("/api/activityType")
 public class ActivityTypeController {
@@ -23,7 +25,7 @@ public class ActivityTypeController {
     ActivityTypeService activityTypeService;
     // Add methods to handle requests related to activity types
 
-    @PostMapping("/api/activityType/create")
+    @PostMapping("/create")
     public ResponseEntity<CreateActivityTypeResponse> createActivityType(@RequestBody ActivityType entity) {
         ActivityType newActivityType = new ActivityType();
         newActivityType.setName(entity.getName());
@@ -40,9 +42,8 @@ public class ActivityTypeController {
         }
     }
 
-    @GetMapping(value="/api/activityType/getAll")
+    @GetMapping(value="/getAll")
     public ResponseEntity<GetActivityTypeResponse> getAllActivityTypes() {
-        System.out.println("REACHED APPPROPERIATE GET MAPPING");
         List<ActivityType> activityTypes = activityTypeService.getAllActivityTypes();
         return new ResponseEntity<>(new GetActivityTypeResponse(activityTypes, "Activity types returned"), HttpStatus.OK);
     }

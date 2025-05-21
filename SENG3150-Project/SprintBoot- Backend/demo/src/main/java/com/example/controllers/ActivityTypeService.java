@@ -30,4 +30,10 @@ public class ActivityTypeService {
         List<ActivityType> activityTypes = getActivityTypes.getAll();
         return activityTypes;
     }
+
+    public ActivityType getDistinctByName(String name){
+        GetActivityTypes getActivityTypes = new GetActivityTypes(activityTypeRepository);
+        ActivityType activityType = getActivityTypes.getDistinctByName(name);
+        return activityType;
+    }
 }
