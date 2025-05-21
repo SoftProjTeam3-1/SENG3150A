@@ -1,5 +1,103 @@
 @import "tailwindcss";
 @theme {
-    --color-mint-500: oklch(0.72 0.11 178);
+  --color-mint-500: oklch(0.72 0.11 178);
 }
 
+/* Base sidebar styling */
+#verticalBar {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;    /* smooth, momentum scrolling */
+  scroll-snap-type: x mandatory;         /* snap to each button */
+  padding: 0.5rem;                       /* breathing room */
+  gap: 0.5rem;  
+  font-size: 500px;                         /* space between buttons */
+}
+
+/* Hide default scrollbar but still allow scrolling */
+#verticalBar::-webkit-scrollbar {
+  display: none;
+}
+#verticalBar {
+  -ms-overflow-style: none;  /* IE/Edge */
+  scrollbar-width: none;     /* Firefox */
+
+
+}
+
+#verticalBar text{
+    font-size: 1.5rem;         /* 24px */
+    color: var(--color-mint-500);
+    font-weight: bold;
+}
+@media (max-width: 640px) {
+  #verticalBar {
+    width: 100%;              /* full‐width on mobile */
+  }
+  #verticalBar button {
+    flex: 0 0 auto;           /* no shrinking, no growing */
+    height: 3.5rem;           /* 56px */
+    width: 3.5rem;
+    scroll-snap-align: start; /* align each button at the left when scrolling */
+    border: 2px solid transparent;
+    transition: border-color 0.2s;
+  }
+  #verticalBar button:hover,
+  #verticalBar button:focus {
+    border-color: var(--color-mint-500);  /* subtle focus indicator */
+  }
+}
+
+
+#verticalBar {
+    scroll-snap-type: x mandatory;
+  }
+  #verticalBar button {
+    scroll-snap-align: start;
+  }
+  /* hide scrollbar */
+  #verticalBar::-webkit-scrollbar { display: none; }
+  #verticalBar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* …existing code above… */
+
+/* MOBILE (≤640px) SIDEBAR AS TOP STRIP OR SLIDE-IN DRAWER */
+@media (max-width: 640px) {
+    #verticalBar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4rem;           /* 64px high strip */
+      display: flex;
+      flex-direction: row;    /* horizontal buttons */
+      align-items: center;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x mandatory;
+      padding: 0.5rem;
+      gap: 0.5rem;
+      background-color: #4B5563; /* tailwind gray-600 */
+      z-index: 50;
+    }
+  
+    /* arrange direct children in a row */
+    #verticalBar > * {
+      flex: none;
+      scroll-snap-align: start;
+    }
+  
+    #verticalBar button {
+      height: 3.5rem;         /* 56px */
+      width: 3.5rem;
+    }
+  }
+  
+  /* HIDE SCROLLBAR ACROSS BROWSERS */
+  #verticalBar::-webkit-scrollbar { display: none; }
+  #verticalBar { -ms-overflow-style: none; scrollbar-width: none; }
+  
+  /* …existing code below (if any)… */

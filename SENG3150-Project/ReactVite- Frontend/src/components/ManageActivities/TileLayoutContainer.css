@@ -97,3 +97,35 @@
 .activity-item:hover {
   background-color: #e0e0e0;
 }
+
+@media screen and (max-width: 768px) {
+  .k-tilelayout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100vw;
+    height: auto;           /* allow vertical grow */
+    padding: 1rem 0;
+    overflow-y: auto;
+  }
+
+  .k-tile {
+    width: 90% !important;   /* full-width cards */
+    max-width: 360px;
+    margin: 0.5rem 0;
+  }
+
+  .k-card {
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto;
+    max-height: none;        /* remove fixed height */
+  }
+
+  .k-card-body {
+    padding: 1rem;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible;       /* let content flow */
+  }
+}

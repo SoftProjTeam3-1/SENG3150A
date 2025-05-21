@@ -446,8 +446,8 @@ const HomeDashboard = () => {
             )}
 
             {showActivityScreen && (
-                <div className="absolute w-1/6 min-h-screen top-20 left-0 bg-gray-600 shadow p-5 text-gray-600 text-2xl text-center flex flex-col items-center"
-                     ref={activityRef}>
+ <div  className="hidden sm:block absolute top-20 left-0 bg-gray-600 w-2/3 sm:w-1/6 shadow p-5 text-gray-600 text-2xl flex flex-col items-center space-y-4 h-auto sm:h-full">                     ref={activityRef}
+                    <div className="text-m"> Select Activity: </div>
                     <ul className="w-full text-center flex flex-col items-center relative space-y-4">
                         {Categories.map((category) => (
 
@@ -508,13 +508,74 @@ const HomeDashboard = () => {
                 </div>
             )}
 
-            {showSessionTypeScreen && (
-                <div className="absolute w-1/6 min-h-screen top-20 left-0 bg-gray-600 shadow p-5 text-gray-600 text-2xl text-center flex flex-col items-center"
-                     ref={sessionRef}>
-                    <button onClick={() => handleSessionSelect('training')} className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105">Training Session</button><br></br>
-                    <button onClick={() => handleSessionSelect('game')} className="w-full h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105">Game Session</button><br></br>
-                </div>
-            )}
+{showSessionTypeScreen && (
+  <div ref={sessionRef}>
+
+    {/* Desktop / tablet sidebar */}
+    <div
+      className="
+        hidden sm:absolute sm:top-20 sm:left-0 
+        sm:w-64 sm:h-auto sm:bg-gray-600 sm:shadow sm:p-5 
+        sm:text-gray-600 sm:text-2xl sm:flex sm:flex-col sm:items-center sm:space-y-4
+      "
+    >
+      <button
+        onClick={() => handleSessionSelect('training')}
+        className="
+          w-full py-4 bg-white rounded-2xl 
+          flex items-center justify-center 
+          transition-transform duration-200 ease-in-out hover:scale-105
+        "
+      >
+        Training Session
+      </button>
+      <button
+        onClick={() => handleSessionSelect('game')}
+        className="
+          w-full py-4 bg-white rounded-2xl 
+          flex items-center justify-center 
+          transition-transform duration-200 ease-in-out hover:scale-105
+        "
+      >
+        Game Session
+      </button>
+      <button
+        onClick={() => setSessionTypeScreen(false)}
+        className="mt-2 text-sm text-gray-300 hover:text-white"
+      >
+        Cancel
+      </button>
+    </div>
+
+    {/* Mobile full‐screen modal */}
+    <div className="absolute inset-0 flex items-center justify-center sm:hidden">
+      <div
+        className="bg-gray-600 text-gray-600 p-4 rounded-xl shadow-lg w-11/12 mx-4 flex flex-col gap-4"
+      >
+        <button
+          onClick={() => handleSessionSelect('training')}
+          className="w-full py-4 bg-white rounded-2xl text-base flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
+        >
+          Training Session
+        </button>
+        <button
+          onClick={() => handleSessionSelect('game')}
+          className="w-full py-4 bg-white rounded-2xl text-base flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
+        >
+          Game Session
+        </button>
+        <button
+          onClick={() => setSessionTypeScreen(false)}
+          className="mt-2 self-end text-sm text-gray-300 hover:text-white"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+)}
+
 
         </div>
             );
