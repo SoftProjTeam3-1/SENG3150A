@@ -98,7 +98,7 @@ const TileBody = ({ categoryName }) => {
           body: JSON.stringify({
             name: newActivity.trim(),
             description: newActivityDescription.trim(),
-            duration: newActivityTime,
+            duration: newActivityTime + 'mins',
             peopleRequired: newActivityPeopleRequired,
             activityType:{
               name: categoryName,
