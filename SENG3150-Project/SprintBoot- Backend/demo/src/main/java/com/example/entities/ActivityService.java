@@ -1,14 +1,12 @@
-package com.example.controllers;
+package com.example.entities;
+
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.example.entities.Activity;
-import com.example.entities.ActivityType;
 import com.example.repositories.ActivityRepository;
 import com.example.repositories.ActivityTypeRepository;
 import com.example.stored_procedures.CreateActivity;
-
-import java.util.List;
 
 
 @Service
