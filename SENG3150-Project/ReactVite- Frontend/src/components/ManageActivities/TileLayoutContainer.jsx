@@ -14,6 +14,11 @@ const TileLayoutContainer = () => {
     const [newCategoryName, setNewCategoryName] = useState('');
     const [newCategoryDescription, setNewCategoryDescription] = useState('');
     const [tiles, setTiles] = useState([]);
+    
+    //state for the confirmation window
+    const [showConfirmation, setShowConfirmation] = React.useState(false);
+    const [confirmationMessage, setConfirmationMessage] = React.useState('');
+    
 
     //Method to create an add tile
     const AddCategoryTile = () => {
@@ -96,7 +101,7 @@ const TileLayoutContainer = () => {
                 const parsedData = await response.json();
 
                 const loadedTiles = parsedData.activityTypes.map((activityTypes) =>
-                    createTile(activityTypes.name)
+                    createTile(activityTypes.name, showConfirmation, confirmationMessage)
                 );
                 setTiles(loadedTiles);
             } catch (error) {
