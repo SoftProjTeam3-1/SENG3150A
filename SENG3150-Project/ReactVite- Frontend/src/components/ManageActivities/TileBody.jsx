@@ -268,31 +268,84 @@ const TileBody = ({ categoryName }) => {
       {/* Show activity information */}
       {/* TODO: Change to a form where user can edit and save changes */}
       {showActivityInfo && ReactDOM.createPortal(
-        // Popup for activity information
-        <>
-        <div className='popup-position'>
-          <div className='popup-container'>
-            <h3>{selectedActivity}</h3>
-            <p>{selectedActivityDescription}</p>
-            <p>People Required: {selectedActivityPeopleRequired}</p>
-            <p>Time: {selectedActivityTime} minutes</p>
-            <button
-              onClick={() => setShowActivityInfo(false)}
-              style={{
-                marginRight: '10px',
-                padding: '6px 12px',
-                border: 'none',
-                borderRadius: '4px',
-                backgroundColor: '#ccc',
-                cursor: 'pointer',
-              }}
-            >
-              Close
-            </button>
-          </div>
-          </div>
-        {/* Make it pop up above everything */}
-        </>, document.getElementById('form-root')
+        (
+          // Popup for activity information
+          <>
+            <div className='popup-position'>
+              <div className='popup-container'>
+                <form className='popup-position'
+                  onSubmit={(e) => {
+                    e.preventDefault(); // Prevent page refresh
+
+                    if (newActivity.trim() === '') {
+                      alert('Please enter a valid activity name.');
+                      return;
+                    }
+
+                    // TODO: Save the changes to the activity
+                    // Update the activity list with the new values
+                  }}>
+                  <div className='popup-container'>
+                    {/* The form inputs */}
+                    <h3>Activity Information</h3>
+                    <p>People Required: {selectedActivityPeopleRequired}</p>
+                    <input
+                      type="text"
+                      onChange={(e) => setNewActivity(e.target.value)}
+                      defaultValue={selectedActivity}
+                      placeholder="Enter activity name"
+                      required
+                      className='form-input-field'
+                    />
+
+                    {/* Textbox input for a description */}
+                    <textarea
+                      placeholder="Enter activity description"
+                      onChange={(e) => setNewActivityDescription(e.target.value)}
+                      defaultValue={selectedActivityDescription}
+                      className='form-textarea-field'
+                      rows="4"
+                    ></textarea>
+                    {/* Number input for time in mins */}
+                    <input
+                      type="number"
+                      placeholder="Enter time in minutes"
+                      onChange={(e) => setNewActivityTime(e.target.value)}
+                      defaultValue={selectedActivityTime}
+                      style={{
+                        width: '100%',
+                        padding: '8px',
+                        marginBottom: '10px',
+                        borderRadius: '4px',
+                        border: '1px solid #ccc',
+                      }}
+                      min="1"
+                    />
+                    {/* Cancel form button that hides the form */}
+                    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                      <button
+                        onClick={() => setShowActivityInfo(false)}
+                        className='activity-cancel-button'
+                      >
+                        Close
+                      </button>
+                      
+                      {/* Submit button */}
+                      <button
+                        type="submit"
+                        className='activity-submit-button'
+                      >
+                        Save
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            {/* Make it pop up above everything */}
+          </>
+        ),
+        document.getElementById('form-root')
       )}
 
       {showForm && ReactDOM.createPortal(
