@@ -639,9 +639,10 @@ const HomeDashboard = () => {
             )}
 
             {showActivityScreen && (
- <div  className="hidden sm:block absolute top-20 left-0 bg-gray-600 w-2/3 sm:w-1/6 shadow p-5 text-gray-600 text-2xl flex flex-col items-center space-y-4 h-auto sm:h-full">                     ref={activityRef}
-                    <div className="text-m"> Select Activity: </div>
-                    <ul className="w-full text-center flex flex-col items-center relative space-y-4">
+                <div  className="hidden sm:block absolute top-20 left-0 bg-gray-600 w-2/3 sm:w-1/6 shadow p-5 text-gray-600 text-2xl flex flex-col items-center space-y-4 h-auto sm:h-full"
+                      ref={activityRef}>
+                            <div className="text-m"> Select Activity: </div>
+                             <ul className="w-full text-center flex flex-col items-center relative space-y-4">
                         {Categories.map((category) => (
 
                             <div key={category.name} className="w-full">
