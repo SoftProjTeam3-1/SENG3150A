@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Header = (headerLabel) => {
-    headerLabel = headerLabel.headerLabel || "Select Date";
+    headerLabel = headerLabel.headerLabel || "Dashboard";
 
     const navigate = useNavigate();
     const [showOptions, setShowOptions] = useState(false);
