@@ -2,11 +2,15 @@ import React, { useState } from 'react';
 import { validateForgotPasswordEmail } from "../../lib/validation.js";
 import './forgotPassword.css';
 import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
+import { href } from 'react-router-dom';
+import { sha256 } from 'js-sha256';
 
 const ForgetPasswordEmailEntryForm = () => {
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
   const [newPassword, setNewPassword] = useState('');
+
   const [message, setMessage] = useState('');
   const [viewValidation, changeValidation] = useState(false);
   const [step, setStep] = useState(1); // 1 = email, 2 = code, 3 = password
@@ -26,26 +30,28 @@ const ForgetPasswordEmailEntryForm = () => {
       setMessage(data.message);
       if (!data.error) setStep(2);
     } catch (err) {
+      ToastContainer.error('Error submitting email:', err);
       console.error('Error submitting email:', err);
     }
   };
 
   const handleCodeSubmit = async (e) => {
     e.preventDefault();
-    // You can skip this step if you verify in reset endpoint
+    // skip this step if you verify in reset endpoint
     setStep(3); // Assume code is valid
   };
-
   const handlePasswordReset = async (e) => {
     e.preventDefault();
-
+  
+    const hashedPassword = sha256(newPassword); // keep this
+  
     try {
       const response = await fetch('/api/user/reset-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, code, newPassword })
+        body: JSON.stringify({ email, code, newPassword: hashedPassword }) 
       });
-
+  
       const data = await response.json();
       setMessage(data.message);
       if (!data.error) window.location.href = '/';
@@ -53,7 +59,6 @@ const ForgetPasswordEmailEntryForm = () => {
       console.error('Error resetting password:', err);
     }
   };
-
   return (
     <div className="forgotPassword-card">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -126,7 +131,15 @@ const ForgetPasswordEmailEntryForm = () => {
       )}
 
       {message && <p className="text-center text-red-500">{message}</p>}
+
+      <button
+
+      className="flex w-full justify-center rounded-md bg-white border-indigo-600 border-dash border-2 px-3 py-1.5 text-sm/6 font-semibold text-indigo-600 shadow-xs hover:border-indigo-500 hover:bg-indigo-500 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+      >
+      <a href="/">Back</a>
+      </button>
     </div>
+    
   );
 };
 
