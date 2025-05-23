@@ -46,3 +46,86 @@
     justify-content: center;
     z-index: 1000;
 }
+
+/* Form CSS for activities */
+.form-input-field {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.form-textarea-field {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+/* Button CSS */
+.activity-cancel-button {
+  margin-right: 10px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  background-color: #ccc;
+  cursor: pointer;
+}
+
+.activity-cancel-button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    background-color: #202C39;
+    color: white;
+    cursor: pointer;
+}
+
+/* Activity button hover css */
+.activity-item {
+  padding: 8px;
+  margin-bottom: 4px;
+  background: #ffffff;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  position: relative;
+}
+
+.activity-item:hover {
+  background-color: #e0e0e0;
+}
+
+@media screen and (max-width: 768px) {
+  .k-tilelayout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100vw;
+    height: auto;           /* allow vertical grow */
+    padding: 1rem 0;
+    overflow-y: auto;
+  }
+
+  .k-tile {
+    width: 90% !important;   /* full-width cards */
+    max-width: 360px;
+    margin: 0.5rem 0;
+  }
+
+  .k-card {
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto;
+    max-height: none;        /* remove fixed height */
+  }
+
+  .k-card-body {
+    padding: 1rem;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible;       /* let content flow */
+  }
+}

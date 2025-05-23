@@ -4,30 +4,55 @@
     Also holds the list of activities in that category.
     The body of the tile is a list of activities in that category and a button to add a new activity.
 */
-import React, { useState } from 'react';
+import React, { useState, useEffect, act } from 'react';
 import ReactDOM from 'react-dom';
 import '@progress/kendo-theme-default/dist/all.css';
 import './TileLayoutContainer.css';
+import { X } from 'lucide-react'; // You can use any icon you prefer
 
 const TileBody = ({ categoryName }) => {
 
+  useEffect(() => {
+      async function fetchData() {
+          try {
+              const response = await fetch('/api/activity/getByActivityType', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ activityType: categoryName }),
+              });
+
+              if (!response.ok) {
+                  throw new Error(`HTTP error! Status: ${response.status}`);
+              }
+
+              const parsedData = await response.json();
+              console.log(parsedData);
+              const activities = parsedData.activities;
+
+              const activityNames = activities.map(activities => activities.name);
+              const activityDescriptions = activities.map(activities => activities.description);
+              const activityTimes = activities.map(activities => activities.duration);
+              const activityPeopleRequired = activities.map(activities => activities.peopleRequired);
+              setActivityList(activityNames);
+              setActivityDescriptionList(activityDescriptions);
+              setActivityTimeList(activityTimes);
+              setActivityPeopleRequiredList(activityPeopleRequired);
+
+          } catch (error) {
+              console.error('Error fetching data:', error);
+          }
+      }
+      fetchData();
+  }, []);
+
   //TODO: Below is testing variables for the activity list
-  const [activityList, setActivityList] = useState([
-    'Run Laps', 'Stretches', 'Hurdles', 'Other',
-  ]);
+  const [activityList, setActivityList] = useState([]);
   //Stored activity description and time for each activity
-  const [activityDescriptionList, setActivityDescriptionList] = useState([
-    'Activity description goes here',
-    'Activity description goes here',
-    'Activity description goes here',
-    'Activity description goes here',
-  ]);
-  const [activityTimeList, setActivityTimeList] = useState([
-    10,
-    20,
-    30,
-    40,
-  ]);
+  const [activityDescriptionList, setActivityDescriptionList] = useState([]);
+  const [activityTimeList, setActivityTimeList] = useState([]);
+  const [activityPeopleRequiredList, setActivityPeopleRequiredList] = useState([]);
 
   // State to manage the visibility of the form
   const [showForm, setShowForm] = useState(false);
@@ -40,11 +65,22 @@ const TileBody = ({ categoryName }) => {
   const [newActivityDescription, setNewActivityDescription] = useState('');
   // State to manage the new activity time input
   const [newActivityTime, setNewActivityTime] = useState(0);
+  // State to manage the new activity people required input
+  const [newActivityPeopleRequired, setNewActivityPeopleRequired] = useState(0);
 
   //Variables to store selected activity
   const [selectedActivity, setSelectedActivity] = useState(null);
   const [selectedActivityDescription, setSelectedActivityDescription] = useState(null);
   const [selectedActivityTime, setSelectedActivityTime] = useState(null);
+  const [selectedActivityPeopleRequired, setSelectedActivityPeopleRequired] = useState(null);
+
+  // State to manage the visibility of the confirmation window
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [confirmationMessage, setConfirmationMessage] = useState('');
+  // Sae activity to delete
+  const [activityToDelete, setActivityToDelete] = useState(null);
+
+
 
   // Method handler for when an activity is clicked
   const handleClick = (item) => {
@@ -52,28 +88,62 @@ const TileBody = ({ categoryName }) => {
     setSelectedActivity(item);
     setSelectedActivityDescription(activityDescriptionList[activityList.indexOf(item)]);
     setSelectedActivityTime(activityTimeList[activityList.indexOf(item)]);
+    setSelectedActivityPeopleRequired(activityPeopleRequiredList[activityList.indexOf(item)]);
     // Show the activity information
     setShowActivityInfo(true);
   }
   // Method to handle adding a new activity
-  const handleAddActivity = () => {
-        // Check if the input is not empty
-        // If not empty, add the activity to the list
-        if (newActivity.trim() !== '') {
-          //TODO: Add the new activity to the list with POST
-          setActivityList([...activityList, newActivity.trim()]);
-          setActivityDescriptionList([...activityDescriptionList, newActivityDescription.trim()]);
-          setActivityTimeList([...activityTimeList, newActivityTime]);
-          setNewActivity('');// Clear the input
-          setNewActivityDescription('');// Clear the input
-          setNewActivityTime(0);// Clear the input
-          // Close the form
-          setShowForm(false);
+  async function handleAddActivity(){
+    // Check if the input is not empty
+    // If not empty, add the activity to the list
+    if (newActivity.trim() !== '') {
+      //TODO: Add the new activity to the list with POST
+      try{
+        const response = await fetch('/api/activity/create',{
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: newActivity.trim(),
+            description: newActivityDescription.trim(),
+            duration: newActivityTime,
+            peopleRequired: newActivityPeopleRequired,
+            activityType:{
+              name: categoryName,
+              description: null
+            }
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        else {
-            alert('Please enter a valid activity name.'); //TODO: Replace with actual functionality
-        }
-  };
+
+        const parsedData = await response.json();
+        console.log(parsedData.response);
+
+        location.reload();
+      }
+      catch(error){
+        console.error('Error adding activity:', error);
+      }
+      /*      
+      setActivityList([...activityList, newActivity.trim()]);
+      setActivityDescriptionList([...activityDescriptionList, newActivityDescription.trim()]);
+      setActivityTimeList([...activityTimeList, newActivityTime]); 
+      */
+      setNewActivity('');// Clear the input
+      setNewActivityDescription('');// Clear the input
+      setNewActivityTime(0);// Clear the input */
+      setNewActivityPeopleRequired(0);// Clear the input
+      // Close the form
+      setShowForm(false);
+    }
+    else {
+        alert('Please enter a valid activity name.'); //TODO: Replace with actual functionality
+    }
+  }
 
   return (
     <>
@@ -95,17 +165,85 @@ const TileBody = ({ categoryName }) => {
               // The method to call when the activity is clicked
               onClick={() => handleClick(item)}
               style={{
-                padding: '8px',
                 marginBottom: '4px',
                 background: '#fff',
                 borderRadius: '4px',
                 cursor: 'pointer',
               }}
-              // Adding hover effect
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#e0e0e0'}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ffffff'}
             >
-              {item}
+                <div className="relative group px-2 py-1 a activity-item">
+                    <span>{item}</span>
+                    <button
+                        className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                        onClick={(e) => {
+                          e.stopPropagation(); // prevent event bubbling
+                          setShowConfirmation(true);
+                          setConfirmationMessage(`Are you sure you want to delete "${item}"?`);
+                          setActivityToDelete(item);
+                        }}
+                        title="Remove"
+                    >
+                        <X className="w-4 h-4 text-gray-500 hover:text-red-500" />
+                    </button>
+                </div>
+                {/* Show the confirmation window */}
+                {/* TODO: Change to a form where user can edit and save changes */}
+                {showConfirmation && ReactDOM.createPortal(
+                  // Popup for activity information
+                  <>
+                  <div className='popup-position'>
+                    <div className='popup-container'>
+                        <h3
+                            style={{
+                                marginBottom: '10px',
+                                fontSize: '18px',
+                                color: '#202C39',
+                            }}
+                        >{confirmationMessage}</h3>
+                        {/* Cancel button hides window*/}
+                        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation(); // prevent event bubbling
+                                  setShowConfirmation(false)
+                                }}
+                                style={{
+                                    marginRight: '40%',
+                                    padding: '6px 12px',
+                                    border: 'none',
+                                    borderRadius: '4px',
+                                    backgroundColor: '#ccc',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                            Cancel
+                            </button>
+                            {/* Submit button */}
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.stopPropagation(); // prevent event bubbling
+                                    handleDeleteActivity(activityToDelete);
+                                    setShowConfirmation(false);
+                                }}
+                                style={{
+                                    padding: '6px 12px',
+                                    border: 'none',
+                                    borderRadius: '4px',
+                                    backgroundColor: '#202C39',
+                                    color: 'white',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                            Confirm
+                            </button>
+                        </div>
+                    </div>
+                    </div>
+                  {/* Make it pop up above everything */}
+                  </>, document.getElementById('form-root')
+                )}
             </li>
           ))}
         </ul>
@@ -136,6 +274,7 @@ const TileBody = ({ categoryName }) => {
           <div className='popup-container'>
             <h3>{selectedActivity}</h3>
             <p>{selectedActivityDescription}</p>
+            <p>People Required: {selectedActivityPeopleRequired}</p>
             <p>Time: {selectedActivityTime} minutes</p>
             <button
               onClick={() => setShowActivityInfo(false)}
@@ -178,13 +317,8 @@ const TileBody = ({ categoryName }) => {
             onChange={(e) => setNewActivity(e.target.value)}
             placeholder="Enter activity name"
             required
-            style={{
-              width: '100%',
-              padding: '8px',
-              marginBottom: '10px',
-              borderRadius: '4px',
-              border: '1px solid #ccc',
-            }}
+            className='form-input-field'
+            
           />
 
           {/* Textbox input for a description */}
@@ -192,6 +326,15 @@ const TileBody = ({ categoryName }) => {
             placeholder="Enter activity description"
             onChange={(e) => setNewActivityDescription(e.target.value)}
             value={newActivityDescription}
+            className='form-textarea-field'
+            rows="4"
+          ></textarea>
+          {/* Number input for time in mins */}
+          <input
+            type="number"
+            placeholder="Enter the number of people required to run this activity"
+            onChange={(e) => setNewActivityPeopleRequired(e.target.value)}
+            value={newActivityPeopleRequired}
             style={{
               width: '100%',
               padding: '8px',
@@ -199,8 +342,8 @@ const TileBody = ({ categoryName }) => {
               borderRadius: '4px',
               border: '1px solid #ccc',
             }}
-            rows="4"
-          ></textarea>
+            min="1"
+          />
           {/* Number input for time in mins */}
           <input
             type="number"
@@ -222,28 +365,14 @@ const TileBody = ({ categoryName }) => {
             <button
               type="button"
               onClick={() => setShowForm(false)}
-              style={{
-                marginRight: '10px',
-                padding: '6px 12px',
-                border: 'none',
-                borderRadius: '4px',
-                backgroundColor: '#ccc',
-                cursor: 'pointer',
-              }}
+              className='activity-cancel-button'
             >
             Cancel
             </button>
             {/* Submit button */}
             <button
               type="submit"
-              style={{
-                padding: '6px 12px',
-                border: 'none',
-                borderRadius: '4px',
-                backgroundColor: '#202C39',
-                color: 'white',
-                cursor: 'pointer',
-              }}
+              className='activity-submit-button'
             >
             Add
             </button>
