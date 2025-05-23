@@ -52,7 +52,7 @@ const Header = () => {
                         className="w-20 h-20 mr-10 transition-transform duration-200 ease-in-out hover:scale-105"
                         onClick={handleOptionsClick}
                     />
-                    <h1 className="flex items-center mr-4">Select Date</h1>
+                    <h1 className="flex items-center mr-4">Dashboard</h1>
                 </div>
             </div>
 
