@@ -19,6 +19,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.CascadeType;
 
 @Entity
 public class VoiceNote {
@@ -28,7 +29,7 @@ public class VoiceNote {
 
     private File voiceFile;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "sessionID")
     private Session session;
 
