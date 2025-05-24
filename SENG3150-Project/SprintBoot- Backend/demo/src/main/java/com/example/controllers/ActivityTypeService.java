@@ -36,4 +36,14 @@ public class ActivityTypeService {
         ActivityType activityType = getActivityTypes.getDistinctByName(name);
         return activityType;
     }
+
+    public boolean deleteActivityType(String name){
+        ActivityType activityType = activityTypeRepository.findDistinctByName(name);
+        if (activityType != null) {
+            activityTypeRepository.delete(activityType);
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

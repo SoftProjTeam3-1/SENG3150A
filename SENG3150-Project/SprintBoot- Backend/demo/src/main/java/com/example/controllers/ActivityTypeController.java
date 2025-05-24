@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.example.entities.ActivityType;
 import com.example.responses.CreateActivityTypeResponse;
 import com.example.responses.GetActivityTypeResponse;
+import com.example.responses.DeleteActivityTypeResponse;
 
 @CrossOrigin(origins = "http://localhost:5173") // Adjust to match your frontend origin
 @RestController
@@ -48,4 +49,13 @@ public class ActivityTypeController {
         return new ResponseEntity<>(new GetActivityTypeResponse(activityTypes, "Activity types returned"), HttpStatus.OK);
     }
     
+    @PostMapping(value="/delete")
+    public ResponseEntity<DeleteActivityTypeResponse> deleteActivityType(@RequestBody ActivityType entity){
+        boolean result = activityTypeService.deleteActivityType(entity.getName());
+        if(result){
+            return new ResponseEntity<>(new DeleteActivityTypeResponse(true, "ActivityType deleted successfully"), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new DeleteActivityTypeResponse(false, "ActivityType deletion failed"), HttpStatus.OK);
+        }
+    }
 }

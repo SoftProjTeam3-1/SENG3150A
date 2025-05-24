@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,9 +12,8 @@ import java.util.List;
 
 import com.example.responses.CreateActivityResponse;
 import com.example.responses.GetActivityResponse;
-import com.example.stored_procedures.GetActivityTypes;
+import com.example.responses.DeleteActivityResponse;
 import com.example.entities.Activity;
-import com.example.entities.ActivityType;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -57,5 +55,15 @@ public class ActivityController {
         System.out.println("This is the activity type name recovered "+activityTypeName);
         List<Activity> activities = activityService.getActivitiesByType(activityTypeName);
         return new ResponseEntity<>(new GetActivityResponse(activities, "Activities returned"), HttpStatus.OK);
+    }
+
+    @PostMapping(value="/delete")
+    public ResponseEntity<DeleteActivityResponse> deleteActivity(@RequestBody Activity activity){
+        boolean result = activityService.deleteActivity(activity.getName());
+        if(result){
+            return new ResponseEntity<>(new DeleteActivityResponse(true, "Activity deleted successfully"), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new DeleteActivityResponse(false, "Activity deletion failed"), HttpStatus.OK);
+        }
     }
 }
