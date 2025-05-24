@@ -19,9 +19,11 @@ public class SecurityConfig {
                                  "/api/user/login",
                                  "/api/activityType/getAll",
                                  "/api/activityType/create",
+                                 "/api/activityType/delete",
                                  "/api/activity/create",
                                  "/api/activity/getAll",
-                                 "/api/activity/getByActivityType").permitAll()
+                                 "/api/activity/getByActivityType",
+                                 "/api/activity/delete").permitAll()
                 .anyRequest().authenticated()
             )
             .httpBasic(httpBasic -> httpBasic.disable());
