@@ -20,6 +20,8 @@ public class SecurityConfig {
                                  "/api/activityType/getAll",
                                  "/api/activityType/create",
                                  "/api/activityType/delete",
+                                 "/api/activityType/update",
+                                 "/api/activity/update",
                                  "/api/activity/create",
                                  "/api/activity/getAll",
                                  "/api/activity/getByActivityType",
