@@ -67,4 +67,25 @@ public class ActivityService {
             return false;
         }
     }
+
+    public boolean updateActivity(Activity activity){
+        try{
+            Activity existingActivity = activityRepository.findDistinctByName(activity.getName());
+            if (existingActivity != null) {
+                activityRepository.updateActivity(existingActivity.getId(), 
+                    activity.getPeopleRequired(),
+                    activity.getName(), 
+                    activity.getDescription(),
+                    activity.isFavourite(),  
+                    activity.getDuration());
+                return true;
+            } else {
+                System.out.println("Activity not found for update: " + activity.getName());
+                return false;
+            }
+        } catch (Exception e) {
+            System.out.println("Error in updateActivity: " + e.getMessage());
+            return false;
+        }
+    }
 }

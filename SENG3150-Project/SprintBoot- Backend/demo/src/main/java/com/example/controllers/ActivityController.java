@@ -13,6 +13,7 @@ import java.util.List;
 import com.example.responses.CreateActivityResponse;
 import com.example.responses.GetActivityResponse;
 import com.example.responses.DeleteActivityResponse;
+import com.example.responses.UpdateActivityResponse;
 import com.example.entities.Activity;
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -64,6 +65,16 @@ public class ActivityController {
             return new ResponseEntity<>(new DeleteActivityResponse(true, "Activity deleted successfully"), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new DeleteActivityResponse(false, "Activity deletion failed"), HttpStatus.OK);
+        }
+    }
+
+    @PostMapping(value="/update")
+    public ResponseEntity<UpdateActivityResponse> updateActivity(@RequestBody Activity entity){
+        boolean result = activityService.updateActivity(entity);
+        if(result){
+            return new ResponseEntity<>(new UpdateActivityResponse(true, "Activity updated successfully"), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new UpdateActivityResponse(false, "Activity update failed"), HttpStatus.OK);
         }
     }
 }

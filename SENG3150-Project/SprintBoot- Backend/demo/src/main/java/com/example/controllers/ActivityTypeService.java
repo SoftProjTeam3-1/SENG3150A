@@ -46,4 +46,22 @@ public class ActivityTypeService {
             return false;
         }
     }
+
+    public boolean updateActivityType(ActivityType activityType){
+        try{
+            ActivityType existingActivityType = activityTypeRepository.findDistinctByName(activityType.getName());
+            if (existingActivityType != null) {
+                activityTypeRepository.updateActivityType(existingActivityType.getId(), 
+                    activityType.getName(), 
+                    activityType.getDescription());
+                return true;
+            } else {
+                return false;
+            }
+        }
+        catch(Exception e){
+            System.out.println("Error in updateActivityType: " + e.getMessage());
+            return false;
+        }
+    }
 }

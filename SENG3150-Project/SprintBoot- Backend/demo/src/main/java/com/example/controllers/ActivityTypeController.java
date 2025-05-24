@@ -16,6 +16,7 @@ import com.example.entities.ActivityType;
 import com.example.responses.CreateActivityTypeResponse;
 import com.example.responses.GetActivityTypeResponse;
 import com.example.responses.DeleteActivityTypeResponse;
+import com.example.responses.UpdateActivityTypeResponse;
 
 @CrossOrigin(origins = "http://localhost:5173") // Adjust to match your frontend origin
 @RestController
@@ -56,6 +57,16 @@ public class ActivityTypeController {
             return new ResponseEntity<>(new DeleteActivityTypeResponse(true, "ActivityType deleted successfully"), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new DeleteActivityTypeResponse(false, "ActivityType deletion failed"), HttpStatus.OK);
+        }
+    }
+
+    @PostMapping(value="/update")
+    public ResponseEntity<UpdateActivityTypeResponse> updateActivityType(@RequestBody ActivityType entity){
+        boolean result = activityTypeService.updateActivityType(entity);
+        if(result){
+            return new ResponseEntity<>(new UpdateActivityTypeResponse(true, "ActivityType updated successfully"), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new UpdateActivityTypeResponse(false, "ActivityType update failed"), HttpStatus.OK);
         }
     }
 }
