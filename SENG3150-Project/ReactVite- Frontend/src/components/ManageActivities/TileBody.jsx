@@ -147,13 +147,15 @@ const TileBody = ({ categoryName }) => {
     // If not empty, update the activity in the list
     if (newActivity.trim() !== '') {
       try{
+        console.log("you reached the front end sender function for updating activity");
+        console.log("Selected activity: ", selectedActivity);
         const response = await fetch('/api/activity/update',{
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            name: selectedActivity,
+            name: selectedActivity.trim(),
             description: selectedActivityDescription.trim(),
             duration: selectedActivityTime,
             peopleRequired: selectedActivityPeopleRequired,
@@ -177,13 +179,45 @@ const TileBody = ({ categoryName }) => {
         console.error('Error updating activity:', error);
       }
     }
-
     setNewActivity('');// Clear the input
     setNewActivityDescription('');// Clear the input
     setNewActivityTime(0);// Clear the input */
     setNewActivityPeopleRequired(0);// Clear the input
 
+  }
 
+  async function handleDeleteActivity(){
+    try{
+      console.log("you reached the front end sender function for deleting activity");
+      const response = await fetch('/api/activity/delete',{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: activityToDelete,
+          description: null,
+          duration: 0,
+          peopleRequired: 0,
+          activityType:{
+            name: categoryName,
+            description: null
+          }
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const parsedData = await response.json();
+      console.log(parsedData.response);
+
+      location.reload();
+    }
+    catch(error){
+      console.error('Error deleting activity:', error);
+    }
   }
 
   return (
@@ -265,7 +299,7 @@ const TileBody = ({ categoryName }) => {
                                 type="button"
                                 onClick={(e) => {
                                     e.stopPropagation(); // prevent event bubbling
-                                    handleDeleteActivity(activityToDelete);
+                                    handleDeleteActivity();
                                     setShowConfirmation(false);
                                 }}
                                 style={{
@@ -318,9 +352,8 @@ const TileBody = ({ categoryName }) => {
                   onSubmit={(e) => {
                     e.preventDefault(); // Prevent page refresh
 
-                    if (newActivity.trim() === '') {
-                      alert('Please enter a valid activity name.');
-                      return;
+                    if (selectedActivity.trim() == '') {
+                      selectedActivity = selectedActivity;
                     }
 
                     handleUpdateActivity();

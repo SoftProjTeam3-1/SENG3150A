@@ -11,7 +11,6 @@ import ReactDOM from 'react-dom';
 
 const createTile = (categoryName, showConfirmation, confirmationMessage) => {
 
-    // Asks the user for confirmation before deleting the activity
     const handleConfirmation = () => {
         //Display a confirmation window
         setConfirmationMessage(`Are you sure you want to delete the activity "${categoryName}"?`);

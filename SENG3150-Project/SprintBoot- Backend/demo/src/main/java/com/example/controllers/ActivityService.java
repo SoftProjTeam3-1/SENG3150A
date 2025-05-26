@@ -70,8 +70,11 @@ public class ActivityService {
 
     public boolean updateActivity(Activity activity){
         try{
+            System.out.println("\n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n" + "Reached updateActivity function in ActivityService!");
+            System.out.println("Activity to update: " + activity.getName());
             Activity existingActivity = activityRepository.findDistinctByName(activity.getName());
             if (existingActivity != null) {
+                System.out.println("Existing activity found: " + existingActivity.getName());
                 activityRepository.updateActivity(existingActivity.getId(), 
                     activity.getPeopleRequired(),
                     activity.getName(), 

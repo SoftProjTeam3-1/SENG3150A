@@ -70,6 +70,7 @@ public class ActivityController {
 
     @PostMapping(value="/update")
     public ResponseEntity<UpdateActivityResponse> updateActivity(@RequestBody Activity entity){
+        System.out.println("REACHED THE UPDATE MAPPING LETS GO!");
         boolean result = activityService.updateActivity(entity);
         if(result){
             return new ResponseEntity<>(new UpdateActivityResponse(true, "Activity updated successfully"), HttpStatus.OK);
