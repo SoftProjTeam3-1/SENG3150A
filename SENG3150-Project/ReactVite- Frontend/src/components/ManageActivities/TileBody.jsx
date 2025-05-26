@@ -288,7 +288,7 @@ const TileBody = ({ categoryName }) => {
                   <div className='popup-container'>
                     {/* The form inputs */}
                     <h3>Activity Information</h3>
-                    <p>People Required: {selectedActivityPeopleRequired}</p>
+
                     <input
                       type="text"
                       onChange={(e) => setNewActivity(e.target.value)}
@@ -306,6 +306,21 @@ const TileBody = ({ categoryName }) => {
                       className='form-textarea-field'
                       rows="4"
                     ></textarea>
+
+                    <input
+                      type="number"
+                      defaultValue={selectedActivityPeopleRequired}
+                      label="Number of people required"
+                      onChange={(e) => setNewActivityPeopleRequired(e.target.value)}
+                      style={{
+                        width: '100%',
+                        padding: '8px',
+                        marginBottom: '10px',
+                        borderRadius: '4px',
+                        border: '1px solid #ccc',
+                      }}
+                    />
+
                     {/* Number input for time in mins */}
                     <input
                       type="number"
