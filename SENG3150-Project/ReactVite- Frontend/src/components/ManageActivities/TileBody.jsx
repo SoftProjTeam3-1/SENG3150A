@@ -128,11 +128,7 @@ const TileBody = ({ categoryName }) => {
       catch(error){
         console.error('Error adding activity:', error);
       }
-      /*      
-      setActivityList([...activityList, newActivity.trim()]);
-      setActivityDescriptionList([...activityDescriptionList, newActivityDescription.trim()]);
-      setActivityTimeList([...activityTimeList, newActivityTime]); 
-      */
+
       setNewActivity('');// Clear the input
       setNewActivityDescription('');// Clear the input
       setNewActivityTime(0);// Clear the input */
@@ -143,6 +139,50 @@ const TileBody = ({ categoryName }) => {
     else {
         alert('Please enter a valid activity name.'); //TODO: Replace with actual functionality
     }
+  }
+
+  async function handleUpdateActivity() {
+    // Check if the input is not empty
+    // If not empty, update the activity in the list
+    if (newActivity.trim() !== '') {
+      try{
+        const response = await fetch('/api/activity/update',{
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: selectedActivity,
+            description: selectedActivityDescription.trim(),
+            duration: selectedActivityTime,
+            peopleRequired: selectedActivityPeopleRequired,
+            activityType:{
+              name: categoryName,
+              description: null
+            }
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const parsedData = await response.json();
+        console.log(parsedData.response);
+
+        location.reload();
+      }
+      catch(error){
+        console.error('Error updating activity:', error);
+      }
+    }
+
+    setNewActivity('');// Clear the input
+    setNewActivityDescription('');// Clear the input
+    setNewActivityTime(0);// Clear the input */
+    setNewActivityPeopleRequired(0);// Clear the input
+
+
   }
 
   return (
@@ -282,6 +322,7 @@ const TileBody = ({ categoryName }) => {
                       return;
                     }
 
+                    handleUpdateActivity();
                     // TODO: Save the changes to the activity
                     // Update the activity list with the new values
                   }}>
@@ -342,7 +383,7 @@ const TileBody = ({ categoryName }) => {
                         onClick={() => setShowActivityInfo(false)}
                         className='activity-cancel-button'
                       >
-                        Close
+                        Cancel
                       </button>
                       
                       {/* Submit button */}
