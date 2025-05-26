@@ -17,7 +17,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.CascadeType;
+
+import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 public class Activity {
@@ -31,9 +35,12 @@ public class Activity {
     private boolean favourite;
     private String duration;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "activityTypeID")
     private ActivityType activityType;
+
+    @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SessionActivity> sessionActivities = new ArrayList<>();
 
     public Activity(){}
     public Activity(String name, String description, int peopleRequired, String duration, ActivityType activityType) {

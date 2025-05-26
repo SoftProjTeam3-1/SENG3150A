@@ -132,9 +132,13 @@ public class PopulateDatabase implements CommandLineRunner{
 
         //making the roll for each session created
         Roll roll1 = new Roll(trainingSession1);
+        trainingSession1.setRoll(roll1);
         Roll roll2 = new Roll(trainingSession2);
+        trainingSession2.setRoll(roll2);
         Roll roll3 = new Roll(trainingSession3);
+        trainingSession3.setRoll(roll3);
         Roll roll4 = new Roll(gameSession1);
+        gameSession1.setRoll(roll4);
 
         //marking the attendance for each player
         Attendance attendance1 = new Attendance(true, player1, roll1);
@@ -242,11 +246,6 @@ public class PopulateDatabase implements CommandLineRunner{
             textNoteR.save(textNote2);
             textNoteR.save(textNote3);
             textNoteR.save(textNote4);
-
-            rollR.save(roll1);
-            rollR.save(roll2);
-            rollR.save(roll3);
-            rollR.save(roll4);
 
             attendanceR.save(attendance1);
             attendanceR.save(attendance2);

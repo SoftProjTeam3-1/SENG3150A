@@ -8,10 +8,15 @@
 
 package com.example.entities;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
 
 @Entity
 public class ActivityType {
@@ -21,6 +26,9 @@ public class ActivityType {
 
     private String name;
     private String description;
+
+    @OneToMany(mappedBy = "activityType", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Activity> activities = new ArrayList<>();
 
     public ActivityType(){}
     public ActivityType(String name, String description) {
@@ -50,5 +58,13 @@ public class ActivityType {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<Activity> getActivities() {
+        return activities;
+    }
+
+    public void setActivities(List<Activity> activities) {
+        this.activities = activities;
     }
 }

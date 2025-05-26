@@ -7,10 +7,15 @@
 
 package com.example.entities;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
 
 @Entity
 public class Player {
@@ -20,6 +25,9 @@ public class Player {
 
     private String playerName;
     private String position;
+
+    @OneToMany(mappedBy= "player", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Attendance> attendances = new ArrayList<>();
 
     public Player(){}
     public Player(String playerName, String position) {
@@ -50,5 +58,12 @@ public class Player {
     public void setPosition(String position) {
         this.position = position;
     }
-    
+
+    public List<Attendance> getAttendances() {
+        return attendances;
+    }
+
+    public void setAttendances(List<Attendance> attendances) {
+        this.attendances = attendances;
+    }
 }

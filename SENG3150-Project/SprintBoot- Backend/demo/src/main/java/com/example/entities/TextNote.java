@@ -25,7 +25,7 @@ public class TextNote {
 
     private String text;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "sessionID")
     private Session session;
 

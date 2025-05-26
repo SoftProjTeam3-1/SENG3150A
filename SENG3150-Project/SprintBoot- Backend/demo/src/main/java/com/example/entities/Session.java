@@ -18,7 +18,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.CascadeType;
+
+import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 public class Session {
@@ -28,13 +33,26 @@ public class Session {
 
     private Date date;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "userID")
     private User user;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "sessionTypeID")
     private SessionType type;
+
+    @OneToMany(mappedBy = "session", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SessionActivity> sessionActivities = new ArrayList<>();
+
+    @OneToMany(mappedBy = "session", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TextNote> textNotes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "session", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<VoiceNote> voiceNotes = new ArrayList<>();
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "rollID")
+    private Roll roll;
 
     public Session(){}
     public Session(Date date, User user, SessionType type) {
@@ -73,5 +91,37 @@ public class Session {
 
     public void setType(SessionType type) {
         this.type = type;
+    }
+
+    public List<SessionActivity> getSessionActivities() {
+        return sessionActivities;
+    }
+
+    public void setSessionActivities(List<SessionActivity> sessionActivities) {
+        this.sessionActivities = sessionActivities;
+    }
+
+    public List<TextNote> getTextNotes() {
+        return textNotes;
+    }
+
+    public void setTextNotes(List<TextNote> textNotes) {
+        this.textNotes = textNotes;
+    }
+
+    public List<VoiceNote> getVoiceNotes() {
+        return voiceNotes;
+    }
+
+    public void setVoiceNotes(List<VoiceNote> voiceNotes) {
+        this.voiceNotes = voiceNotes;
+    }
+
+    public Roll getRoll() {
+        return roll;
+    }
+
+    public void setRoll(Roll roll) {
+        this.roll = roll;
     }
 }

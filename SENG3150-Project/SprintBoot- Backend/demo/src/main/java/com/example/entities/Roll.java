@@ -14,8 +14,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.CascadeType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Roll {
@@ -23,9 +27,12 @@ public class Roll {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int rollID;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(mappedBy= "roll", orphanRemoval = true)
     @JoinColumn(name = "sessionID")
     private Session session;
+
+    @OneToMany(mappedBy = "roll", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Attendance> attendances = new ArrayList<>();
 
     public Roll(){}
     public Roll(Session session) {
@@ -46,5 +53,13 @@ public class Roll {
 
     public void setSession(Session session) {
         this.session = session;
+    }
+
+    public List<Attendance> getAttendances() {
+        return attendances;
+    }
+
+    public void setAttendances(List<Attendance> attendances) {
+        this.attendances = attendances;
     }
 }

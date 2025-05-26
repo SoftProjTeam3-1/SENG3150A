@@ -26,11 +26,11 @@ public class SessionActivity {
     private int sessionActivityID;
 
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "sessionID")
     private Session session;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "activityID")
     private Activity activity;
 

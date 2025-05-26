@@ -29,7 +29,7 @@ public class VoiceNote {
 
     private File voiceFile;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "sessionID")
     private Session session;
 

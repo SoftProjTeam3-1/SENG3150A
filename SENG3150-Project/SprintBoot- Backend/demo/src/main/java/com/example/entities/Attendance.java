@@ -26,11 +26,11 @@ public class Attendance {
 
     private boolean attended;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "playerID")
     private Player player;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "rollID")
     private Roll roll;
 

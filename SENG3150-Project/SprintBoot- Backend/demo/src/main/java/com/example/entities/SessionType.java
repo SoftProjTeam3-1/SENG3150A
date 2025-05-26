@@ -11,6 +11,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
+
+import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 public class SessionType {
@@ -20,6 +25,9 @@ public class SessionType {
 
     private String name;
     private String description;    
+
+    @OneToMany(mappedBy = "type", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Session> sessions = new ArrayList<>();
 
     public SessionType(){}
     public SessionType(String name, String description){
@@ -49,5 +57,13 @@ public class SessionType {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<Session> getSessions() {
+        return sessions;
+    }
+
+    public void setSessions(List<Session> sessions) {
+        this.sessions = sessions;
     }
 }
