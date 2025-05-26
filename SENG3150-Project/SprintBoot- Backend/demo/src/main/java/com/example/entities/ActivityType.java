@@ -9,6 +9,9 @@
 package com.example.entities;
 
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
 
 import jakarta.persistence.Entity;
@@ -27,6 +30,7 @@ public class ActivityType {
     private String name;
     private String description;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "activityType", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Activity> activities = new ArrayList<>();
 

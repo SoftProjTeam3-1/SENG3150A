@@ -15,6 +15,9 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.CascadeType;
 
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
 
 @Entity
@@ -26,6 +29,7 @@ public class SessionType {
     private String name;
     private String description;    
 
+    @JsonIgnore
     @OneToMany(mappedBy = "type", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Session> sessions = new ArrayList<>();
 

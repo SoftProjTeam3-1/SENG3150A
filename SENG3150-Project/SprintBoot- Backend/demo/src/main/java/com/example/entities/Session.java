@@ -23,6 +23,9 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.CascadeType;
 
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
 
 @Entity
@@ -41,15 +44,19 @@ public class Session {
     @JoinColumn(name = "sessionTypeID")
     private SessionType type;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "session", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SessionActivity> sessionActivities = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "session", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TextNote> textNotes = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "session", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<VoiceNote> voiceNotes = new ArrayList<>();
 
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "rollID")
     private Roll roll;

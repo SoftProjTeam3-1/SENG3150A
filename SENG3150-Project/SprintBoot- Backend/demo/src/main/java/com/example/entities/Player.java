@@ -8,6 +8,9 @@
 package com.example.entities;
 
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
 
 import jakarta.persistence.Entity;
@@ -26,6 +29,7 @@ public class Player {
     private String playerName;
     private String position;
 
+    @JsonIgnore
     @OneToMany(mappedBy= "player", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Attendance> attendances = new ArrayList<>();
 

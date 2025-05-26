@@ -21,6 +21,9 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.CascadeType;
 
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
 
 @Entity
@@ -39,6 +42,7 @@ public class Activity {
     @JoinColumn(name = "activityTypeID")
     private ActivityType activityType;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SessionActivity> sessionActivities = new ArrayList<>();
 

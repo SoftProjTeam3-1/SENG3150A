@@ -20,7 +20,8 @@ const TileBody = ({ categoryName }) => {
                   headers: {
                       'Content-Type': 'application/json',
                   },
-                  body: JSON.stringify({ activityType: categoryName }),
+                  body: JSON.stringify({ 
+                    activityType: categoryName }),
               });
 
               if (!response.ok) {

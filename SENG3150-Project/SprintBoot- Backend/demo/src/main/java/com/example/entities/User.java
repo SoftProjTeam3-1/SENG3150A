@@ -9,6 +9,9 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.CascadeType;
 
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
 
 @Entity
@@ -31,6 +34,7 @@ public class User {
   private String emailCodeReceived;
   private String emailCodeSentTo;
 
+  @JsonIgnore
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Session> sessions = new ArrayList<>();
   

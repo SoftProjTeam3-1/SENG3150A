@@ -21,16 +21,20 @@ import jakarta.persistence.CascadeType;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Roll {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int rollID;
 
+    @JsonIgnore
     @OneToOne(mappedBy= "roll", orphanRemoval = true)
     @JoinColumn(name = "sessionID")
     private Session session;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "roll", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Attendance> attendances = new ArrayList<>();
 
