@@ -11,6 +11,40 @@ import ReactDOM from 'react-dom';
 
 const createTile = (categoryName, showConfirmation, confirmationMessage) => {
 
+    async function handleDeleteActivityType(){
+        try{
+        console.log("you reached the front end sender function for deleting activity type");
+        const response = await fetch('/api/activityType/delete',{
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: activityToDelete,
+                description: null,
+                duration: 0,
+                peopleRequired: 0,
+                activityType:{
+                    name: categoryName,
+                    description: null
+                }
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const parsedData = await response.json();
+        console.log(parsedData.response);
+
+        location.reload();
+        }
+        catch(error){
+        console.error('Error deleting activity:', error);
+        }        
+    }
+
     const handleConfirmation = () => {
         //Display a confirmation window
         setConfirmationMessage(`Are you sure you want to delete the activity "${categoryName}"?`);
