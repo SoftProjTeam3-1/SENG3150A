@@ -126,7 +126,7 @@ const RegisterForm = () => {
         </h2>
       </div>
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form className="space-y-6">
           {/* First Name */}
           <div>
             <label htmlFor="firstName" className="block text-sm/6 font-medium text-white">

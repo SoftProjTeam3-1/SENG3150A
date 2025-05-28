@@ -11,10 +11,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
+        .cors()
+            .and()
+        .csrf(csrf -> csrf.disable())
+        .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/user/register", 
                                  "/api/user/forgotpassword", 
+                                 
                                  "/api/user/reset-password", 
                                  "/api/user/login",
                                  "/api/activityType/getAll",

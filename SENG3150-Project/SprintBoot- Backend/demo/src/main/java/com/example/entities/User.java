@@ -100,7 +100,7 @@ public class User {
     this.emailCodeReceived = emailCodeReceived;
   }
   public String getEmailCodeSentTo() {
-    return emailCodeSentTo;
+  return emailCodeSentTo;
   }
   public void setEmailCodeSentTo(String emailCodeSentTo) {
     this.emailCodeSentTo = emailCodeSentTo;
