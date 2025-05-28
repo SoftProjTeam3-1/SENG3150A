@@ -51,4 +51,24 @@ public class SessionService {
             return null;
         }
     }
+
+    public boolean saveSession(Session session) {
+        try {
+            sessionRepository.save(session);
+            return true;
+        } catch (Exception e) {
+            System.out.println("Error saving session: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean updateTextBySessionId(String text, int sessionId) {
+        try {
+            textNoteRepository.updateTextBySessionId(text, sessionId);
+            return true;
+        } catch (Exception e) {
+            System.out.println("Error updating text note: " + e.getMessage());
+            return false;
+        }
+    }
 }

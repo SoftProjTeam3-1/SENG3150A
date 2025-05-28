@@ -28,7 +28,8 @@ public class SecurityConfig {
                                  "/api/activity/delete",
                                  "/api/sessionActivity/getSessionActivities",
                                  "/api/session/getNote",
-                                 "/api/session/initialCall").permitAll()
+                                 "/api/session/initialCall",
+                                 "/api/session/create").permitAll()
                 .anyRequest().authenticated()
             )
             .httpBasic(httpBasic -> httpBasic.disable());
