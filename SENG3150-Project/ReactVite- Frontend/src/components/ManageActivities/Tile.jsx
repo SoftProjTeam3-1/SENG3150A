@@ -12,8 +12,8 @@ import ReactDOM from 'react-dom';
 const createTile = (categoryName, showConfirmation, confirmationMessage) => {
 
     const activityTypeToDelete = categoryName; // Assuming categoryName is the activity type to delete
-      const [showConfirmation, setShowConfirmation] = useState(false);
-      const [confirmationMessage, setConfirmationMessage] = useState('');
+/*       const [showConfirmation, setShowConfirmation] = useState(false);
+      const [confirmationMessage, setConfirmationMessage] = useState(''); */
 
     async function handleDeleteActivityType(){
         try{

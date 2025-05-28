@@ -7,7 +7,6 @@ import React, { useState, useEffect } from 'react';
 import createTile from './Tile.jsx';
 import '@progress/kendo-theme-default/dist/all.css';
 import './TileLayoutContainer.css';
-//import AddCategoryTile from './AddTile.jsx';
 
 const TileLayoutContainer = () => {
     //variable to store the new category name
@@ -15,10 +14,8 @@ const TileLayoutContainer = () => {
     const [newCategoryDescription, setNewCategoryDescription] = useState('');
     const [tiles, setTiles] = useState([]);
     
-    //state for the confirmation window
-    const [showConfirmation, setShowConfirmation] = React.useState(false);
-    const [confirmationMessage, setConfirmationMessage] = React.useState('');
-    
+    const [showConfirmation, setShowConfirmation] = useState(false);
+    const [confirmationMessage, setConfirmationMessage] = useState('');
 
     //Method to create an add tile
     const AddCategoryTile = () => {
