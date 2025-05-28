@@ -11,6 +11,10 @@ import ReactDOM from 'react-dom';
 
 const createTile = (categoryName, showConfirmation, confirmationMessage) => {
 
+    const activityTypeToDelete = categoryName; // Assuming categoryName is the activity type to delete
+      const [showConfirmation, setShowConfirmation] = useState(false);
+      const [confirmationMessage, setConfirmationMessage] = useState('');
+
     async function handleDeleteActivityType(){
         try{
         console.log("you reached the front end sender function for deleting activity type");
@@ -20,14 +24,8 @@ const createTile = (categoryName, showConfirmation, confirmationMessage) => {
             'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                name: activityToDelete,
+                name: activityTypeToDelete,
                 description: null,
-                duration: 0,
-                peopleRequired: 0,
-                activityType:{
-                    name: categoryName,
-                    description: null
-                }
             })
         });
 
@@ -65,7 +63,7 @@ const createTile = (categoryName, showConfirmation, confirmationMessage) => {
                     <span>{categoryName}</span>
                     <button
                         className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                        onClick={handleConfirmation}
+                        onClick={handleDeleteActivityType}
                         title="Remove"
                     >
                         <X className="w-4 h-4 text-gray-500 hover:text-red-500" />
