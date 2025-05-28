@@ -17,7 +17,7 @@ public class SecurityConfig {
         .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/user/register", 
                                  "/api/user/forgotpassword", 
-                                 
+                                 "/api/user/dashboard",
                                  "/api/user/reset-password", 
                                  "/api/user/login",
                                  "/api/activityType/getAll",

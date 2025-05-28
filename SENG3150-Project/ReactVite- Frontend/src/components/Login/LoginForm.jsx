@@ -50,7 +50,7 @@ const LoginForm = () => {
       console.log(data.response);
       console.log(viewValidation);
 
-      if(data.response && viewValidation){
+      if(data.response && viewValidation){  
         console.log('User logged in successfully!')
         window.location.href = '/dashboard' // Redirect to the dashboard page
       }
@@ -93,12 +93,10 @@ const LoginForm = () => {
   
   
   return (
-    <div className={"login-card"}>
-      <ToastContainer>
-
-      </ToastContainer>
+    <div className="login-card px-4 py-6 sm:px-6 sm:py-8">
+      <ToastContainer />
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">
+        <h2 className="mt-10 text-center text-2xl font-bold tracking-tight text-white">
           Login
         </h2>
       </div>
@@ -106,7 +104,7 @@ const LoginForm = () => {
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="Username" className="block text-sm/6 font-medium text-white">
+            <label htmlFor="Username" className="block text-sm font-medium text-white">
               Email
             </label>
             <div className="mt-2">
@@ -118,14 +116,14 @@ const LoginForm = () => {
                 id="email"
                 name="email"
                 required
-                className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                className="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-indigo-600 sm:text-sm"
               />
             </div>
           </div>
 
           <div>
             <div className="flex items-center justify-between">
-              <label htmlFor="password" className="block text-sm/6 font-medium text-white">
+              <label htmlFor="password" className="block text-sm font-medium text-white">
                 Password
               </label>
             </div>
@@ -134,19 +132,18 @@ const LoginForm = () => {
                 id="password"
                 name="password"
                 type="password"
-                placeholder='********'
+                placeholder="********"
                 required
                 autoComplete="current-password"
-                className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                className="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-indigo-600 sm:text-sm"
                 onChange={e => setPassword(e.target.value)}
                 value={plainTextPassword}
-              >
-              </input>
+              />
 
               <img 
                 src={eyeClosedIcon} 
-                alt='eye' 
-                id='hideButton'
+                alt="eye" 
+                id="hideButton"
                 onClick={() => {
                   const passwordField = document.getElementById('password');
                   const imageFile = document.getElementById('hideButton');
@@ -159,26 +156,27 @@ const LoginForm = () => {
                     imageFile.src = eyeClosedIcon; // Change image to closed eye
                   }
                 }}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer w-5 h-5"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer w-6 h-6"
               />
             </div>
           </div>
+
           <div className="text-sm">
             <a href="/forget-password" className="font-semibold text-white hover:text-gray-400">
               Forgot password?
             </a>
 
-            <br></br>
+            <br />
 
             <a href="/register" className="font-semibold text-white hover:text-gray-400">
-              Create an Account{' '}
+              Create an Account
             </a>
           </div>
 
           <div>
             <button
               type="submit"
-              className="flex w-full justify-center rounded-md bg-orange-400 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-orange-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="flex w-full justify-center rounded-md bg-orange-400 px-4 py-2 text-sm font-semibold text-white shadow-xs hover:bg-orange-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               Enter
             </button>

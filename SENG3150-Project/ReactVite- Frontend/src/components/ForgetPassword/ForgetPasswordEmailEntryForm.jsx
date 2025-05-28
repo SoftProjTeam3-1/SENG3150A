@@ -133,7 +133,7 @@ const ForgetPasswordEmailEntryForm = () => {
       {message && <p className="text-center text-red-500">{message}</p>}
 
       <button
-
+        onClick={() => window.location.href = '/'}
       className="flex w-full justify-center rounded-md bg-white border-indigo-600 border-dash border-2 px-3 py-1.5 text-sm/6 font-semibold text-indigo-600 shadow-xs hover:border-indigo-500 hover:bg-indigo-500 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
       >
       <a href="/">Back</a>
