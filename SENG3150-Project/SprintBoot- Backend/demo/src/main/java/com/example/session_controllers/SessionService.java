@@ -26,18 +26,18 @@ public class SessionService {
     }
 
     public List<Session> getTrainingSessions() {
-        return sessionRepository.findTop3BySessionTypeOrderByDateDesc(
+        return sessionRepository.findTop3ByTypeOrderByDateDesc(
             sessionTypeRepository.findDistinctByName("Training")
         );
     }
 
     public Session getGameSession() {
-        return sessionRepository.findTopBySessionTypeOrderByDateDesc(
+        return sessionRepository.findTopByTypeOrderByDateDesc(
             sessionTypeRepository.findDistinctByName("Game")
         );
     }
 
-    public int getIdByDate(Date date){
+    public int getIdByDate(String date){
         return sessionRepository.findIdByDate(date);
     }
 

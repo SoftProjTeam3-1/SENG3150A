@@ -15,9 +15,9 @@ public interface SessionRepository extends JpaRepository<Session, Integer>{
     List<Session> findByDate(Date date);
     List<Session> findByUser(User user);
     List<Session> findByType(SessionType type);
-    List<Session> findTop3BySessionTypeOrderByDateDesc(SessionType sessionType);
-    Session findTopBySessionTypeOrderByDateDesc(SessionType sessionType);
+    List<Session> findTop3ByTypeOrderByDateDesc(SessionType type);
+    Session findTopByTypeOrderByDateDesc(SessionType type);
 
-    @Query("SELECT s.sessionid FROM Session s WHERE s.date = :date")
-    int findIdByDate(Date date);
+    @Query("SELECT s.sessionID FROM Session s WHERE s.date = :date")
+    int findIdByDate(String date);
 }

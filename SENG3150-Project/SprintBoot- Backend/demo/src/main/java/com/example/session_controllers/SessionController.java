@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.example.entities.Session;
 import com.example.responses.InitialSessionGrabResponse;
+import com.example.responses.GetTextNoteResponse;
 
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class SessionController {
 
     @PostMapping("/getNote")
     public ResponseEntity<GetTextNoteResponse> getNote(@RequestBody Session session){
-        int foundSessionId = sessionService.getIdByDate(Session.getDate());
+        int foundSessionId = sessionService.getIdByDate(session.getDate().toString());
         String text = sessionService.getTextBySessionId(foundSessionId);
         if (text == null) {
             return new ResponseEntity<>(new GetTextNoteResponse(null, "No text found for this session", false), HttpStatus.NOT_FOUND);
