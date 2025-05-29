@@ -9,6 +9,13 @@ import {
     Draggable
 } from 'react-beautiful-dnd';
 
+// Polyfill for UUID v4
+function uuidv4() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
 
 const HomeDashboard = () => {
 
@@ -90,7 +97,7 @@ const HomeDashboard = () => {
 
     //Functions for setting a temporary session
     const setTemporarySessionID = () => {
-        setTemporarySession(prev => ({ ...prev, id: crypto.randomUUID() }));
+        setTemporarySession(prev => ({ ...prev, id: uuidv4() }));
     };
 
     const setTemporarySessionType = (type) => {
@@ -427,9 +434,9 @@ const HomeDashboard = () => {
 
             <Header headerLabel={"Home"}/>
 
-            <div id="middleSegment" style={{display: 'flex'}} className="bg-emerald-100 min-h-screen h-screen overflow-hidden">
-                <div id="verticalBar" className="w-28 bg-gray-600 text-2xl flex flex-col items-center h-full min-h-screen overflow-y-auto flex-shrink-0">
-                    <ul className="text-center flex flex-col items-center relative top-[10px]">
+            <div id="middleSegment" style={{display: 'flex'}} className="bg-emerald-100 min-h-screen">
+                <div id="verticalBar" className="min-w-[7rem] max-w-[7rem] w-[7rem] flex-shrink-0 bg-gray-600 text-2xl flex flex-col items-center ">
+                    <ul className="text-center flex flex-col items-center relative top-[10px] w-full">
                         {sessions.map(({id, date}) => {
                             if (!date) return null;
 
@@ -438,7 +445,7 @@ const HomeDashboard = () => {
                             return (
                             <button
                                 key={id}
-                                className={`h-20 w-20 border-5 rounded-2xl flex flex-col items-center justify-center leading-none transition-transform duration-200 ease-in-out hover:scale-105
+                                className={`h-20 w-24 border-5 rounded-2xl flex flex-col items-center justify-center leading-none transition-transform duration-200 ease-in-out hover:scale-105
                                 ${isClicked ? 'bg-orange-300 border-orange-600' : 'bg-white border-gray-600'}`}
                                 onClick={() => handleClickSelectedSessions(id)}
                                 onContextMenu={(e) => {
@@ -446,9 +453,9 @@ const HomeDashboard = () => {
                                     handleRemoveDate(id);
                                 }}>
 
-                                <div className="flex flex-col items-center justify-center h-fimull w-full">
-                                    <span className="text-lg font-semibold leading-tight">{month}</span>
-                                    <span className="text-2xl font-bold leading-tight mt-1">{day}</span>
+                                <div className="flex flex-col items-center justify-center space-y-1">
+                                    <div className="text-lg font-bold leading-tight">{month}</div>
+                                    <div className="text-xl font-semibold leading-tight">{day}</div>
                                 </div>
                             </button>
                         );
@@ -456,7 +463,7 @@ const HomeDashboard = () => {
                     </ul>
 
                     <button
-                        className="relative top-[10px] text-6xl h-20 w-20 bg-white border-5 border-gray-600 rounded-2xl flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
+                        className="relative top-[10px] text-6xl h-20 w-24 bg-white border-5 border-gray-600 rounded-2xl flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
                         onClick={() => handleNewActivity()}
                     >
                         <div className="leading-none -mt-2 text-center">
@@ -491,7 +498,9 @@ const HomeDashboard = () => {
                                                         key={id}
                                                         className="w-75 h-140 bg-white rounded-2xl flex flex-col items-center text-black "
                                                     >
-                                                        <div className="text-xl w-full text-center py-3">{month} {day}</div>
+                                                        <div className="text-xl w-full text-center py-3 flex items-center justify-center min-h-[56px] max-h-[56px] min-w-[200px] max-w-[220px] px-8 font-bold text-xl tracking-wide">
+                                                            {month} {day}
+                                                        </div>
 
                                                         <div
                                                             className="text-l py-3 w-75 h-125 bg-white rounded-2xl flex flex-col items-center text-black overflow-y-auto"
@@ -511,7 +520,9 @@ const HomeDashboard = () => {
                                             ) : (
                                                 <>
                                                     <div className="gap-y-3 w-75 h-140 bg-white rounded-2xl flex flex-col items-center text-black pb-3 py-2">
-                                                        <div className="text-xl w-full text-center ">{month} {day}</div>
+                                                        <div className="text-xl w-full text-center py-3 flex items-center justify-center min-h-[56px] max-h-[56px] min-w-[200px] max-w-[220px] px-8 font-bold text-xl tracking-wide">
+                                                            {month} {day}
+                                                        </div>
                                                         <div className="overflow-y-auto flex flex-wrap w-full justify-center py-3">
 
                                                             <div>
@@ -659,7 +670,7 @@ const HomeDashboard = () => {
                                         <div className="flex flex-col gap-2 mt-2 w-full">
                                             {category.activities.map((activity) => (
 
-                                            <div key={crypto.randomUUID()} className="w-full h-10 bg-white text-gray-600 rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105">
+                                            <div key={uuidv4()} className="w-full h-10 bg-white text-gray-600 rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105">
                                                 <button className="text-xs select-none"
                                                 onClick={() => {
 
