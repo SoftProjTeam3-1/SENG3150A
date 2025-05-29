@@ -14,9 +14,6 @@ import ForgetPasswordEnterCode from './pages/ForgetPasswordEnterCode';
 import ResetPassword from './pages/ResetPassword';
 import Attendance from "./pages/Attendance";
 
-
-
-
 const router = createBrowserRouter(
   //routes using the layout are enclosed together, the dashboard is outside because it does not use the layout.
   createRoutesFromElements(
@@ -36,7 +33,11 @@ const router = createBrowserRouter(
 );
 
 const App = () => {
-    return (<RouterProvider router = {router}/>)
+    return (
+      <div className="w-full h-screen m-0 p-0 overflow-hidden">
+        <RouterProvider router = {router}/>
+      </div>
+    )
 };
 
 export default App

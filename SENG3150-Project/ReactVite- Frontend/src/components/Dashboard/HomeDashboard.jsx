@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import DatePicker from "react-datepicker";
 import { format } from 'date-fns';
@@ -428,8 +427,8 @@ const HomeDashboard = () => {
 
             <Header headerLabel={"Home"}/>
 
-            <div id="middleSegment" style={{display: 'flex'}} className="bg-emerald-100 min-h-screen">
-                <div id="verticalBar" className=" w-25 bg-gray-600  text-2xl flex flex-col items-center ">
+            <div id="middleSegment" style={{display: 'flex'}} className="bg-emerald-100 min-h-screen h-screen overflow-hidden">
+                <div id="verticalBar" className="w-28 bg-gray-600 text-2xl flex flex-col items-center h-full min-h-screen overflow-y-auto flex-shrink-0">
                     <ul className="text-center flex flex-col items-center relative top-[10px]">
                         {sessions.map(({id, date}) => {
                             if (!date) return null;
@@ -447,9 +446,10 @@ const HomeDashboard = () => {
                                     handleRemoveDate(id);
                                 }}>
 
-                                <div className="leading-none">{month}</div>
-                                <br/>
-                                <div className="leading-none -mt-5">{day}</div>
+                                <div className="flex flex-col items-center justify-center h-fimull w-full">
+                                    <span className="text-lg font-semibold leading-tight">{month}</span>
+                                    <span className="text-2xl font-bold leading-tight mt-1">{day}</span>
+                                </div>
                             </button>
                         );
                         })}
@@ -763,7 +763,7 @@ const HomeDashboard = () => {
           onClick={() => setSessionTypeScreen(false)}
           className="mt-2 self-end text-sm text-gray-300 hover:text-white"
         >
-          Cancel
+        Cancel
         </button>
       </div>
     </div>
