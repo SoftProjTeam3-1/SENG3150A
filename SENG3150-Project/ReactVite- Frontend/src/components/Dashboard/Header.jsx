@@ -37,7 +37,7 @@ const Header = (headerLabel) => {
         <>
             <div
                 id="header"
-                className="bg-orange-400 shadow text-white p-3 h-20 w-screen text-2xl sm:text-3xl flex items-center justify-between"
+                className="bg-orange-400 shadow text-white p-3 h-20 w-screen text-2xl sm:text-3xl flex items-center justify-between font-bold"
             >
                 <div className="flex items-center">
                     <img

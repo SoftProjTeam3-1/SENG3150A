@@ -43,12 +43,14 @@ const HomeDashboard = () => {
     const [showEditDurationScreen, setShowEditDurationScreen] = useState(false);
     const [showCalendar, setShowCalendar] = useState(false);
     const [showSessionTypeScreen, setSessionTypeScreen] = useState(false);
+    const [showActivityDetails, setShowActivityDetails] = useState(false)
 
 
     // Used to determine if user clicks off menu
     const sessionRef = useRef(null);
     const activityRef = useRef(null);
     const editRef = useRef(null);
+    const activityDetailsRef = useRef(null);
 
 
     // Category Menu Functions
@@ -221,7 +223,9 @@ const HomeDashboard = () => {
     };
 
 
+    const handleClickActivityDetails = (sessionId, activity) => {
 
+    }
 
 
     useEffect(() => {
@@ -234,22 +238,22 @@ const HomeDashboard = () => {
             {
                 name: "Warm Up",
                 activities: [
-                    { name: "Jogging", description: "Light jogging to warm up", duration: 30 },
-                    { name: "Dynamic Stretches", description: "Full body stretches", duration: 20 },
+                    { name: "Jogging", description: "Light jogging to warm up", duration: 30, category:"Warm Up" },
+                    { name: "Dynamic Stretches", description: "Full body stretches", duration: 20, category:"Warm Up" },
                 ]
             },
             {
                 name: "Skills Practice",
                 activities: [
-                    { name: "Passing", description: "Short and long passes", duration: 20 },
-                    { name: "Dribbling", description: "Cone dribbling drills", duration: 30 },
+                    { name: "Passing", description: "Short and long passes", duration: 20, category:"Skills Practice" },
+                    { name: "Dribbling", description: "Cone dribbling drills", duration: 30, category:"Skills Practice" },
                 ]
             },
             {
                 name: "Games",
                 activities: [
-                    { name: "Small-sided Game", description: "4v4 half-pitch game", duration: 15 },
-                    { name: "Scrimmage", description: "Full team practice match", duration: 30 },
+                    { name: "Small-sided Game", description: "4v4 half-pitch game", duration: 15, category:"Games" },
+                    { name: "Scrimmage", description: "Full team practice match", duration: 30, category:"Games" },
                 ]
             }
         ];
@@ -278,13 +282,20 @@ const HomeDashboard = () => {
             ) {
                 setShowActivityScreen(false);
             }
+            if(
+                showActivityDetails &&
+                activityDetailsRef.current &&
+                !activityDetailsRef.current.contains(event.target)
+            ) {
+                setShowActivityDetails(false);
+            }
         };
 
         document.addEventListener("mousedown", handleClickOutside);
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [showSessionTypeScreen, showActivityScreen]);
+    }, [showSessionTypeScreen, showActivityScreen, showActivityDetails]);
 
 
     // Calculate total minutes
@@ -362,7 +373,7 @@ const HomeDashboard = () => {
             const srcActivities = [...srcSession.activities];
             const dstActivities = srcSessionId === dstSessionId ? srcActivities : [...dstSession.activities];
 
-            // === Intra-row reorder ===
+            // Intra-row reorder
             if (srcSessionId === dstSessionId && srcRow === dstRow) {
                 const rowItems = srcActivities.filter(a => a.row === srcRow);
 
@@ -379,7 +390,7 @@ const HomeDashboard = () => {
                 return updatedSessions;
             }
 
-            // === Inter-row or inter-session move ===
+            // Inter-row or inter-session move
             const srcIdx = srcActivities.findIndex(
                 (a) => a.name === activityName && a.row === srcRow
             );
@@ -426,12 +437,12 @@ const HomeDashboard = () => {
     return(
         <div className="w-full m-0 p-0">
 
-            <Header headerLabel={"Home"}/>
+            <Header headerLabel={"Mayfield Soccer Team - Dashboard"}/>
 
-            <div id="middleSegment" style={{display: 'flex'}} className="bg-emerald-100 min-h-screen">
-                <div id="verticalBar" className=" w-25 bg-gray-600  text-2xl flex flex-col items-center ">
+            <div id="middleSegment" style={{display: 'flex'}} className="bg-white min-h-screen">
+                <div id="verticalBar" className="w-2/3 sm:w-1/6 bg-gray-600 text-2xl flex flex-col items-center ">
                     <ul className="text-center flex flex-col items-center relative top-[10px]">
-                        {sessions.map(({id, date}) => {
+                        {sessions.map(({id, date, type}) => {
                             if (!date) return null;
 
                             const [month, day] = date.split(' ');
@@ -439,24 +450,24 @@ const HomeDashboard = () => {
                             return (
                             <button
                                 key={id}
-                                className={`h-20 w-20 border-5 rounded-2xl flex flex-col items-center justify-center leading-none transition-transform duration-200 ease-in-out hover:scale-105
-                                ${isClicked ? 'bg-orange-300 border-orange-600' : 'bg-white border-gray-600'}`}
+                                className={`mt-2 h-20 w-35 rounded-2xl flex flex-col items-center justify-center leading-none transition-transform duration-200 ease-in-out hover:scale-105
+                                ${isClicked ? 'bg-orange-300 ' : 'bg-white '}`}
                                 onClick={() => handleClickSelectedSessions(id)}
                                 onContextMenu={(e) => {
                                     e.preventDefault(); // prevent browser context menu
                                     handleRemoveDate(id);
                                 }}>
 
-                                <div className="leading-none">{month}</div>
+                                <div className="leading-none font-bold">{month} {day}</div>
                                 <br/>
-                                <div className="leading-none -mt-5">{day}</div>
+                                <div className="leading-none -mt-5 text-sm">{type} session</div>
                             </button>
                         );
                         })}
                     </ul>
 
                     <button
-                        className="relative top-[10px] text-6xl h-20 w-20 bg-white border-5 border-gray-600 rounded-2xl flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
+                        className="mt-2 relative top-[10px] text-6xl h-20 w-20 bg-white border-5 border-gray-600 rounded-2xl flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
                         onClick={() => handleNewActivity()}
                     >
                         <div className="leading-none -mt-2 text-center">
@@ -487,16 +498,17 @@ const HomeDashboard = () => {
                                             {/* Determines if game or training was selected */}
                                             {type === 'game' ? (
                                                 <>
+                                                    <div className="border-gray-600 border-2 rounded-2xl">
                                                     <div
                                                         key={id}
                                                         className="w-75 h-140 bg-white rounded-2xl flex flex-col items-center text-black "
                                                     >
-                                                        <div className="text-xl w-full text-center py-3">{month} {day}</div>
+                                                        <div className="text-xl w-full text-center py-3 font-bold">{month} {day}</div>
 
                                                         <div
                                                             className="text-l py-3 w-75 h-125 bg-white rounded-2xl flex flex-col items-center text-black overflow-y-auto"
                                                         >
-                                                            Notes
+                                                            <div className="font-bold">Notes</div>
                                                             <div>
                                                             <textarea
                                                                 className="w-65 h-110 resize-none py-3"
@@ -507,11 +519,12 @@ const HomeDashboard = () => {
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    </div>
                                                 </>
                                             ) : (
                                                 <>
-                                                    <div className="gap-y-3 w-75 h-140 bg-white rounded-2xl flex flex-col items-center text-black pb-3 py-2">
-                                                        <div className="text-xl w-full text-center ">{month} {day}</div>
+                                                    <div className="gap-y-3 w-75 h-140 bg-gray-600 rounded-2xl flex flex-col items-center text-black pb-3 py-2 border-gray-600 border-2">
+                                                        <div className="text-xl w-full text-center text-white font-bold">{month} {day}</div>
                                                         <div className="overflow-y-auto flex flex-wrap w-full justify-center py-3">
 
                                                             <div>
@@ -523,7 +536,6 @@ const HomeDashboard = () => {
                                                                             droppableId={`${id}__row-${rowKey}`}
                                                                             //direction="horizontal"
                                                                             key={rowKey}
-                                                                            o
                                                                         >
                                                                             {(provided) => (
                                                                                 <div
@@ -543,7 +555,7 @@ const HomeDashboard = () => {
                                                                                                     ref={dragProvided.innerRef}
                                                                                                     {...dragProvided.draggableProps}
                                                                                                     {...dragProvided.dragHandleProps}
-                                                                                                    className="relative group bg-blue-100 px-4 py-2 rounded shadow text-center select-none transition-transform duration-200 ease-in-out hover:scale-105"
+                                                                                                    className="relative group bg-orange-100 px-4 py-2 rounded shadow text-center select-none transition-transform duration-200 ease-in-out hover:scale-105"
                                                                                                 >
                                                                                                     <button
                                                                                                         className="absolute top-0 right-1 text-red-600 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
@@ -551,8 +563,9 @@ const HomeDashboard = () => {
                                                                                                     >
                                                                                                         ×
                                                                                                     </button>
-                                                                                                    <div>{activity.name}</div>
-                                                                                                    <div>{activity.duration} minutes</div>
+                                                                                                    <div className="font-bold">{activity.name}</div>
+                                                                                                    <div className="text-sm !k-font-style-italic">{activity.category}</div>
+                                                                                                    <div className="font-bold">{activity.duration} minutes</div>
                                                                                                 </div>
                                                                                             )}
                                                                                         </Draggable>
@@ -567,7 +580,7 @@ const HomeDashboard = () => {
                                                             {/* Plus Button */}
                                                             <div className="w-64 h-24 flex items-center justify-center">
                                                                 <button
-                                                                    className="text-6xl w-70 h-24 bg-emerald-100 shadow-emerald-50 rounded-2xl flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
+                                                                    className="text-6xl w-20 h-20 bg-orange-400 text-white shadow-emerald-50 rounded-2xl flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
                                                                     onClick={() => handleActivityScreenClick(id)}
                                                                 >
                                                                     <div className="leading-none -mt-2">+</div>
@@ -577,7 +590,7 @@ const HomeDashboard = () => {
 
                                                         </div>
                                                             {/* Total Time */}
-                                                            <div className="text-center mt-auto pt-3">
+                                                            <div className="text-center mt-auto pt-3 text-white font-bold">
                                                                 Total Time: {calculateTotalSessionMinutes(session)} Minutes
                                                             </div>
 
@@ -586,8 +599,8 @@ const HomeDashboard = () => {
 
 
                                                     {/* Notes */}
-                                                    <div className="text-l py-3 w-75 h-125 bg-white rounded-2xl flex flex-col items-center text-black">
-                                                        Notes
+                                                    <div className="text-l py-3 w-75 h-125 bg-white rounded-2xl flex flex-col items-center text-black border-gray-600 border-2">
+                                                        <div className="font-bold">Notes</div>
                                                         <div>
                                                             <textarea
                                                                 className="w-65 h-110 resize-none py-3"
@@ -680,6 +693,13 @@ const HomeDashboard = () => {
                         )
                         }
                     </ul>
+                </div>
+            )}
+
+            {showActivityDetails && (
+                <div className="absolute w-1/6 min-h-screen top-20 left-0 bg-gray-600 shadow p-5 text-white text-2xl text-center flex flex-col items-center"
+                     ref={activityDetailsRef}>
+
                 </div>
             )}
 
