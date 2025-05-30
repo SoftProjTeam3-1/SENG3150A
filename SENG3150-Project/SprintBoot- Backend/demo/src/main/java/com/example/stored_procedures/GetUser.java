@@ -1,3 +1,7 @@
+/*
+ * Author: Harrison Armstrong
+ */
+
 package com.example.stored_procedures;
 
 import com.example.entities.User;

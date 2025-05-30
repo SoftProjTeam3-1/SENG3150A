@@ -1,3 +1,8 @@
+/*
+ * Author: Darcy Studdert
+ * Author of Refactor: Harrison Armstrong
+ */
+
 package com.example.entities;
 
 import org.springframework.beans.factory.annotation.Autowired;

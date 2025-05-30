@@ -1,3 +1,7 @@
+/*
+ * Authors: Harrison Armstrong, Darcy Studdert
+ */
+
 package com.example.entities;
 
 import jakarta.persistence.Column;

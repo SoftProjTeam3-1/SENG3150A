@@ -1,3 +1,7 @@
+/*
+ * Author: Darcy Studdert (Initial)
+ * Author of Refactor: Harrison Armstrong
+ */
 package com.example.entities;
 
 import java.util.ArrayList;

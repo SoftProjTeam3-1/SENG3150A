@@ -1,3 +1,7 @@
+/*
+ * Author: Harrison Armstrong
+ */
+
 package com.example.session_controllers;
 
 import org.springframework.web.bind.annotation.RestController;
@@ -39,7 +43,6 @@ public class SessionActivityController {
     @PostMapping("/addSessionActivity")
     public ResponseEntity<AddSessionActivityResponse> addSessionActivity(@RequestBody SessionActivity entity){
         //get session and activity for the entity
-        Session session = entity.getSession();
         Activity activity = entity.getActivity();
 
         //find those in database

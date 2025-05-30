@@ -1,3 +1,7 @@
+/*
+ * Author: Harrison Armstrong
+ */
+
 package com.example.responses;
 
 import com.example.entities.Activity;

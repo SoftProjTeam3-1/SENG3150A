@@ -1,3 +1,7 @@
+/*
+ * Author: Harrison Armstrong
+ */
+
 package com.example.controllers;
 
 import org.springframework.stereotype.Service;

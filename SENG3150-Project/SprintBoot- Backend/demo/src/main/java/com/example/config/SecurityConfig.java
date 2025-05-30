@@ -1,3 +1,7 @@
+/*
+ * Author: Harrison Armstrong
+ */
+
 package com.example.config;
 
 import org.springframework.context.annotation.Bean;
@@ -27,6 +31,7 @@ public class SecurityConfig {
                                  "/api/activity/getByActivityType",
                                  "/api/activity/delete",
                                  "/api/sessionActivity/getSessionActivities",
+                                 "/api/sessionActivity/addSessionActivity",
                                  "/api/session/getNote",
                                  "/api/session/initialCall",
                                  "/api/session/create").permitAll()
