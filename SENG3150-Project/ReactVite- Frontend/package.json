@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host",
+    "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -23,7 +23,6 @@
     "react-router-dom": "^7.4.1",
     "react-toastify": "^11.0.5",
     "tailwindcss": "^4.0.17",
-    "uuid": "^11.1.0",
     "vite-plugin-mkcert": "^1.17.8"
   },
   "devDependencies": {

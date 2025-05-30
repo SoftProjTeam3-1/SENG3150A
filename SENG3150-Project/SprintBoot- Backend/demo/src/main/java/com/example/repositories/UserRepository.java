@@ -1,8 +1,7 @@
 package com.example.repositories;
 
-import java.util.List;
-
 import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
 
 import com.example.entities.User;
 
@@ -13,5 +12,4 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     List<User> findByVerified(boolean verified);
     List<User> findByPassword(String password);
     List<User> findById(int id);
-    
 }
