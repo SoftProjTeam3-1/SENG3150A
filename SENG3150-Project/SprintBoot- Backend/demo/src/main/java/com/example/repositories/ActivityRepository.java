@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import com.example.entities.Activity;
 import com.example.entities.ActivityType;
+import com.example.entities.SessionActivity;
 
 import jakarta.transaction.Transactional;
 
@@ -32,4 +33,12 @@ public interface ActivityRepository extends JpaRepository<Activity, Integer>{
         @Param("favourite") boolean favourite,
         @Param("duration") String duration
     );
+
+    @Query(value = "SELECT * " + //
+                "FROM activity a " + //
+                "INNER JOIN session_activity sa ON sa.activityid = a.activityid " + //
+                "INNER JOIN session s ON s.sessionid = sa.sessionid " + //
+                "WHERE s.sessionid = :id;", nativeQuery = true)
+    List<Activity> findActivitiesBySession(@Param("id") int id);
+
 }

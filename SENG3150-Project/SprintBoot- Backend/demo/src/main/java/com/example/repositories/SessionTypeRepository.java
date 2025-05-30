@@ -10,6 +10,7 @@ import com.example.entities.SessionType;
 public interface SessionTypeRepository extends JpaRepository<SessionType, Integer> {
     SessionType findById(int id);
     List<SessionType> findByName(String name);
+    SessionType findDistinctByName(String name);
     List<SessionType> findByDescription(String description);
     
 }
