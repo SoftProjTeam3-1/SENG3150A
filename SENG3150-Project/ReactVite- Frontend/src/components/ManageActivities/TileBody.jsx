@@ -363,7 +363,7 @@ const TileBody = ({ categoryName }) => {
                   <div className='popup-container'>
                     {/* The form inputs */}
                     <h3>Activity Information</h3>
-
+                    <p>People Required: {selectedActivityPeopleRequired}</p>
                     <input
                       type="text"
                       onChange={(e) => setNewActivity(e.target.value)}
@@ -411,6 +411,7 @@ const TileBody = ({ categoryName }) => {
                       }}
                       min="1"
                     />
+                    
                     {/* Cancel form button that hides the form */}
                     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                       <button
