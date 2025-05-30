@@ -2,9 +2,7 @@ import optionsIMG from "../../assets/options.png";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const Header = (headerLabel) => {
-    headerLabel = headerLabel.headerLabel || "Dashboard";
-
+const Header = ({ headerLabel = "Dashboard", dateText }) => {
     const navigate = useNavigate();
     const [showOptions, setShowOptions] = useState(false);
 
@@ -37,18 +35,24 @@ const Header = (headerLabel) => {
         <>
             <div
                 id="header"
-                className="bg-orange-400 shadow text-white p-3 h-20 w-screen text-2xl sm:text-3xl flex items-center justify-between"
+                className="bg-orange-400 shadow text-white px-6 py-3 min-h-20 h-20 w-full min-w-[320px] text-2xl sm:text-3xl flex items-center justify-between"
+                style={{ minWidth: '320px', minHeight: '5rem' }}
             >
-                <div className="flex items-center">
+                <div className="flex items-center min-w-0 flex-shrink-0">
                     <img
                         src={optionsIMG}
                         ref={iconRef}
                         alt={"Options"}
-                        className="w-12 h-12 sm:w-20 sm:h-20 mr-4 sm:mr-10 transition-transform duration-200 ease-in-out hover:scale-105"
+                        className="w-12 h-12 sm:w-20 sm:h-20 mr-4 sm:mr-10 transition-transform duration-200 ease-in-out hover:scale-105 flex-shrink-0"
                         onClick={handleOptionsClick}
                     />
-                    <h1 className="flex items-center">{headerLabel}</h1>
+                    <h1 className="flex items-center whitespace-nowrap font-bold flex-shrink-0">{headerLabel}</h1>
                 </div>
+                {dateText && (
+                    <div className="ml-4 text-lg sm:text-xl font-medium whitespace-nowrap px-4 py-2 bg-white bg-opacity-20 rounded-lg flex-shrink-0">
+                        {dateText}
+                    </div>
+                )}
             </div>
 
             {showOptions && (

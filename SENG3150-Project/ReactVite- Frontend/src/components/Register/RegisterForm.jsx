@@ -55,8 +55,6 @@ const RegisterForm = () => {
       console.log(data);
       console.log(viewValidation);
 
-      //setSubmitFailed(!response.ok);
-
       if (data.response && viewValidation) {
         console.log('User registered successfully!');
         window.location.href = '/';
@@ -116,20 +114,19 @@ const RegisterForm = () => {
   ];
 
   return (
-    <div className={"register-card"}>
-      <ToastContainer>
-
-      </ToastContainer>
+    <div className="register-card px-4 py-6 sm:px-6 sm:py-8">
+      <ToastContainer />
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">
+        <h2 className="mt-10 text-center text-2xl font-bold tracking-tight text-white">
           Register
         </h2>
       </div>
+
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* First Name */}
           <div>
-            <label htmlFor="firstName" className="block text-sm/6 font-medium text-white">
+            <label htmlFor="firstName" className="block text-sm font-medium text-white">
               First Name
             </label>
             <div className="mt-2">
@@ -141,14 +138,14 @@ const RegisterForm = () => {
                 id="firstName"
                 name="firstName"
                 required
-                className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                className="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-indigo-600 sm:text-sm"
               />
             </div>
           </div>
 
           {/* Surname */}
           <div>
-            <label htmlFor="surname" className="block text-sm/6 font-medium text-white">
+            <label htmlFor="surname" className="block text-sm font-medium text-white">
               Surname
             </label>
             <div className="mt-2">
@@ -160,166 +157,127 @@ const RegisterForm = () => {
                 id="surname"
                 name="surname"
                 required
-                className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                className="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-indigo-600 sm:text-sm"
               />
             </div>
           </div>
 
-            <div>
-                <label htmlFor="Username" className="block text-sm/6 font-medium text-gray-900">
-                Username
-                </label>
-                <div className="mt-2">
-                <input
-                    type="email"
-                    placeholder="joe.bloggs@email.com"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    id="email"
-                    name="email"
-                    required
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                />
-                </div>
-            </div>
-            
-            <div>
-              <label htmlFor="password" className="block text-sm/6 font-medium text-gray-900">
-                Password
-              </label>
-              <div className="mt-2">
-                <input
-                  onChange={e => setPassword(e.target.value)}
-                  id="password"
-                  name="password"
-                  value={plainTextPassword}
-                  type="password"
-                  placeholder='********'
-                  required
-                  autoComplete="current-password"
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                />
-                <img 
-                  src={eyeClosedIcon} 
-                  alt='eye' 
-                  id='hideButton' 
-                  style={{ width: '5%', height: '5%' }}
-                  onClick={() => {
-                    const passwordField = document.getElementById('password');
-                    const imageFile = document.getElementById('hideButton');
-                    if (passwordField.type === 'password') {
-                      passwordField.type = 'text'; // Show password
-                      imageFile.src = eyeOpenIcon; // Change image to open eye
-                    } else {
-                      passwordField.type = 'password'; // Hide password
-                      imageFile.src = eyeClosedIcon; // Change image to closed eye
-                    }
-                  }}/>
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="password2" className="block text-sm/6 font-medium text-gray-900">
-                Confirm Password
-              </label>
-              <div className="mt-2">
-                <input
-                    onChange={e => setConfirmPassword(e.target.value)}
-                  id="password2"
-                  name="password2"
-                  value={confirmPassword}
-                  type="password"
-                  placeholder='********'
-                  required
-                  autoComplete="current-password"
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                />
-                <img 
-                  src={eyeClosedIcon} 
-                  alt='eye' 
-                  id='hideButton2' 
-                  style={{ width: '5%', height: '5%' }}
-                  onClick={() => {
-                    const passwordField = document.getElementById('password2');
-                    const imageFile = document.getElementById('hideButton2');
-                    if (passwordField.type === 'password') {
-                      passwordField.type = 'text'; // Show password
-                      imageFile.src = eyeOpenIcon; // Change image to open eye
-                    } else {
-                      passwordField.type = 'password'; // Hide password
-                      imageFile.src = eyeClosedIcon; // Change image to closed eye
-                    }
-                  }}/>
-              </div>
-            </div>
-
-          {/* Confirm Password */}
+          {/* Email */}
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm/6 font-medium text-white">
-              Confirm Password
+            <label htmlFor="email" className="block text-sm font-medium text-white">
+              Email
             </label>
             <div className="mt-2">
               <input
+                type="email"
+                placeholder="joe.bloggs@email.com"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                id="email"
+                name="email"
+                required
+                className="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-indigo-600 sm:text-sm"
+              />
+            </div>
+          </div>
+
+          {/* Password */}
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-white">
+              Password
+            </label>
+            <div className="mt-2 flex items-center relative">
+              <input
+                id="password"
+                name="password"
                 type="password"
                 placeholder="********"
-                value={confirmPassword}
-                onChange={e => setConfirmPassword(e.target.value)}
-                id="confirmPassword"
-                name="confirmPassword"
                 required
-                autoComplete="new-password"
-                className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                className="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-indigo-600 sm:text-sm"
+                onChange={e => setPassword(e.target.value)}
+                value={plainTextPassword}
               />
-                  {/* Password Hints */}
-              <ul className="space-y-1 text-sm text-gray-300 text-neutral-500 mt-4">
-                {passwordHints.map((hint, index) => (
-                    <li key={index} className="flex items-center">
-                      {hint.isValid ? (
-                          <svg className="h-4 w-4 text-green-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-7.5 7.5a1 1 0 01-1.414 0l-3.5-3.5a1 1 0 011.414-1.414L8 11.086l6.793-6.793a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                      ) : (
-                          <svg className="h-4 w-4 text-red-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fillRule="evenodd" d="M10 8.586l4.95-4.95a1 1 0 011.414 1.414L11.414 10l4.95 4.95a1 1 0 01-1.414 1.414L10 11.414l-4.95 4.95a1 1 0 01-1.414-1.414L8.586 10l-4.95-4.95A1 1 0 015.05 3.636L10 8.586z" clipRule="evenodd" />
-                          </svg>
-                      )}
-                      <span className="ml-2">{hint.text}</span>
-                    </li>
-                ))}
-              </ul>
-            </div>
-           </div>
+              <img 
+                src={eyeClosedIcon} 
+                alt="eye" 
+                id="hideButton"
+                onClick={() => {
+                  const passwordField = document.getElementById('password');
+                  const imageFile = document.getElementById('hideButton');
 
-           
+                  if (passwordField.type === 'password') {
+                    passwordField.type = 'text'; // Show password
+                    imageFile.src = eyeOpenIcon; // Change image to open eye
+                  } else {
+                    passwordField.type = 'password'; // Hide password
+                    imageFile.src = eyeClosedIcon; // Change image to closed eye
+                  }
+                }}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer w-6 h-6"
+              />
+            </div>
+          </div>
+
+          {/* Confirm Password */}
+          <div>
+            <label htmlFor="confirm-password" className="block text-sm font-medium text-white">
+              Confirm Password
+            </label>
+            <div className="mt-2 flex items-center relative">
+              <input
+                id="confirm-password"
+                name="confirm-password"
+                type="password"
+                placeholder="********"
+                required
+                className="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-indigo-600 sm:text-sm"
+                onChange={e => setConfirmPassword(e.target.value)}
+                value={confirmPassword}
+              />
+              <img 
+                src={eyeClosedIcon} 
+                alt="eye" 
+                id="hideButton2"
+                onClick={() => {
+                  const passwordField = document.getElementById('confirm-password');
+                  const imageFile = document.getElementById('hideButton2');
+
+                  if (passwordField.type === 'password') {
+                    passwordField.type = 'text'; // Show password
+                    imageFile.src = eyeOpenIcon; // Change image to open eye
+                  } else {
+                    passwordField.type = 'password'; // Hide password
+                    imageFile.src = eyeClosedIcon; // Change image to closed eye
+                  }
+                }}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer w-6 h-6"
+              />
+            </div>
+          </div>
+
+          {/* Already have an account */}
+          <div className="text-sm">
+            <a href="/login" className="font-semibold text-white hover:text-gray-400">
+              Already have an account? Login
+            </a>
+          </div>
+
           {/* Buttons */}
           <div>
             <button
-            onClick={handleSubmit}
-                type="submit"
-                className="flex w-full justify-center rounded-md bg-orange-400 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-orange-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              type="submit"
+              className="flex w-full justify-center rounded-md bg-orange-400 px-4 py-2 text-sm font-semibold text-white shadow-xs hover:bg-orange-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              Enter
+              Register
             </button>
           </div>
 
-          <div>
+          <div className="mt-4">
             <button
-              className="flex w-full justify-center rounded-md bg-orange-400 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-orange-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="flex w-full justify-center rounded-md bg-orange-400 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-gray-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               <a href="/">Back</a>
             </button>
-            
-            <br></br>
-
-            <div>
-            <button
-
-              className="flex w-full justify-center rounded-md bg-white border-indigo-600 border-dash border-2 px-3 py-1.5 text-sm/6 font-semibold text-indigo-600 shadow-xs hover:border-indigo-500 hover:bg-indigo-500 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              <a href="/">Back</a>
-            </button>
-          </div>
-
           </div>
         </form>
       </div>

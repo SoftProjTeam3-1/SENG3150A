@@ -14,6 +14,10 @@ public class CustomCorsConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         config.addAllowedOrigin("http://localhost:5173");
+        config.addAllowedOrigin("http://localhost:3000");
+        config.addAllowedOrigin("http://localhost:8080");
+        config.addAllowedOrigin( "http://10.222.108.67:5173");
+       config.addAllowedOrigin("http:// http://192.168.1.105:5174");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
 
