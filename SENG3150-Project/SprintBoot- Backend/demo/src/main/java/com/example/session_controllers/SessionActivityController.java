@@ -12,7 +12,9 @@ import org.springframework.http.ResponseEntity;
 
 import com.example.entities.Session;
 import com.example.entities.Activity;
+import com.example.entities.SessionActivity;
 import com.example.responses.SessionActivityGrabResponse;
+import com.example.responses.AddSessionActivityResponse;
 
 import java.util.List;
 
@@ -31,6 +33,30 @@ public class SessionActivityController {
             return new ResponseEntity<>(new SessionActivityGrabResponse(null, "No activities found for this session", false), HttpStatus.NOT_FOUND);
         } else {
             return new ResponseEntity<>(new SessionActivityGrabResponse(activities, "Activities retrieved successfully", true), HttpStatus.OK);
+        }
+    }
+
+    @PostMapping("/addSessionActivity")
+    public ResponseEntity<AddSessionActivityResponse> addSessionActivity(@RequestBody SessionActivity entity){
+        //get session and activity for the entity
+        Session session = entity.getSession();
+        Activity activity = entity.getActivity();
+
+        //find those in database
+        Session persistedSession = sessionActivityService.getSessionByDateAndType(entity);
+        Activity persistedActivity = sessionActivityService.getActivityByName(activity.getName());
+        
+        //save new session activity with the following attributes
+        if(persistedActivity == null || persistedSession == null) {
+            return new ResponseEntity<>(new AddSessionActivityResponse("Session or Activity not found", false), HttpStatus.NOT_FOUND);
+        }
+        else{
+            boolean result = sessionActivityService.saveSessionActivity(new SessionActivity(persistedSession, persistedActivity));
+            if(result){
+                return new ResponseEntity<>(new AddSessionActivityResponse("Session activity added successfully", true), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new AddSessionActivityResponse("Failed to add session activity", false), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
     }
 }
