@@ -9,6 +9,11 @@
   background-color: rgba(175, 210, 187, 1);
 }
 
+/* makes the html the whole screen */
+html, body {
+  height: 100%;
+  margin: 0;
+}
 /* Mobile-friendly adjustments */
 @media (max-width: 768px) {
   .tilelayoutcontainer {

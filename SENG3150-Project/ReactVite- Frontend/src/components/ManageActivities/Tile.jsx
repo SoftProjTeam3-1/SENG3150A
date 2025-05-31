@@ -10,20 +10,7 @@ import { X } from 'lucide-react'; // You can use any icon you prefer
 import '@progress/kendo-theme-default/dist/all.css';
 import ReactDOM from 'react-dom';
 
-const createTile = (categoryName, showConfirmation, confirmationMessage) => {
-
-    // // Asks the user for confirmation before deleting the activity
-    // const handleConfirmation = () => {
-    //     //Display a confirmation window
-    //     setConfirmationMessage(`Are you sure you want to delete the activity "${categoryName}"?`);
-    //     setShowConfirmation(true);
-    // };
-
-    // //TODO: Handle the confirmation response
-    // const handleConfirmationResponse = () => {
-    //     // User confirmed, proceed with deletion
-    //     alert(`Activity "${categoryName}" deleted.`);
-    // }
+const createTile = (categoryName) => {
 
     return {
         defaultPosition: { colSpan: 1, rowSpan: 1 },
