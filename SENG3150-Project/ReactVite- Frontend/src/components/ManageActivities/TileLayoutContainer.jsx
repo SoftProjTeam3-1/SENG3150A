@@ -23,56 +23,40 @@ const TileLayoutContainer = () => {
             defaultPosition: { colSpan: 1, rowSpan: 1 },
             header: (<>New Category</>),
             body: (
-                <>
-                        <div style={{ textAlign: 'center', paddingBottom: '5px' }}>
-                            <input
-                                type="text"
-                                placeholder="Enter New Category Name"
-                                onChange={(e) => setNewCategoryName(e.target.value)}
-                                value={newCategoryName}
-                                style={{
-                                    width: '100%',
-                                    borderRadius: '4px',
-                                    border: '1px solid #ccc',
-                                    height: '30px',
-                                    textAlign: 'left',
-                                    paddingLeft: '5px',
-                                }}
-                            />
-                        </div>
-                        <div style={{ textAlign: 'center', paddingBottom: '5px' }}>
-                            <input
-                                type="text"
-                                placeholder="Enter a Description"
-                                onChange={(e) => setNewCategoryDescription(e.target.value)}
-                                value={newCategoryDescription}
-                                style={{
-                                    width: '100%',
-                                    borderRadius: '4px',
-                                    border: '1px solid #ccc',
-                                    height: '30px',
-                                    textAlign: 'left',
-                                    paddingLeft: '5px',
-                                }}
-                            />
-                        </div>  
-                        <div style={{ textAlign: 'center', paddingBottom: '5px', marginTop: '10px' }}>
-                            {/* TODO */}
-                            <button
-                                type="button"
-                                onClick={loadNewCategory}
-                                style={{
-                                    backgroundColor: '#202C39',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '4px',
-                                    padding: '5px 12px',
-                                    cursor: 'pointer',
-                                }}>
-                                Add Category
-                            </button>
-                        </div>
-                </>
+            <form
+                onSubmit={(e) => {
+                e.preventDefault();
+                loadNewCategory();
+                }}
+            >
+                <div className="text-center pb-1.5">
+                <input
+                    type="text"
+                    placeholder="Enter New Category Name"
+                    onChange={(e) => setNewCategoryName(e.target.value)}
+                    value={newCategoryName}
+                    className="w-full rounded border border-gray-300 h-8 pl-2 text-left"
+                    required
+                />
+                </div>
+                <div className="text-center pb-1.5">
+                <input
+                    type="text"
+                    placeholder="Enter a Description"
+                    onChange={(e) => setNewCategoryDescription(e.target.value)}
+                    value={newCategoryDescription}
+                    className="w-full rounded border border-gray-300 h-8 pl-2 text-left"
+                />
+                </div>
+                <div className="text-center pb-1.5 mt-2.5">
+                <button
+                    type="submit"
+                    className="bg-[#202C39] text-white border-none rounded px-3 py-1 cursor-pointer"
+                >
+                    Add Category
+                </button>
+                </div>
+            </form>
             ),
             reorderable: false,
             resizable: false,
@@ -110,10 +94,6 @@ const TileLayoutContainer = () => {
 
     //Method to add a new category
     async function loadNewCategory(){
-        if (newCategoryName.trim() === '' || newCategoryDescription.trim() === '') {
-            alert('Please enter a category name and description.');
-            return;
-        }
         try{
             const response = await fetch('/api/activityType/create', {
                 method: 'POST',
@@ -140,18 +120,33 @@ const TileLayoutContainer = () => {
         }
     };
 
+    // Responsive columns based on screen width
+    const getColumns = () => {
+        if (window.innerWidth < 640) return 1; // mobile
+        if (window.innerWidth < 1024) return 3; // tablet
+        if (window.innerWidth < 1280) return 4; // small desktop
+        return 5; // large desktop
+    };
+
+    const [columns, setColumns] = useState(getColumns());
+
+    useEffect(() => {
+        const handleResize = () => setColumns(getColumns());
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     return (
         <>
             <div className='tilelayoutcontainer' id="form-root">
                 {/* Tile Container for Categories */}
-               <TileLayout
-                 style={{ backgroundColor: '#f0f0f0' }}
-                 columns={6}
-                    //rowHeight={100}
+                <TileLayout
+                    style={{ backgroundColor: '#f0f0f0' }}
+                    columns={columns}
                     gap={{ rows: 20, columns: 20 }}
                     items={[...tiles, AddCategoryTile()]}
                     autoFlow='row dense'
-               />
+                />
             </div>
         </>
     )

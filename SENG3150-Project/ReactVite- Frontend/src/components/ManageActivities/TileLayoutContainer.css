@@ -1,36 +1,39 @@
+/* Styles for the whole component in TileLayout Container */
+.tilelayoutcontainer {
+  height: 100%;
+}
 /* Styles for TileLayout */
 .k-tilelayout {
-    background-color: rgba(175, 210, 187, 1) !important;
-    height: 100vh;
-    width: 100vw;
+  background-color: rgba(175, 210, 187, 1) !important;
+  width: 100%;
+
 }
 
 /* Css for Tiles */
 .k-tile {
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
-    background-color: rgba(245, 251, 239, 1);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  background-color: rgba(245, 251, 239, 1);
 }
 
 /* Css for the whole card */
 .k-card {
-    background-color: rgba(245, 251, 239, 1);
-    max-height: 80vh;
+  background-color: rgba(245, 251, 239, 1);
 }
 
 /* Card Body Css */
 .k-card-body {
-    padding: 15px;
-    padding-top: 10px;
+  padding: 15px;
+  padding-top: 10px;
 }
 
 /* Popup Css for the container */
 .popup-container {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 300px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 /* Popup position css */
@@ -98,34 +101,3 @@
   background-color: #e0e0e0;
 }
 
-@media screen and (max-width: 768px) {
-  .k-tilelayout {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100vw;
-    height: auto;           /* allow vertical grow */
-    padding: 1rem 0;
-    overflow-y: auto;
-  }
-
-  .k-tile {
-    width: 90% !important;   /* full-width cards */
-    max-width: 360px;
-    margin: 0.5rem 0;
-  }
-
-  .k-card {
-    width: 100%;
-    max-width: 360px;
-    margin: 0 auto;
-    max-height: none;        /* remove fixed height */
-  }
-
-  .k-card-body {
-    padding: 1rem;
-    height: auto !important;
-    max-height: none !important;
-    overflow: visible;       /* let content flow */
-  }
-}
