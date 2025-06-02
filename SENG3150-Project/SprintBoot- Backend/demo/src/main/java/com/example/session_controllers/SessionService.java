@@ -12,7 +12,6 @@ import com.example.repositories.TextNoteRepository;
 import com.example.entities.Session;
 
 import java.util.List;
-import java.util.Date;
 
 @Service
 public class SessionService {
@@ -72,6 +71,20 @@ public class SessionService {
             return true;
         } catch (Exception e) {
             System.out.println("Error updating text note: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public Session getSessionByDateAndType(Session session) {
+        return sessionRepository.findDistinctByDateAndType(session.getDate(), session.getType());
+    }
+
+    public boolean deleteSession(Session session){
+        try {
+            sessionRepository.delete(session);
+            return true;
+        } catch (Exception e) {
+            System.out.println("Error deleting session: " + e.getMessage());
             return false;
         }
     }

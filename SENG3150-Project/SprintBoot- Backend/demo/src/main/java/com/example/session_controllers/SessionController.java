@@ -19,6 +19,7 @@ import com.example.responses.InitialSessionGrabResponse;
 import com.example.responses.GetTextNoteResponse;
 import com.example.responses.CreateSessionResponse;
 import com.example.responses.EditNoteResponse;
+import com.example.responses.DeleteSessionResponse;
 
 import java.util.List;
 
@@ -83,4 +84,25 @@ public class SessionController {
             return new ResponseEntity<>(new CreateSessionResponse("Failed to create session", false), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PostMapping("/deleteSession")
+    public ResponseEntity<DeleteSessionResponse> postMethodName(@RequestBody Session session) {
+        //get via date and type
+        Session returnedSession = sessionService.getSessionByDateAndType(session);
+        //call function to delete session
+        if(returnedSession != null) {
+            boolean result = sessionService.deleteSession(returnedSession);
+            if(result) {
+                return new ResponseEntity<>(new DeleteSessionResponse(true, "Session deleted successfully"), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new DeleteSessionResponse(false, "Failed to delete session"), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        else{
+            //if session not found, return error
+            return new ResponseEntity<>(new DeleteSessionResponse(false, "Session not found"), HttpStatus.NOT_FOUND);
+        }
+        //get result and return response
+    }
+    
 }

@@ -20,6 +20,7 @@ public interface SessionRepository extends JpaRepository<Session, Integer>{
     List<Session> findByDate(Date date);
     List<Session> findByUser(User user);
     List<Session> findByType(SessionType type);
+    Session findDistinctByDateAndType(Date date, SessionType type);
     List<Session> findTop3ByTypeOrderByDateDesc(SessionType type);
     Session findTopByTypeOrderByDateDesc(SessionType type);
 
