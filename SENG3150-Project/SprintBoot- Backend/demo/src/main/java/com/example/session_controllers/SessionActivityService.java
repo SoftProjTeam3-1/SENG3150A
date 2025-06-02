@@ -74,4 +74,23 @@ public class SessionActivityService {
             return false;
         }
     }
+
+    public SessionActivity getSessionActivityBySessionAndActivity(Session session, Activity activity) {
+        try {
+            return sessionActivityRepository.findDistinctBySessionAndActivity(session, activity);
+        } catch (Exception e) {
+            System.out.println("Error retrieving session activity: " + e.getMessage());
+            return null;
+        }
+    }
+
+    public boolean deleteSessionActivity(SessionActivity sessionActivity) {
+        try {
+            sessionActivityRepository.delete(sessionActivity);
+            return true;
+        } catch (Exception e) {
+            System.out.println("Error deleting session activity: " + e.getMessage());
+            return false;
+        }
+    }
 }

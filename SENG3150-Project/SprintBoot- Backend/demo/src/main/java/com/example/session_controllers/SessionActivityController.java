@@ -19,6 +19,7 @@ import com.example.entities.Activity;
 import com.example.entities.SessionActivity;
 import com.example.responses.SessionActivityGrabResponse;
 import com.example.responses.AddSessionActivityResponse;
+import com.example.responses.DeleteSessionActivityResponse;
 
 import java.util.List;
 
@@ -62,4 +63,23 @@ public class SessionActivityController {
             }
         }
     }
+
+    @PostMapping("/deleteSessionActivity")
+    public ResponseEntity<DeleteSessionActivityResponse> postMethodName(@RequestBody SessionActivity sessionActivity) {
+        //get session activity
+        SessionActivity entity = sessionActivityService.getSessionActivityBySessionAndActivity(sessionActivity.getSession(), sessionActivity.getActivity());
+        if (entity != null) {
+            boolean result = sessionActivityService.deleteSessionActivity(entity);
+            if(result){
+                return new ResponseEntity<>(new DeleteSessionActivityResponse("Session activity deleted successfully", true), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new DeleteSessionActivityResponse("Failed to delete session activity", false), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        else{
+            return new ResponseEntity<>(new DeleteSessionActivityResponse("Session activity not found", false), HttpStatus.NOT_FOUND);
+        }
+        //run delete method in service with returned 
+    }
+    
 }
