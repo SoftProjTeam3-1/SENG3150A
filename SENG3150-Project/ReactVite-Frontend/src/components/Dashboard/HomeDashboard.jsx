@@ -43,12 +43,14 @@ const HomeDashboard = () => {
     const [showEditDurationScreen, setShowEditDurationScreen] = useState(false);
     const [showCalendar, setShowCalendar] = useState(false);
     const [showSessionTypeScreen, setSessionTypeScreen] = useState(false);
+    const [showActivityDetails, setShowActivityDetails] = useState(false)
 
 
     // Used to determine if user clicks off menu
     const sessionRef = useRef(null);
     const activityRef = useRef(null);
     const editRef = useRef(null);
+    const activityDetailsRef = useRef(null);
 
 
     // Category Menu Functions
@@ -61,33 +63,6 @@ const HomeDashboard = () => {
         console.log(Categories);
     };
 
-
-    // Sets the temporary category name
-    const setTemporaryCategoryName = (name) => {
-        setTemporaryCategory(prev => ({...prev, name}));
-    }
-
-    // Creates a category and adds it to the category collections
-    const createCategory = () => {
-        const newCategory = {...temporaryCategory};
-        setCategories(prev => [...prev, newCategory]);
-
-        setTemporaryCategory({name:null, activities:[]});
-    }
-
-    // Adds an activity to category based on the name given\
-    const addActivityToCategory = (categoryName, activity) => {
-        setCategories(prevCategories =>
-            prevCategories.map(category => {
-                if (category.name === categoryName){
-                    return {
-                        ...category, activities: [...category.activities, activity]
-                    };
-                }
-                return category;
-            })
-        );
-    };
 
     //Functions for setting a temporary session
     const setTemporarySessionID = () => {
@@ -221,9 +196,6 @@ const HomeDashboard = () => {
     };
 
 
-
-
-
     useEffect(() => {
         console.log("Sessions updated:", sessions);
     }, [sessions]);
@@ -234,22 +206,22 @@ const HomeDashboard = () => {
             {
                 name: "Warm Up",
                 activities: [
-                    { name: "Jogging", description: "Light jogging to warm up", duration: 30 },
-                    { name: "Dynamic Stretches", description: "Full body stretches", duration: 20 },
+                    { name: "Jogging", description: "Light jogging to warm up", duration: 30, category:"Warm Up" },
+                    { name: "Dynamic Stretches", description: "Full body stretches", duration: 20, category:"Warm Up" },
                 ]
             },
             {
                 name: "Skills Practice",
                 activities: [
-                    { name: "Passing", description: "Short and long passes", duration: 20 },
-                    { name: "Dribbling", description: "Cone dribbling drills", duration: 30 },
+                    { name: "Passing", description: "Short and long passes", duration: 20, category:"Skills Practice" },
+                    { name: "Dribbling", description: "Cone dribbling drills", duration: 30, category:"Skills Practice" },
                 ]
             },
             {
                 name: "Games",
                 activities: [
-                    { name: "Small-sided Game", description: "4v4 half-pitch game", duration: 15 },
-                    { name: "Scrimmage", description: "Full team practice match", duration: 30 },
+                    { name: "Small-sided Game", description: "4v4 half-pitch game", duration: 15, category:"Games" },
+                    { name: "Scrimmage", description: "Full team practice match", duration: 30, category:"Games" },
                 ]
             }
         ];
@@ -278,13 +250,20 @@ const HomeDashboard = () => {
             ) {
                 setShowActivityScreen(false);
             }
+            if(
+                showActivityDetails &&
+                activityDetailsRef.current &&
+                !activityDetailsRef.current.contains(event.target)
+            ) {
+                setShowActivityDetails(false);
+            }
         };
 
         document.addEventListener("mousedown", handleClickOutside);
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [showSessionTypeScreen, showActivityScreen]);
+    }, [showSessionTypeScreen, showActivityScreen, showActivityDetails]);
 
 
     // Calculate total minutes
@@ -362,11 +341,11 @@ const HomeDashboard = () => {
             const srcActivities = [...srcSession.activities];
             const dstActivities = srcSessionId === dstSessionId ? srcActivities : [...dstSession.activities];
 
-            // === Intra-row reorder ===
+            // Intra-row reorder
             if (srcSessionId === dstSessionId && srcRow === dstRow) {
-                const rowItems = srcActivities.filter(a => a.row === srcRow);
+                //const rowItems = srcActivities.filter(a => a.row === srcRow);
 
-                const rowActivity = rowItems[source.index];
+                //const rowActivity = rowItems[source.index];
                 const globalIndices = srcActivities.reduce((acc, a, i) => {
                     if (a.row === srcRow) acc.push(i);
                     return acc;
@@ -379,7 +358,7 @@ const HomeDashboard = () => {
                 return updatedSessions;
             }
 
-            // === Inter-row or inter-session move ===
+            // Inter-row or inter-session move
             const srcIdx = srcActivities.findIndex(
                 (a) => a.name === activityName && a.row === srcRow
             );
@@ -426,37 +405,37 @@ const HomeDashboard = () => {
     return(
         <div className="w-full m-0 p-0">
 
-            <Header headerLabel={"Home"}/>
+            <Header headerLabel={"Mayfield Soccer Team - Dashboard"}/>
 
-            <div id="middleSegment" style={{display: 'flex'}} className="bg-emerald-100 min-h-screen">
-                <div id="verticalBar" className=" w-25 bg-gray-600  text-2xl flex flex-col items-center ">
+            <div id="middleSegment" style={{display: 'flex'}} className="bg-white min-h-screen">
+                <div id="verticalBar" className="w-30 sm:w-65 bg-gray-600 text-2xl flex flex-col items-center ">
                     <ul className="text-center flex flex-col items-center relative top-[10px]">
-                        {sessions.map(({id, date}) => {
+                        {sessions.map(({id, date, type}) => {
                             if (!date) return null;
 
                             const [month, day] = date.split(' ');
                             const isClicked = selectedSessions.includes(id);
                             return (
-                            <button
-                                key={id}
-                                className={`h-20 w-20 border-5 rounded-2xl flex flex-col items-center justify-center leading-none transition-transform duration-200 ease-in-out hover:scale-105
-                                ${isClicked ? 'bg-orange-300 border-orange-600' : 'bg-white border-gray-600'}`}
-                                onClick={() => handleClickSelectedSessions(id)}
-                                onContextMenu={(e) => {
-                                    e.preventDefault(); // prevent browser context menu
-                                    handleRemoveDate(id);
-                                }}>
+                                <button
+                                    key={id}
+                                    className={`mt-2 h-20 w-15 sm:w-35 rounded-2xl flex flex-col items-center justify-center leading-none transition-transform duration-200 ease-in-out hover:scale-105
+                                ${isClicked ? 'bg-orange-300 ' : 'bg-white '}`}
+                                    onClick={() => handleClickSelectedSessions(id)}
+                                    onContextMenu={(e) => {
+                                        e.preventDefault(); // prevent browser context menu
+                                        handleRemoveDate(id);
+                                    }}>
 
-                                <div className="leading-none">{month}</div>
-                                <br/>
-                                <div className="leading-none -mt-5">{day}</div>
-                            </button>
-                        );
+                                    <div className="leading-none font-bold">{month} {day}</div>
+                                    <br/>
+                                    <div className="leading-none -mt-5 text-sm">{type} session</div>
+                                </button>
+                            );
                         })}
                     </ul>
 
                     <button
-                        className="relative top-[10px] text-6xl h-20 w-20 bg-white border-5 border-gray-600 rounded-2xl flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
+                        className="mt-2 relative top-[10px] text-6xl h-20 w-20 bg-white border-5 border-gray-600 rounded-2xl flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
                         onClick={() => handleNewActivity()}
                     >
                         <div className="leading-none -mt-2 text-center">
@@ -487,31 +466,33 @@ const HomeDashboard = () => {
                                             {/* Determines if game or training was selected */}
                                             {type === 'game' ? (
                                                 <>
-                                                    <div
-                                                        key={id}
-                                                        className="w-75 h-140 bg-white rounded-2xl flex flex-col items-center text-black "
-                                                    >
-                                                        <div className="text-xl w-full text-center py-3">{month} {day}</div>
-
+                                                    <div className="border-gray-600 border-2 rounded-2xl">
                                                         <div
-                                                            className="text-l py-3 w-75 h-125 bg-white rounded-2xl flex flex-col items-center text-black overflow-y-auto"
+                                                            key={id}
+                                                            className="w-75 h-140 bg-white rounded-2xl flex flex-col items-center text-black "
                                                         >
-                                                            Notes
-                                                            <div>
+                                                            <div className="text-xl w-full text-center py-3 font-bold">{month} {day}</div>
+
+                                                            <div
+                                                                className="text-l py-3 w-75 h-125 bg-white rounded-2xl flex flex-col items-center text-black overflow-y-auto"
+                                                            >
+                                                                <div className="font-bold">Notes</div>
+                                                                <div>
                                                             <textarea
                                                                 className="w-65 h-110 resize-none py-3"
                                                                 placeholder="Write something here..."
                                                                 value={notes}
                                                                 onChange={(e) => updateNotesForSession(id, e.target.value)}
                                                             />
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </>
                                             ) : (
                                                 <>
-                                                    <div className="gap-y-3 w-75 h-140 bg-white rounded-2xl flex flex-col items-center text-black pb-3 py-2">
-                                                        <div className="text-xl w-full text-center ">{month} {day}</div>
+                                                    <div className="gap-y-3 w-75 h-140 bg-gray-600 rounded-2xl flex flex-col items-center text-black pb-3 py-2 border-gray-600 border-2">
+                                                        <div className="text-xl w-full text-center text-white font-bold">{month} {day}</div>
                                                         <div className="overflow-y-auto flex flex-wrap w-full justify-center py-3">
 
                                                             <div>
@@ -523,7 +504,6 @@ const HomeDashboard = () => {
                                                                             droppableId={`${id}__row-${rowKey}`}
                                                                             //direction="horizontal"
                                                                             key={rowKey}
-                                                                            o
                                                                         >
                                                                             {(provided) => (
                                                                                 <div
@@ -543,7 +523,7 @@ const HomeDashboard = () => {
                                                                                                     ref={dragProvided.innerRef}
                                                                                                     {...dragProvided.draggableProps}
                                                                                                     {...dragProvided.dragHandleProps}
-                                                                                                    className="relative group bg-blue-100 px-4 py-2 rounded shadow text-center select-none transition-transform duration-200 ease-in-out hover:scale-105"
+                                                                                                    className="relative group bg-orange-100 px-4 py-2 rounded shadow text-center select-none transition-transform duration-200 ease-in-out hover:scale-105"
                                                                                                 >
                                                                                                     <button
                                                                                                         className="absolute top-0 right-1 text-red-600 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
@@ -551,8 +531,9 @@ const HomeDashboard = () => {
                                                                                                     >
                                                                                                         ×
                                                                                                     </button>
-                                                                                                    <div>{activity.name}</div>
-                                                                                                    <div>{activity.duration} minutes</div>
+                                                                                                    <div className="font-bold">{activity.name}</div>
+                                                                                                    <div className="text-sm !k-font-style-italic">{activity.category}</div>
+                                                                                                    <div className="font-bold">{activity.duration} minutes</div>
                                                                                                 </div>
                                                                                             )}
                                                                                         </Draggable>
@@ -567,7 +548,7 @@ const HomeDashboard = () => {
                                                             {/* Plus Button */}
                                                             <div className="w-64 h-24 flex items-center justify-center">
                                                                 <button
-                                                                    className="text-6xl w-70 h-24 bg-emerald-100 shadow-emerald-50 rounded-2xl flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
+                                                                    className="text-6xl w-20 h-20 bg-orange-400 text-white shadow-emerald-50 rounded-2xl flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
                                                                     onClick={() => handleActivityScreenClick(id)}
                                                                 >
                                                                     <div className="leading-none -mt-2">+</div>
@@ -576,18 +557,18 @@ const HomeDashboard = () => {
 
 
                                                         </div>
-                                                            {/* Total Time */}
-                                                            <div className="text-center mt-auto pt-3">
-                                                                Total Time: {calculateTotalSessionMinutes(session)} Minutes
-                                                            </div>
+                                                        {/* Total Time */}
+                                                        <div className="text-center mt-auto pt-3 text-white font-bold">
+                                                            Total Time: {calculateTotalSessionMinutes(session)} Minutes
+                                                        </div>
 
 
                                                     </div>
 
 
                                                     {/* Notes */}
-                                                    <div className="text-l py-3 w-75 h-125 bg-white rounded-2xl flex flex-col items-center text-black">
-                                                        Notes
+                                                    <div className="text-l py-3 w-75 h-125 bg-white rounded-2xl flex flex-col items-center text-black border-gray-600 border-2">
+                                                        <div className="font-bold">Notes</div>
                                                         <div>
                                                             <textarea
                                                                 className="w-65 h-110 resize-none py-3"
@@ -641,45 +622,52 @@ const HomeDashboard = () => {
             {showActivityScreen && (
                 <div  className="hidden sm:block absolute top-20 left-0 bg-gray-600 w-2/3 sm:w-1/6 shadow p-5 text-gray-600 text-2xl flex flex-col items-center space-y-4 h-auto sm:h-full"
                       ref={activityRef}>
-                            <div className="text-m"> Select Activity: </div>
-                             <ul className="w-full text-center flex flex-col items-center relative space-y-4">
+                    <div className="text-m"> Select Activity: </div>
+                    <ul className="w-full text-center flex flex-col items-center relative space-y-4">
                         {Categories.map((category) => (
 
-                            <div key={category.name} className="w-full">
-                                <button
-                                    className="w-full h-20 bg-white text-gray-600 rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
-                                    onClick={() => toggleCategory(category.name)}
-                                >
-                                    <div>{category.name}</div>
-                                </button>
+                                <div key={category.name} className="w-full">
+                                    <button
+                                        className="w-full h-20 bg-white text-gray-600 rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
+                                        onClick={() => toggleCategory(category.name)}
+                                    >
+                                        <div>{category.name}</div>
+                                    </button>
 
-                                {/* Drop Down Menu */}
-                                {openCategory === category.name && (
-                                    category.activities.length > 0 ? (
-                                        <div className="flex flex-col gap-2 mt-2 w-full">
-                                            {category.activities.map((activity) => (
+                                    {/* Drop Down Menu */}
+                                    {openCategory === category.name && (
+                                        category.activities.length > 0 ? (
+                                            <div className="flex flex-col gap-2 mt-2 w-full">
+                                                {category.activities.map((activity) => (
 
-                                            <div key={crypto.randomUUID()} className="w-full h-10 bg-white text-gray-600 rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105">
-                                                <button className="text-xs select-none"
-                                                onClick={() => {
+                                                    <div key={crypto.randomUUID()} className="w-full h-10 bg-white text-gray-600 rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105">
+                                                        <button className="text-xs select-none"
+                                                                onClick={() => {
 
-                                                    // Sets the activity to the temporary var to hold
-                                                    setShowActivityScreen(false);
-                                                    setTemporaryActivity(activity);
-                                                    handleEditDuration();
+                                                                    // Sets the activity to the temporary var to hold
+                                                                    setShowActivityScreen(false);
+                                                                    setTemporaryActivity(activity);
+                                                                    handleEditDuration();
 
-                                                }}>{activity.name}</button>
+                                                                }}>{activity.name}</button>
 
+                                                    </div>
+                                                ))}
                                             </div>
-                                        ))}
-                                        </div>
-                                    ) : null
-                                )}
-                            </div>
-                        )
+                                        ) : null
+                                    )}
+                                </div>
+                            )
                         )
                         }
                     </ul>
+                </div>
+            )}
+
+            {showActivityDetails && (
+                <div className="absolute w-1/6 min-h-screen top-20 left-0 bg-gray-600 shadow p-5 text-white text-2xl text-center flex flex-col items-center"
+                     ref={activityDetailsRef}>
+
                 </div>
             )}
 
@@ -703,77 +691,74 @@ const HomeDashboard = () => {
                 </div>
             )}
 
-{showSessionTypeScreen && (
-  <div ref={sessionRef}>
+            {showSessionTypeScreen && (
+                <div ref={sessionRef}>
 
-    {/* Desktop / tablet sidebar */}
-    <div
-      className="
+                    {/* Desktop / tablet sidebar */}
+                    <div
+                        className="
         hidden sm:absolute sm:top-20 sm:left-0 
         sm:w-64 sm:h-auto sm:bg-gray-600 sm:shadow sm:p-5 
         sm:text-gray-600 sm:text-2xl sm:flex sm:flex-col sm:items-center sm:space-y-4
       "
-    >
-      <button
-        onClick={() => handleSessionSelect('training')}
-        className="
+                    >
+                        <button
+                            onClick={() => handleSessionSelect('training')}
+                            className="
           w-full py-4 bg-white rounded-2xl 
           flex items-center justify-center 
           transition-transform duration-200 ease-in-out hover:scale-105
         "
-      >
-        Training Session
-      </button>
-      <button
-        onClick={() => handleSessionSelect('game')}
-        className="
+                        >
+                            Training Session
+                        </button>
+                        <button
+                            onClick={() => handleSessionSelect('game')}
+                            className="
           w-full py-4 bg-white rounded-2xl 
           flex items-center justify-center 
           transition-transform duration-200 ease-in-out hover:scale-105
         "
-      >
-        Game Session
-      </button>
-      <button
-        onClick={() => setSessionTypeScreen(false)}
-        className="mt-2 text-sm text-gray-300 hover:text-white"
-      >
-        Cancel
-      </button>
-    </div>
+                        >
+                            Game Session
+                        </button>
+                        <button
+                            onClick={() => setSessionTypeScreen(false)}
+                            className="mt-2 text-sm text-gray-300 hover:text-white"
+                        >
+                            Cancel
+                        </button>
+                    </div>
 
-    {/* Mobile full‐screen modal */}
-    <div className="absolute inset-0 flex items-center justify-center sm:hidden">
-      <div
-        className="bg-gray-600 text-gray-600 p-4 rounded-xl shadow-lg w-11/12 mx-4 flex flex-col gap-4"
-      >
-        <button
-          onClick={() => handleSessionSelect('training')}
-          className="w-full py-4 bg-white rounded-2xl text-base flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
-        >
-          Training Session
-        </button>
-        <button
-          onClick={() => handleSessionSelect('game')}
-          className="w-full py-4 bg-white rounded-2xl text-base flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
-        >
-          Game Session
-        </button>
-        <button
-          onClick={() => setSessionTypeScreen(false)}
-          className="mt-2 self-end text-sm text-gray-300 hover:text-white"
-        >
-          Cancel
-        </button>
-      </div>
-    </div>
-  </div>
-
-)}
-
-
+                    {/* Mobile full‐screen modal */}
+                    <div className="absolute inset-0 flex items-center justify-center sm:hidden">
+                        <div
+                            className="bg-gray-600 text-gray-600 p-4 rounded-xl shadow-lg w-11/12 mx-4 flex flex-col gap-4"
+                        >
+                            <button
+                                onClick={() => handleSessionSelect('training')}
+                                className="w-full py-4 bg-white rounded-2xl text-base flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
+                            >
+                                Training Session
+                            </button>
+                            <button
+                                onClick={() => handleSessionSelect('game')}
+                                className="w-full py-4 bg-white rounded-2xl text-base flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
+                            >
+                                Game Session
+                            </button>
+                            <button
+                                onClick={() => setSessionTypeScreen(false)}
+                                className="mt-2 self-end text-sm text-gray-300 hover:text-white"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
-            );
+    );
 };
 
 export default HomeDashboard;
