@@ -176,7 +176,11 @@ export function validateLogin({emailId, passwordId}) {
     const passwordValid = passwordResult.Valid;
 
     //  Joins the error logs together
-    const errorLog = [...emailResult.Data, ...passwordResult.Data];
+    const errorLog = [...emailResult.Data];
+
+    if (errorLog.length === 0){
+        errorLog.push("Unable to Login");
+    }
 
     //  Returns a boolean of the decision
     //  Can be used as another form of verification
