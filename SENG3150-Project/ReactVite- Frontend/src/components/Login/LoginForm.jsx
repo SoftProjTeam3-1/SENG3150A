@@ -5,7 +5,7 @@
  * It allows the user to enter their username and password to log in. 
  */
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import React from 'react'
 import {validateLogin} from "../../lib/validation.js";
 import eyeOpenIcon from '../../assets/eye-open.svg';
@@ -20,17 +20,42 @@ const LoginForm = () => {
 
   const [email, setEmail] = useState('')
   const [plainTextPassword, setPassword] = useState('')
-  const [message, setMessage] = useState('')
 
   let [viewValidation, changeValidation] = useState(false);
-  let [viewErrorLog, changeErrorLog] = useState("");
 
   const handleSubmit = async e => {
     e.preventDefault()
 
     let s = validateLogin({emailId:email,passwordId:plainTextPassword});
     changeValidation(s.valid);
-    changeErrorLog(s.errors)
+
+    if (!s.valid) {
+      // directly handle client-side validation fail here
+      toast.error(
+          <div>
+            {s.errors.length > 1 ? (
+                <ul className="list-disc pl-5 text-left">
+                  {s.errors.map((err, i) => (
+                      <li key={i}>{err.replace(/^- /, '')}</li>
+                  ))}
+                </ul>
+            ) : (
+                <div>{s.errors[0].replace(/^- /, '')}</div>
+            )}
+          </div>,
+          {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: "colored",
+          }
+      );
+      return;
+    }
+
 
     const password = sha256(plainTextPassword)
 
@@ -42,56 +67,33 @@ const LoginForm = () => {
         },
         body: JSON.stringify({email, password})
       })
-      
+
       const object = await response.text();
       const data = JSON.parse(object);
-
       console.log(data);
-      console.log(data.response);
-      console.log(viewValidation);
 
-      if(data.response && viewValidation){
+      if(data.response){
         console.log('User logged in successfully!')
-        window.location.href = '/dashboard' // Redirect to the dashboard page
+        window.location.href = '/dashboard'
+      } else {
+        toast.error("Login Failed", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "colored",
+        })
       }
-      setMessage(data.message)
+
     } catch (err) {
       console.error('Error submitting user:', err)
     }
-
-    if(viewErrorLog.length > 0){
-      toast.error(
-          <div>
-            <ul className="list-disc pl-5 text-left">
-              {viewErrorLog.map((err, i) => (
-                  <li key={i}>{err.replace(/^- /, '')}</li>  // removes any "- " at the start
-              ))}
-            </ul>
-          </div>,
-          {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            theme: "colored",
-          });
-    } 
-    else {
-      toast.error("Login Failed", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      theme: "colored",
-      })
-    }
   }
-  
-  
+
+
+
   return (
     <div className={"login-card"}>
       <ToastContainer>
