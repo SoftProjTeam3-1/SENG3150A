@@ -32,9 +32,11 @@ public class SecurityConfig {
                                  "/api/activity/delete",
                                  "/api/sessionActivity/getSessionActivities",
                                  "/api/sessionActivity/addSessionActivity",
+                                 "/api/sessionActivity/deleteSessionActivity",
                                  "/api/session/getNote",
                                  "/api/session/initialCall",
-                                 "/api/session/create").permitAll()
+                                 "/api/session/create",
+                                 "/api/session/deleteSession").permitAll()
                 .anyRequest().authenticated()
             )
             .httpBasic(httpBasic -> httpBasic.disable());
