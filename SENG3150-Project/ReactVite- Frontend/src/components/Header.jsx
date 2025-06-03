@@ -15,8 +15,8 @@ const Header = () => {
         <img
             src={Logo}
             alt="School Logo"
-            className="w-30 h-30 rounded-full "
-            style={{marginLeft: "-90%", marginTop: "-15.5px"}}
+            className="w-30 h-30 rounded-full sm:ml-16"
+            style={{ marginLeft: '-70%', marginTop: '-15.5px' }}
         />
       </div>
     </>
