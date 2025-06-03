@@ -22,7 +22,7 @@ const TileHead = ({ categoryName }) => {
     }
 
     const handleConfirmation = () => {
-        setConfirmationMessage(`Are you sure you want to delete the activity "${categoryName}"?`);
+        setConfirmationMessage(`Are you sure you want to delete category "${categoryName}"?`);
         setShowConfirmation(true);
     };
 

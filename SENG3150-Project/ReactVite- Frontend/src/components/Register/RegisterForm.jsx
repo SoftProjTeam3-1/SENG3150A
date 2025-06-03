@@ -166,7 +166,7 @@ const RegisterForm = () => {
           </div>
 
             <div>
-                <label htmlFor="Username" className="block text-sm/6 font-medium text-gray-900">
+                <label htmlFor="Username" className="block text-sm/6 font-medium text-white">
                 Username
                 </label>
                 <div className="mt-2">
@@ -184,7 +184,7 @@ const RegisterForm = () => {
             </div>
             
             <div>
-              <label htmlFor="password" className="block text-sm/6 font-medium text-gray-900">
+              <label htmlFor="password" className="block text-sm/6 font-medium text-white">
                 Password
               </label>
               <div className="mt-2 flex items-center relative">
@@ -220,7 +220,7 @@ const RegisterForm = () => {
             </div>
 
             <div>
-              <label htmlFor="password2" className="block text-sm/6 font-medium text-gray-900">
+              <label htmlFor="password2" className="block text-sm/6 font-medium text-white">
                 Confirm Password
               </label>
               <div className="mt-2 flex items-center relative">
@@ -255,24 +255,8 @@ const RegisterForm = () => {
               </div>
             </div>
 
-          {/* Confirm Password */}
-          <div>
-            <label htmlFor="confirmPassword" className="block text-sm/6 font-medium text-white">
-              Confirm Password
-            </label>
-            <div className="mt-2">
-              <input
-                type="password"
-                placeholder="********"
-                value={confirmPassword}
-                onChange={e => setConfirmPassword(e.target.value)}
-                id="confirmPassword"
-                name="confirmPassword"
-                required
-                autoComplete="new-password"
-                className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-              />
-                  {/* Password Hints */}
+            <div>
+                {/* Password Hints */}
               <ul className="space-y-1 text-sm text-white mt-4">
                 {passwordHints.map((hint, index) => (
                     <li key={index} className="flex items-center">
@@ -281,15 +265,14 @@ const RegisterForm = () => {
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-7.5 7.5a1 1 0 01-1.414 0l-3.5-3.5a1 1 0 011.414-1.414L8 11.086l6.793-6.793a1 1 0 011.414 0z" clipRule="evenodd" />
                           </svg>
                       ) : (
-                          <svg className="h-4 w-4 text-red-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fillRule="evenodd" d="M10 8.586l4.95-4.95a1 1 0 011.414 1.414L11.414 10l4.95 4.95a1 1 0 01-1.414 1.414L10 11.414l-4.95-4.95a1 1 0 01-1.414-1.414L8.586 10l-4.95-4.95A1 1 0 015.05 3.636L10 8.586z" clipRule="evenodd" />
+                          <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fillRule="evenodd" d="M6.293 6.293a1 1 0 011.414 0L10 8.586l2.293-2.293a1 1 0 111.414 1.414L11.414 10l2.293 2.293a1 1 0 01-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 01-1.414-1.414L8.586 10 6.293 7.707a1 1 0 010-1.414z" clipRule="evenodd" />
                           </svg>
                       )}
                       <span className="ml-2">{hint.text}</span>
                     </li>
                 ))}
               </ul>
-            </div>
            </div>
 
            
