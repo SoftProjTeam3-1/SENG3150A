@@ -68,8 +68,8 @@ const ForgetPasswordEmailEntryForm = () => {
       </div>
 
       {step === 1 && (
-        <form onSubmit={handleEmailSubmit} className="space-y-6">
-          <div>
+        <form onSubmit={handleEmailSubmit} className="space-y-8">
+          <div className="mb-6">
             <label htmlFor="email" className="block text-sm font-medium text-white">
               Email
             </label>
@@ -79,18 +79,18 @@ const ForgetPasswordEmailEntryForm = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900"
+              className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 mt-2"
             />
           </div>
-          <button type="submit" className="w-full bg-orange-400 py-2 rounded-md text-white font-semibold">
+          <button type="submit" className="w-full bg-orange-400 py-2 rounded-md text-white font-semibold mt-4">
             Send Code
           </button>
         </form>
       )}
 
       {step === 2 && (
-        <form onSubmit={handleCodeSubmit} className="space-y-6">
-          <div>
+        <form onSubmit={handleCodeSubmit} className="space-y-8">
+          <div className="mb-6">
             <label htmlFor="code" className="block text-sm font-medium text-white">
               Enter 4-digit Code
             </label>
@@ -101,18 +101,18 @@ const ForgetPasswordEmailEntryForm = () => {
               value={code}
               onChange={(e) => setCode(e.target.value)}
               required
-              className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900"
+              className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 mt-2"
             />
           </div>
-          <button type="submit" className="w-full bg-orange-400 py-2 rounded-md text-white font-semibold">
+          <button type="submit" className="w-full bg-orange-400 py-2 rounded-md text-white font-semibold mt-4">
           Verify Code
           </button>
         </form>
       )}
 
       {step === 3 && (
-        <form onSubmit={handlePasswordReset} className="space-y-6">
-          <div>
+        <form onSubmit={handlePasswordReset} className="space-y-8">
+          <div className="mb-6">
             <label htmlFor="newPassword" className="block text-sm font-medium text-white">
               New Password
             </label>
@@ -121,10 +121,10 @@ const ForgetPasswordEmailEntryForm = () => {
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               required
-              className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900"
+              className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 mt-2"
             />
           </div>
-          <button type="submit" className="w-full bg-orange-400 py-2 rounded-md text-white font-semibold">
+          <button type="submit" className="w-full bg-orange-400 py-2 rounded-md text-white font-semibold mt-4">
             Reset Password
           </button>
         </form>
@@ -132,12 +132,15 @@ const ForgetPasswordEmailEntryForm = () => {
 
       {message && <p className="text-center text-red-500">{message}</p>}
 
-      <button
-
-      className="flex w-full justify-center rounded-md bg-white border-indigo-600 border-dash border-2 px-3 py-1.5 text-sm/6 font-semibold text-indigo-600 shadow-xs hover:border-indigo-500 hover:bg-indigo-500 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-      >
-      <a href="/">Back</a>
-      </button>
+      <div className="flex flex-col gap-4 mt-4">
+        <button
+          type="button"
+          onClick={() => (window.location.href = "/")}
+          className="w-full bg-orange-400 py-2 rounded-md text-white font-semibold"
+        >
+          Back
+        </button>
+      </div>
     </div>
     
   );

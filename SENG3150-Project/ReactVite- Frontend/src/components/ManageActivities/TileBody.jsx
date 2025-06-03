@@ -198,7 +198,7 @@ const TileBody = ({ categoryName }) => {
               </div>
               {showConfirmation &&
                 ReactDOM.createPortal(
-                  <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-40">
+                  <div className="fixed inset-0 flex items-center justify-center z-50 bg-white/30 backdrop-blur-sm">
                     <div className="bg-white rounded shadow-lg p-6 w-full max-w-md">
                       <h3 className="mb-4 text-lg font-semibold text-gray-800">{confirmationMessage}</h3>
                       <div className="flex justify-end space-x-3">
@@ -246,7 +246,7 @@ const TileBody = ({ categoryName }) => {
       {/* Edit Activity Popup */}
         {showActivityInfo &&
           ReactDOM.createPortal(
-            <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-40">
+            <div className="fixed inset-0 flex items-center justify-center z-50 bg-white/30 backdrop-blur-sm">
           <div className="bg-white rounded shadow-lg p-6 w-full max-w-md">
             {/* Display activity details */}
             <h3 className="text-lg font-semibold mb-4">Activity Details</h3>
@@ -284,7 +284,7 @@ const TileBody = ({ categoryName }) => {
         {/* Add Activity Popup */}
       {showForm &&
         ReactDOM.createPortal(
-          <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-40">
+          <div className="fixed inset-0 flex items-center justify-center z-50 bg-white/30 backdrop-blur-sm">
             <form
               className="bg-white rounded shadow-lg p-6 w-full max-w-md"
               onSubmit={(e) => {

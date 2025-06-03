@@ -39,7 +39,7 @@ const TileHead = ({ categoryName }) => {
                 </button>
             </div>
             {showConfirmation && ReactDOM.createPortal(
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm">
                     <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
                         <h3 className="mb-4 text-lg font-semibold text-gray-800">{confirmationMessage}</h3>
                         <div className="flex justify-end space-x-2">

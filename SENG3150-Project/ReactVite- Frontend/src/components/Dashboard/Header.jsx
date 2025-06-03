@@ -77,7 +77,14 @@ const Header = (headerLabel) => {
                         Dashboard
                     </button>
                     <br />
-                    <button className="w-full h-12 sm:h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105">
+                    <button
+                        className="w-full h-12 sm:h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
+                        onClick={() => {
+                            localStorage.clear();
+                            sessionStorage.clear();
+                            navigate("/");
+                        }}
+                    >
                         Logout
                     </button>
                 </div>
