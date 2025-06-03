@@ -63,13 +63,14 @@ const Header = (headerLabel) => {
                         Manage Activities
                     </button>
                     <br />
-                    <button
+                    {/* <button
                         className="w-full h-12 sm:h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
                         onClick={() => navigate("/attendance")}
+                        
                     >
                         Attendance
                     </button>
-                    <br />
+                    <br /> */}
                     <button
                         className="w-full h-12 sm:h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
                         onClick={() => navigate("/dashboard")}
