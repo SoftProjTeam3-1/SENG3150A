@@ -39,7 +39,7 @@ const TileLayoutContainer = () => {
                     required
                 />
                 </div>
-                <div className="text-center pb-1.5">
+                {/* <div className="text-center pb-1.5">
                 <input
                     type="text"
                     placeholder="Enter a Description"
@@ -47,7 +47,7 @@ const TileLayoutContainer = () => {
                     value={newCategoryDescription}
                     className="w-full rounded border border-gray-300 h-8 pl-2 text-left"
                 />
-                </div>
+                </div> */}
                 <div className="text-center pb-1.5 mt-2.5">
                 <button
                     type="submit"
