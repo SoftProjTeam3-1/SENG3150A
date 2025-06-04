@@ -33,46 +33,22 @@ const RegisterForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let s = validateRegister({emailId: email, passwordId: plainTextPassword, confirmPasswordId: confirmPassword});
+    let s = validateRegister({ emailId: email, passwordId: plainTextPassword, confirmPasswordId: confirmPassword });
     changeValidation(s.valid);
-    changeErrorLog(s.errors);
-    console.log(s.errors);
 
-    try {
-      const response = await fetch('/api/user/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          firstName,
-          surname,
-          email,
-          password 
-        }),
-      });
-
-      const object = await response.text();
-      const data = JSON.parse(object);
-      console.log(data);
-      console.log(viewValidation);
-
-      //setSubmitFailed(!response.ok);
-
-      if (data.response && viewValidation) {
-        console.log('User registered successfully!');
-        window.location.href = '/';
-      }
-    } catch (err) {
-      console.log(viewErrorLog);
-      console.error('Error submitting user:', err);
-    }
-    if(viewErrorLog.length > 0){
+    if (!s.valid) {
+      // Handle client-side validation errors directly
       toast.error(
           <div>
-            <ul className="list-disc pl-5 text-left">
-              {viewErrorLog.map((err, i) => (
-                  <li key={i}>{err.replace(/^- /, '')}</li>  // removes any "- " at the start
-              ))}
-            </ul>
+            {s.errors.length > 1 ? (
+                <ul className="list-disc pl-5 text-left">
+                  {s.errors.map((err, i) => (
+                      <li key={i}>{err.replace(/^- /, '')}</li>
+                  ))}
+                </ul>
+            ) : (
+                <div>{s.errors[0].replace(/^- /, '')}</div>
+            )}
           </div>,
           {
             position: "top-right",
@@ -82,20 +58,57 @@ const RegisterForm = () => {
             pauseOnHover: true,
             draggable: true,
             theme: "colored",
-          });
-    }else if(viewErrorLog.length == 0 && viewValidation){
-      toast.success("Registration successful!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
+          }
+      );
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/user/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          firstName,
+          surname,
+          email,
+          password
+        }),
       });
-    }else{
-      toast.error("Unable to Register", {
+
+      const object = await response.text();
+      const data = JSON.parse(object);
+      console.log(data);
+
+      if (data.response) {
+        toast.success("Registration successful!", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "colored",
+        });
+
+        // redirect after short delay (wait for toast to show)
+        setTimeout(() => {
+          window.location.href = '/dashboard';
+        }, 3000); // same time as autoClose
+      } else {
+        toast.error("Unable to Register", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "colored",
+        });
+      }
+
+    } catch (err) {
+      console.error('Error submitting user:', err);
+      toast.error("An unexpected error occurred", {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -105,7 +118,8 @@ const RegisterForm = () => {
         theme: "colored",
       });
     }
-  };
+  }
+
 
 
   const passwordHints = [
