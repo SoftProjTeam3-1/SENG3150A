@@ -566,7 +566,7 @@ const HomeDashboard = () => {
                         <div className="mb-2">Edit Duration (Minutes):</div>
                         <input
                             type="number"
-                            min="0"
+                            min="1"
                             className="w-20 h-10 rounded text-white text-center border-2 border-white mb-4"
                             value={durationInput}
                             onChange={(e) => setDurationInput(e.target.value)}
@@ -618,6 +618,12 @@ const HomeDashboard = () => {
                                 </div>
                             ))}
                         </ul>
+                        <button
+                            onClick={() => setShowActivityScreen(false)}
+                            className="mt-2 text-sm text-gray-300 hover:text-white self-end"
+                        >
+                            Cancel
+                        </button>
                     </div>
                 </div>
             )}
