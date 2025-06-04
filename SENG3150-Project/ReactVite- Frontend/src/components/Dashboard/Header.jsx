@@ -53,7 +53,7 @@ const Header = (headerLabel) => {
 
             {showOptions && (
                 <div
-                    className="absolute w-3/4 sm:w-1/6 min-h-screen top-20 left-0 bg-gray-600 shadow p-5 text-gray-600 text-lg sm:text-2xl text-center flex flex-col items-center z-50"
+                    className="absolute w-full sm:w-1/5 min-h-screen top-20 left-0 bg-gray-600 shadow p-5 text-lg sm:text-xl text-center flex flex-col items-center z-50 text-black font-bold"
                     ref={optionsRef}
                 >
                     <button
