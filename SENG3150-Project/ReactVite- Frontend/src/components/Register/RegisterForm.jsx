@@ -180,8 +180,8 @@ const RegisterForm = () => {
           </div>
 
             <div>
-                <label htmlFor="Username" className="block text-sm/6 font-medium text-white">
-                Username
+                <label htmlFor="email" className="block text-sm/6 font-medium text-white">
+                Email
                 </label>
                 <div className="mt-2">
                 <input
