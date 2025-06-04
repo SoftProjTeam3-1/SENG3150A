@@ -37,7 +37,7 @@ const Header = (headerLabel) => {
         <>
             <div
                 id="header"
-                className="bg-orange-400 shadow text-white p-3 h-20 w-screen text-2xl sm:text-3xl flex items-center justify-between font-bold"
+                className="bg-orange-400 shadow text-white p-3 h-20 w-screen text-2xl sm:text-3xl flex items-center justify-between font-bold "
             >
                 <div className="flex items-center">
                     <img
@@ -53,7 +53,7 @@ const Header = (headerLabel) => {
 
             {showOptions && (
                 <div
-                    className="absolute w-full sm:w-1/5 min-h-screen top-20 left-0 bg-gray-600 shadow p-5 text-lg sm:text-xl text-center flex flex-col items-center z-50 text-black font-bold"
+                    className="absolute w-full sm:w-1/5 min-h-screen top-20 left-0 bg-gray-600 shadow p-5 text-lg sm:text-xl text-center flex flex-col items-center z-50 text-black font-bold lg:max-w-50"
                     ref={optionsRef}
                 >
                     <button
