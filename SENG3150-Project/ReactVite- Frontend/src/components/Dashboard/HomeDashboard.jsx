@@ -278,7 +278,7 @@ const HomeDashboard = () => {
             <Header headerLabel={"Mayfield Soccer Team - Dashboard"}/>
             <div id="middleSegment" className="bg-white min-h-screen flex flex-col sm:flex-row">
                 {/* Sidebar for sessions */}
-                <div id="verticalBar" className="w-full sm:w-1/5 bg-gray-600 text-lg sm:text-2xl flex flex-row sm:flex-col items-center sm:items-center py-2 sm:py-0 overflow-x-auto sm:overflow-x-visible">
+                <div id="verticalBar" className="lg:max-w-50 w-full sm:w-1/5 bg-gray-600 text-lg sm:text-2xl flex flex-row sm:flex-col items-center sm:items-center py-2 sm:py-0 overflow-x-auto sm:overflow-x-visible">
                     <ul className="flex flex-row sm:flex-col items-center w-full justify-center gap-2 sm:gap-0">
                         {sessions.map(({id, date, type}) => {
                             if (!date) return null;
@@ -287,7 +287,7 @@ const HomeDashboard = () => {
                             return (
                                 <button
                                     key={id}
-                                    className={`min-w-[4rem] sm:w-32 h-16 sm:h-20 mt-0 sm:mt-2 rounded-2xl flex flex-col items-center justify-center leading-none transition-transform duration-200 ease-in-out hover:scale-105 ${isClicked ? 'bg-orange-300 ' : 'bg-white '}`}
+                                    className={`min-w-[4rem] sm:w-32 p-3 h-16 sm:h-20 mt-0 sm:mt-2 rounded-2xl flex flex-col items-center justify-center leading-none transition-transform duration-200 ease-in-out hover:scale-105 ${isClicked ? 'bg-orange-300 ' : 'bg-white '}`}
                                     onClick={() => handleClickSelectedSessions(id)}
                                     onContextMenu={(e) => {
                                         e.preventDefault();
@@ -300,10 +300,10 @@ const HomeDashboard = () => {
                         })}
                     </ul>
                     <button
-                        className="ml-2 sm:ml-0 mt-0 sm:mt-2 text-4xl sm:text-6xl w-12 h-12 sm:w-20 sm:h-20 bg-white border-4 border-gray-600 rounded-2xl flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
+                        className="ml-2 sm:ml-0 mt-0 sm:mt-2  sm:text-6xl min-w-[4rem] sm:w-32 h-16 sm:h-20 bg-white border-4 border-gray-600 rounded-2xl flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
                         onClick={() => handleNewActivity()}
                     >
-                        <div className="leading-none text-center">+</div>
+                        <div className="leading-none font-bold text-base">New Session</div>
                     </button>
                 </div>
                 {/* Main user display */}
@@ -396,16 +396,16 @@ const HomeDashboard = () => {
                                                                                             ref={dragProvided.innerRef}
                                                                                             {...dragProvided.draggableProps}
                                                                                             {...dragProvided.dragHandleProps}
-                                                                                            className={`relative bg-orange-100 px-6 py-4 rounded shadow text-center select-none transition-transform duration-200 ease-in-out hover:scale-105 w-full mb-2 ${snapshot.isDragging ? 'opacity-50' : ''}`}
+                                                                                            className={`relative bg-orange-100 px-6 py-4 rounded shadow text-center select-none transition-transform duration-200 ease-in-out hover:scale-105 w-full mb-2 ${snapshot.isDragging ? 'opacity-50' : ''} group`}
                                                                                             style={dragProvided.draggableProps.style}
                                                                                         >
                                                                                             <button
-                                                                                                className="absolute top-0 right-1 text-red-600 opacity-0 hover:opacity-100 transition-opacity duration-200"
+                                                                                                className="absolute top-0 right-1 text-red-600 transition-opacity duration-200 opacity-0 group-hover:opacity-100 pointer-events-auto"
                                                                                                 onClick={() => handleRemoveActivityFromSession(session.id, activity, col)}
-                                                                                                tabIndex={-1}
                                                                                             >
                                                                                                 ×
                                                                                             </button>
+
                                                                                             <div className="font-bold text-base">{activity.name}</div>
                                                                                             <div className="text-xs italic">{activity.category}</div>
                                                                                             <div className="font-bold text-base">{activity.duration} min</div>
@@ -421,10 +421,10 @@ const HomeDashboard = () => {
                                                         </div>
                                                         <div className="w-full flex items-center justify-center mt-2">
                                                             <button
-                                                                className="text-4xl sm:text-6xl w-12 h-12 sm:w-20 sm:h-20 bg-orange-400 text-white shadow-emerald-50 rounded-2xl flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
+                                                                className="text-4xl sm:text-6xl min-w-[4rem] sm:w-32 h-16 sm:h-20 bg-orange-400 text-white shadow-emerald-50 rounded-2xl flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
                                                                 onClick={() => handleActivityScreenClick(id)}
                                                             >
-                                                                <div className="leading-none">+</div>
+                                                                <div className="leading-none text-base font-bold">New Activity</div>
                                                             </button>
                                                         </div>
                                                         <div className="text-center mt-auto pt-2 sm:pt-3 text-white font-bold text-xs sm:text-base">
@@ -504,11 +504,11 @@ const HomeDashboard = () => {
                                                                                                 ref={dragProvided.innerRef}
                                                                                                 {...dragProvided.draggableProps}
                                                                                                 {...dragProvided.dragHandleProps}
-                                                                                                className={`relative bg-orange-100 px-6 py-4 rounded shadow text-center select-none transition-transform duration-200 ease-in-out hover:scale-105 w-full mb-2 ${snapshot.isDragging ? 'opacity-50' : ''}`}
+                                                                                                className={`relative bg-orange-100 px-6 py-4 rounded shadow text-center select-none transition-transform duration-200 ease-in-out hover:scale-105 w-full mb-2 ${snapshot.isDragging ? 'opacity-50' : ''} group`}
                                                                                                 style={dragProvided.draggableProps.style}
                                                                                             >
                                                                                                 <button
-                                                                                                    className="absolute top-0 right-1 text-red-600 opacity-0 hover:opacity-100 transition-opacity duration-200"
+                                                                                                    className="absolute top-0 right-1 text-red-600 transition-opacity duration-200 opacity-0 group-hover:opacity-100 pointer-events-auto"
                                                                                                     onClick={() => handleRemoveActivityFromSession(session.id, activity, col)}
                                                                                                     tabIndex={-1}
                                                                                                 >
@@ -529,10 +529,10 @@ const HomeDashboard = () => {
                                                             </div>
                                                             <div className="w-full flex items-center justify-center mt-2">
                                                                 <button
-                                                                    className="text-4xl sm:text-6xl w-12 h-12 sm:w-20 sm:h-20 bg-orange-400 text-white shadow-emerald-50 rounded-2xl flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
+                                                                    className="text-4xl sm:text-6xl min-w-[4rem] sm:w-32 h-16 sm:h-20 bg-orange-400 text-white shadow-emerald-50 rounded-2xl flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
                                                                     onClick={() => handleActivityScreenClick(id)}
                                                                 >
-                                                                    <div className="leading-none">+</div>
+                                                                    <div className="leading-none text-base font-bold">New Activity</div>
                                                                 </button>
                                                             </div>
                                                             <div className="text-center mt-auto pt-2 sm:pt-3 text-white font-bold text-xs sm:text-base">
@@ -561,12 +561,12 @@ const HomeDashboard = () => {
                 </div>
             </div>
             {showEditDurationScreen && (
-                <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50">
+                <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50 ">
                     <div className="bg-gray-600 shadow p-5 rounded-xl text-white text-lg sm:text-2xl text-center flex flex-col items-center w-11/12 max-w-xs sm:max-w-md" ref={editRef}>
                         <div className="mb-2">Edit Duration (Minutes):</div>
                         <input
                             type="number"
-                            className="w-20 h-10 rounded text-black text-center border-2 border-white mb-4"
+                            className="w-20 h-10 rounded text-white text-center border-2 border-white mb-4"
                             value={durationInput}
                             onChange={(e) => setDurationInput(e.target.value)}
                         />
