@@ -274,9 +274,9 @@ const HomeDashboard = () => {
 
 
     return(
-        <div className="w-full m-0 p-0">
+        <div className="w-full m-0 p-0 ">
             <Header headerLabel={"Mayfield Soccer Team - Dashboard"}/>
-            <div id="middleSegment" className="bg-white min-h-screen flex flex-col sm:flex-row">
+            <div id="middleSegment" className="min-h-screen flex flex-col sm:flex-row" style={{ backgroundColor: '#AFD2BB' }}>
                 {/* Sidebar for sessions */}
                 <div id="verticalBar" className="lg:max-w-50 w-full sm:w-1/5 bg-gray-600 text-lg sm:text-2xl flex flex-row sm:flex-col items-center sm:items-center py-2 sm:py-0 overflow-x-auto sm:overflow-x-visible">
                     <ul className="flex flex-row sm:flex-col items-center w-full justify-center gap-2 sm:gap-0">
