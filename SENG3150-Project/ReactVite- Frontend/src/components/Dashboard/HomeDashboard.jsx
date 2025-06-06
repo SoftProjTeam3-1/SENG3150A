@@ -809,6 +809,12 @@ const HomeDashboard = () => {
                         >
                             Confirm
                         </button>
+                        <button
+                            onClick={() => setShowEditDurationScreen(false)}
+                            className="mt-2 text-sm text-gray-300 hover:text-white self-end"
+                        >
+                            Cancel
+                        </button>
                     </div>
                 </div>
             )}
@@ -841,16 +847,18 @@ const HomeDashboard = () => {
 
                                     <div className="flex flex-col gap-2 mt-2 w-full">
                                         {Categories.find(c => c.name === openCategory)?.activities.map((activity, index) => (
-                                            <div key={index} className="w-full h-10 bg-white text-gray-600 rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105">
-                                                <button className="text-xs select-none"
-                                                        onClick={() => {
-                                                            setShowActivityScreen(false);
-                                                            setTemporaryActivity(activity);
-                                                            handleEditDuration();
-                                                            setOpenCategory(null);
-                                                        }}>{activity.name}
-                                                </button>
-                                            </div>
+                                            <button
+                                                key={index}
+                                                className="w-full h-10 bg-white text-gray-600 rounded-2xl flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105 text-xs select-none"
+                                                onClick={() => {
+                                                    setShowActivityScreen(false);
+                                                    setTemporaryActivity(activity);
+                                                    handleEditDuration();
+                                                    setOpenCategory(null);
+                                                }}
+                                            >
+                                                {activity.name}
+                                            </button>
                                         ))}
                                     </div>
                                 </div>
