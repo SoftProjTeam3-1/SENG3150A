@@ -27,6 +27,7 @@ public class SecurityConfig {
                                  "/api/activityType/create",
                                  "/api/activity/create",
                                  "/api/activity/getAll",
+                                 "/api/activityType/delete",
                                  "/api/activity/getByActivityType").permitAll()
                 .anyRequest().authenticated()
             )
