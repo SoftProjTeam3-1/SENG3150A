@@ -1,0 +1,103 @@
+/* Styles for the whole component in TileLayout Container */
+.tilelayoutcontainer {
+  height: 100%;
+}
+/* Styles for TileLayout */
+.k-tilelayout {
+  background-color: rgba(175, 210, 187, 1) !important;
+  width: 100%;
+
+}
+
+/* Css for Tiles */
+.k-tile {
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  background-color: rgba(245, 251, 239, 1);
+}
+
+/* Css for the whole card */
+.k-card {
+  background-color: rgba(245, 251, 239, 1);
+}
+
+/* Card Body Css */
+.k-card-body {
+  padding: 15px;
+  padding-top: 10px;
+}
+
+/* Popup Css for the container */
+.popup-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Popup position css */
+.popup-position {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+/* Form CSS for activities */
+.form-input-field {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.form-textarea-field {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+/* Button CSS */
+.activity-cancel-button {
+  margin-right: 10px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  background-color: #ccc;
+  cursor: pointer;
+}
+
+.activity-cancel-button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    background-color: #202C39;
+    color: white;
+    cursor: pointer;
+}
+
+/* Activity button hover css */
+.activity-item {
+  padding: 8px;
+  margin-bottom: 4px;
+  background: #ffffff;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  position: relative;
+}
+
+.activity-item:hover {
+  background-color: #e0e0e0;
+}
+

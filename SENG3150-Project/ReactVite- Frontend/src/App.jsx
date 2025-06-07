@@ -8,9 +8,13 @@ import Login from './pages/Login';
 import EntryLayout from './layout/EntryLayout';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import ManageActivitiesPage from './pages/ManageActivitiesPage';
 import ForgetPassword from './pages/ForgetPassword';
 import ForgetPasswordEnterCode from './pages/ForgetPasswordEnterCode';
 import ResetPassword from './pages/ResetPassword';
+import Attendance from "./pages/Attendance";
+
+
 
 
 const router = createBrowserRouter(
@@ -26,6 +30,8 @@ const router = createBrowserRouter(
       </Route>)
 
       <Route path='/dashboard' element={<Dashboard />} />
+      <Route path='/manage-activities' element={<ManageActivitiesPage />} />
+        <Route path='/attendance' element={<Attendance />}/>
     </>)
 );
 

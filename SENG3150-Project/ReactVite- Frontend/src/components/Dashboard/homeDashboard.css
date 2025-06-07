@@ -100,4 +100,35 @@
   #verticalBar::-webkit-scrollbar { display: none; }
   #verticalBar { -ms-overflow-style: none; scrollbar-width: none; }
   
+<<<<<<< HEAD
+/* Activity Droppable Area Styles */
+.activity-droppable {
+  min-height: 120px;
+  align-items: flex-start;
+}
+.activity-droppable.flex-row {
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+.activity-droppable.flex-col {
+  flex-direction: column;
+}
+
+/* Activity Card Styles */
+.activity-droppable > div[draggable] {
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+.activity-droppable.flex-row > div[draggable] {
+  flex: 0 1 160px;
+  min-width: 120px;
+  max-width: 180px;
+  margin: 0.25rem;
+}
+.activity-droppable.flex-col > div[draggable] {
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+=======
   /* …existing code below (if any)… */
+>>>>>>> origin/main
