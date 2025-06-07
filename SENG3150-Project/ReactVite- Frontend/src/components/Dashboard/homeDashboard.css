@@ -100,6 +100,7 @@
   #verticalBar::-webkit-scrollbar { display: none; }
   #verticalBar { -ms-overflow-style: none; scrollbar-width: none; }
   
+<<<<<<< HEAD
 /* Activity Droppable Area Styles */
 .activity-droppable {
   min-height: 120px;
@@ -128,3 +129,6 @@
   width: 100%;
   margin-bottom: 0.5rem;
 }
+=======
+  /* …existing code below (if any)… */
+>>>>>>> origin/main

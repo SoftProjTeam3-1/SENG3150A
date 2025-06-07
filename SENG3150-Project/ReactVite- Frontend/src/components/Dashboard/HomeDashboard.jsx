@@ -150,13 +150,23 @@ const HomeDashboard = () => {
         setSessions(prevSessions =>
             prevSessions.map(session => {
                 if (session.id === singleSelectedSession) {
+<<<<<<< HEAD
+=======
+                    // Determine the max existing row number
+>>>>>>> origin/main
                     const maxRow = session.activities.length > 0
                         ? Math.max(...session.activities.map(act => act.row ?? 0))
                         : 0;
 
+<<<<<<< HEAD
                     const newActivity = {
                         ...activity,
                         id: crypto.randomUUID(),
+=======
+                    // Create the new activity with the next available row
+                    const newActivity = {
+                        ...activity,
+>>>>>>> origin/main
                         row: maxRow + 1
                     };
 
@@ -171,7 +181,10 @@ const HomeDashboard = () => {
     };
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/main
     // Handles Duration of Activity Functions
 
     const [durationInput, setDurationInput] = useState(0);
@@ -186,7 +199,13 @@ const HomeDashboard = () => {
                 session.id === sessionId
                     ? {
                         ...session,
+<<<<<<< HEAD
                         activities: session.activities.filter(a => a.id !== activity.id)
+=======
+                        activities: session.activities.filter(
+                            a => !(a.name === activity.name && a.row === activity.row)
+                        )
+>>>>>>> origin/main
                     }
                     : session
             )
@@ -204,6 +223,7 @@ const HomeDashboard = () => {
             {
                 name: "Warm Up",
                 activities: [
+<<<<<<< HEAD
                     { name: "Light Jogging", description: "Jog slowly for 5 minutes", duration: 5, category: "Warm Up" },
                     { name: "Arm Circles", description: "Loosen shoulders and arms", duration: 3, category: "Warm Up" },
                     { name: "High Knees", description: "Dynamic high knees warm up", duration: 3, category: "Warm Up" },
@@ -214,11 +234,16 @@ const HomeDashboard = () => {
                     { name: "Jumping Jacks", description: "Full body activation", duration: 3, category: "Warm Up" },
                     { name: "Dynamic Stretches", description: "Whole body dynamic stretching", duration: 5, category: "Warm Up" },
                     { name: "Skipping", description: "Rope skipping to elevate heart rate", duration: 5, category: "Warm Up" }
+=======
+                    { name: "Jogging", description: "Light jogging to warm up", duration: 30, category:"Warm Up" },
+                    { name: "Dynamic Stretches", description: "Full body stretches", duration: 20, category:"Warm Up" },
+>>>>>>> origin/main
                 ]
             },
             {
                 name: "Skills Practice",
                 activities: [
+<<<<<<< HEAD
                     { name: "Short Passing", description: "Short accurate ground passes", duration: 15, category: "Skills Practice" },
                     { name: "Long Passing", description: "Driven long passes across field", duration: 15, category: "Skills Practice" },
                     { name: "First Touch Drills", description: "Control and settle incoming balls", duration: 15, category: "Skills Practice" },
@@ -229,11 +254,16 @@ const HomeDashboard = () => {
                     { name: "Volley Finishing", description: "First-time volley shots", duration: 10, category: "Skills Practice" },
                     { name: "Heading Drills", description: "Offensive and defensive headers", duration: 10, category: "Skills Practice" },
                     { name: "Penalty Kicks", description: "Spot kick practice", duration: 10, category: "Skills Practice" }
+=======
+                    { name: "Passing", description: "Short and long passes", duration: 20, category:"Skills Practice" },
+                    { name: "Dribbling", description: "Cone dribbling drills", duration: 30, category:"Skills Practice" },
+>>>>>>> origin/main
                 ]
             },
             {
                 name: "Games",
                 activities: [
+<<<<<<< HEAD
                     { name: "Small-Sided Game", description: "4v4 small pitch", duration: 20, category: "Games" },
                     { name: "Scrimmage", description: "Full team match", duration: 30, category: "Games" },
                     { name: "Positional Game", description: "Maintain shape under pressure", duration: 20, category: "Games" },
@@ -280,6 +310,16 @@ const HomeDashboard = () => {
         setCategories(defaultCategories);
     }
 
+=======
+                    { name: "Small-sided Game", description: "4v4 half-pitch game", duration: 15, category:"Games" },
+                    { name: "Scrimmage", description: "Full team practice match", duration: 30, category:"Games" },
+                ]
+            }
+        ];
+
+        setCategories(defaultCategories);
+    };
+>>>>>>> origin/main
 
     useEffect(() => {
         // fetch('http://localhost:8080/api/sessions')
@@ -353,10 +393,22 @@ const HomeDashboard = () => {
         };
     };
     const parseDraggableId = (id) => {
+<<<<<<< HEAD
         return { activityId: id };
     };
 
 
+=======
+        const [sessionId, rest] = id.split('__');
+        const [activityName, indexStr] = rest.split('-');
+        return {
+            sessionId,
+            activityName,
+            index: parseInt(indexStr, 10)
+        };
+    };
+
+>>>>>>> origin/main
     const onDragStart = (start) => {
         console.log("Drag started:");
         console.log("Draggable ID:", start.draggableId);
@@ -365,12 +417,22 @@ const HomeDashboard = () => {
 
     const handleActivityMove = ({ draggableId, source, destination }) => {
         const { sessionId: srcSessionId, rowIndex: srcRow } = parseDroppableId(source.droppableId);
+<<<<<<< HEAD
         const { sessionId: dstSessionId, rowIndex: dstRowOriginal } = parseDroppableId(destination.droppableId);
         const { activityId } = parseDraggableId(draggableId);  // now parsing activityId directly
 
         if (
             srcSessionId === dstSessionId &&
             srcRow === dstRowOriginal &&
+=======
+        const { sessionId: dstSessionId, rowIndex: dstRow } = parseDroppableId(destination.droppableId);
+        const { activityName } = parseDraggableId(draggableId);
+
+        // If dropped in same spot, do nothing
+        if (
+            srcSessionId === dstSessionId &&
+            srcRow === dstRow &&
+>>>>>>> origin/main
             source.index === destination.index
         ) return;
 
@@ -388,7 +450,14 @@ const HomeDashboard = () => {
             const dstActivities = srcSessionId === dstSessionId ? srcActivities : [...dstSession.activities];
 
             // Intra-row reorder
+<<<<<<< HEAD
             if (srcSessionId === dstSessionId && srcRow === dstRowOriginal) {
+=======
+            if (srcSessionId === dstSessionId && srcRow === dstRow) {
+                //const rowItems = srcActivities.filter(a => a.row === srcRow);
+
+                //const rowActivity = rowItems[source.index];
+>>>>>>> origin/main
                 const globalIndices = srcActivities.reduce((acc, a, i) => {
                     if (a.row === srcRow) acc.push(i);
                     return acc;
@@ -402,6 +471,7 @@ const HomeDashboard = () => {
             }
 
             // Inter-row or inter-session move
+<<<<<<< HEAD
             const srcIdx = srcActivities.findIndex(a => a.id === activityId);
             if (srcIdx === -1) return prevSessions;
 
@@ -425,6 +495,19 @@ const HomeDashboard = () => {
 
             const insertAt = dstActivities.reduce(
                 (acc, a, i) => (a.row === finalTargetRow && acc.count++ === destination.index ? { idx: i, found: true, count: acc.count } : acc),
+=======
+            const srcIdx = srcActivities.findIndex(
+                (a) => a.name === activityName && a.row === srcRow
+            );
+            if (srcIdx === -1) return prevSessions;
+
+            const [movedItem] = srcActivities.splice(srcIdx, 1);
+            movedItem.row = dstRow;
+
+            // Find global insert index
+            const insertAt = dstActivities.reduce(
+                (acc, a, i) => (a.row === dstRow && acc.count++ === destination.index ? { idx: i, found: true, count: acc.count } : acc),
+>>>>>>> origin/main
                 { idx: dstActivities.length, count: 0, found: false }
             ).idx;
 
@@ -442,6 +525,11 @@ const HomeDashboard = () => {
 
 
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> origin/main
     const onDragEnd = (result) => {
         const { source, destination, draggableId } = result;
 
@@ -456,6 +544,7 @@ const HomeDashboard = () => {
 
 
     return(
+<<<<<<< HEAD
         <div className="w-full m-0 p-0 max-w-full">
 
             <Header headerLabel={"Mayfield Soccer Team - Dashboard"}/>
@@ -501,11 +590,24 @@ const HomeDashboard = () => {
                     <ul className="text-center flex flex-col items-center relative top-[10px]">
                         {sessions.map(({id, date, type}) => {
                             if (!date) return null;
+=======
+        <div className="w-full m-0 p-0">
+
+            <Header headerLabel={"Mayfield Soccer Team - Dashboard"}/>
+
+            <div id="middleSegment" style={{display: 'flex'}} className="bg-white min-h-screen">
+                <div id="verticalBar" className="w-2/3 sm:w-1/6 bg-gray-600 text-2xl flex flex-col items-center ">
+                    <ul className="text-center flex flex-col items-center relative top-[10px]">
+                        {sessions.map(({id, date, type}) => {
+                            if (!date) return null;
+
+>>>>>>> origin/main
                             const [month, day] = date.split(' ');
                             const isClicked = selectedSessions.includes(id);
                             return (
                                 <button
                                     key={id}
+<<<<<<< HEAD
                                     className={`w-32 h-20 mt-2 rounded-2xl flex flex-col items-center justify-center leading-none transition-transform duration-200 ease-in-out hover:scale-105 ${isClicked ? 'bg-orange-300' : 'bg-white'}`}
                                     onClick={() => handleClickSelectedSessions(id)}
                                     onContextMenu={(e) => {
@@ -514,12 +616,26 @@ const HomeDashboard = () => {
                                     }}>
                                     <div className="font-bold">{month} {day}</div>
                                     <div className="text-sm">{type} session</div>
+=======
+                                    className={`mt-2 h-20 w-35 rounded-2xl flex flex-col items-center justify-center leading-none transition-transform duration-200 ease-in-out hover:scale-105
+                                ${isClicked ? 'bg-orange-300 ' : 'bg-white '}`}
+                                    onClick={() => handleClickSelectedSessions(id)}
+                                    onContextMenu={(e) => {
+                                        e.preventDefault(); // prevent browser context menu
+                                        handleRemoveDate(id);
+                                    }}>
+
+                                    <div className="leading-none font-bold">{month} {day}</div>
+                                    <br/>
+                                    <div className="leading-none -mt-5 text-sm">{type} session</div>
+>>>>>>> origin/main
                                 </button>
                             );
                         })}
                     </ul>
 
                     <button
+<<<<<<< HEAD
                         className="mt-4 text-6xl w-32 h-20 bg-white border-4 border-gray-600 rounded-2xl flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
                         onClick={() => handleNewActivity()}
                     >
@@ -532,6 +648,18 @@ const HomeDashboard = () => {
                 {/*Main Display*/}
                 <div id="userDisplay" className="hidden sm:block">
 
+=======
+                        className="mt-2 relative top-[10px] text-6xl h-20 w-20 bg-white border-5 border-gray-600 rounded-2xl flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
+                        onClick={() => handleNewActivity()}
+                    >
+                        <div className="leading-none -mt-2 text-center">
+                            +
+                        </div>
+                    </button>
+                </div>
+
+                <div id="userDisplay">
+>>>>>>> origin/main
                     {/* Drag Drop Container */}
                     <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
                         <div className="p-5 flex flex-wrap gap-4">
@@ -553,7 +681,11 @@ const HomeDashboard = () => {
                                             {/* Determines if game or training was selected */}
                                             {type === 'game' ? (
                                                 <>
+<<<<<<< HEAD
                                                     <div className="border-white border-2 rounded-2xl">
+=======
+                                                    <div className="border-gray-600 border-2 rounded-2xl">
+>>>>>>> origin/main
                                                         <div
                                                             key={id}
                                                             className="w-75 h-140 bg-white rounded-2xl flex flex-col items-center text-black "
@@ -566,7 +698,11 @@ const HomeDashboard = () => {
                                                                 <div className="font-bold">Notes</div>
                                                                 <div>
                                                             <textarea
+<<<<<<< HEAD
                                                                 className="w-65 h-110 resize-none py-3 outline-none focus:outline-none"
+=======
+                                                                className="w-65 h-110 resize-none py-3"
+>>>>>>> origin/main
                                                                 placeholder="Write something here..."
                                                                 value={notes}
                                                                 onChange={(e) => updateNotesForSession(id, e.target.value)}
@@ -584,6 +720,7 @@ const HomeDashboard = () => {
 
                                                             <div>
                                                                 {/* Drag Zones for Each Row */}
+<<<<<<< HEAD
                                                                 {Object.keys(groupedActivities).length === 0 ? (
                                                                     // Handle empty session case (no rows yet)
                                                                     <Droppable droppableId={`${id}__row-0`} key={"row-0"}>
@@ -658,11 +795,73 @@ const HomeDashboard = () => {
                                                                 </button>
                                                             </div>
 
+=======
+                                                                {Object.keys(groupedActivities)
+                                                                    .sort((a, b) => parseInt(a) - parseInt(b))
+                                                                    .map((rowKey) => (
+                                                                        <Droppable
+                                                                            droppableId={`${id}__row-${rowKey}`}
+                                                                            //direction="horizontal"
+                                                                            key={rowKey}
+                                                                        >
+                                                                            {(provided) => (
+                                                                                <div
+                                                                                    ref={provided.innerRef}
+                                                                                    {...provided.droppableProps}
+                                                                                    className="flex gap-2 mb-2"
+                                                                                >
+                                                                                    {groupedActivities[rowKey].map((activity, index) => (
+                                                                                        <Draggable
+                                                                                            key={`${id}__${activity.name}-${index}`}
+                                                                                            draggableId={`${id}__${activity.name}-${index}`}
+                                                                                            index={index}
+
+                                                                                        >
+                                                                                            {(dragProvided) => (
+                                                                                                <div
+                                                                                                    ref={dragProvided.innerRef}
+                                                                                                    {...dragProvided.draggableProps}
+                                                                                                    {...dragProvided.dragHandleProps}
+                                                                                                    className="relative group bg-orange-100 px-4 py-2 rounded shadow text-center select-none transition-transform duration-200 ease-in-out hover:scale-105"
+                                                                                                >
+                                                                                                    <button
+                                                                                                        className="absolute top-0 right-1 text-red-600 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                                                                                                        onClick={() => handleRemoveActivityFromSession(session.id, activity)}
+                                                                                                    >
+                                                                                                        ×
+                                                                                                    </button>
+                                                                                                    <div className="font-bold">{activity.name}</div>
+                                                                                                    <div className="text-sm !k-font-style-italic">{activity.category}</div>
+                                                                                                    <div className="font-bold">{activity.duration} minutes</div>
+                                                                                                </div>
+                                                                                            )}
+                                                                                        </Draggable>
+                                                                                    ))}
+                                                                                    {provided.placeholder}
+                                                                                </div>
+                                                                            )}
+                                                                        </Droppable>
+                                                                    ))}
+                                                            </div>
+
+                                                            {/* Plus Button */}
+                                                            <div className="w-64 h-24 flex items-center justify-center">
+                                                                <button
+                                                                    className="text-6xl w-20 h-20 bg-orange-400 text-white shadow-emerald-50 rounded-2xl flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
+                                                                    onClick={() => handleActivityScreenClick(id)}
+                                                                >
+                                                                    <div className="leading-none -mt-2">+</div>
+                                                                </button>
+                                                            </div>
+
+
+>>>>>>> origin/main
                                                         </div>
                                                         {/* Total Time */}
                                                         <div className="text-center mt-auto pt-3 text-white font-bold">
                                                             Total Time: {calculateTotalSessionMinutes(session)} Minutes
                                                         </div>
+<<<<<<< HEAD
                                                     </div>
                                                     {/* Notes */}
                                                     <div className="text-l py-3 w-75 h-125 bg-white rounded-2xl flex flex-col items-center text-black border-white border-2">
@@ -670,6 +869,19 @@ const HomeDashboard = () => {
                                                         <div>
                                                             <textarea
                                                                 className="w-65 h-110 resize-none py-3 outline-none focus:outline-none"
+=======
+
+
+                                                    </div>
+
+
+                                                    {/* Notes */}
+                                                    <div className="text-l py-3 w-75 h-125 bg-white rounded-2xl flex flex-col items-center text-black border-gray-600 border-2">
+                                                        <div className="font-bold">Notes</div>
+                                                        <div>
+                                                            <textarea
+                                                                className="w-65 h-110 resize-none py-3"
+>>>>>>> origin/main
                                                                 placeholder="Write something here..."
                                                                 value={notes}
                                                                 onChange={(e) => updateNotesForSession(id, e.target.value)}
@@ -684,6 +896,7 @@ const HomeDashboard = () => {
                         </div>
                     </DragDropContext>
                 </div>
+<<<<<<< HEAD
 
                 {/*Mobile Display*/}
                 <div className="block sm:hidden">
@@ -886,6 +1099,93 @@ const HomeDashboard = () => {
             {showCalendar && (
                 <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex justify-center items-center z-50">
                     <div className="bg-white p-4 sm:p-6 rounded-xl shadow-xl w-11/12 max-w-xs sm:max-w-md flex justify-center items-center">
+=======
+            </div>
+
+            {showEditDurationScreen && (
+                <div className="absolute w-1/6 min-h-screen top-20 left-0 bg-gray-600 shadow p-5 text-white text-2xl text-center flex flex-col items-center"
+                     ref={editRef}>
+                    <div className="text-m"> Edit Duration (Minutes): </div>
+
+                    <input
+                        type="number"
+                        className="w-20 h-10 rounded text-white text-center border-2 border-white"
+                        value={durationInput}
+                        onChange={(e) => setDurationInput(e.target.value)}
+                    />
+                    <button
+                        className="mt-4 bg-white text-gray-800 rounded px-4 py-2 hover:bg-gray-300"
+                        onClick={() => {
+
+                            handleEditDuration()
+
+                            const activityWithDuration = { ...temporaryActivity, duration: durationInput };
+
+                            handleClickActivity(activityWithDuration);
+
+                            // Resets the temporary Category
+                            setTemporaryActivity({name: null, description: null, time: null, category: null, duration: 0, row: null});
+                        }}
+                    >
+                        Confirm
+                    </button>
+
+                </div>
+            )}
+
+            {showActivityScreen && (
+                <div  className="hidden sm:block absolute top-20 left-0 bg-gray-600 w-2/3 sm:w-1/6 shadow p-5 text-gray-600 text-2xl flex flex-col items-center space-y-4 h-auto sm:h-full"
+                      ref={activityRef}>
+                    <div className="text-m"> Select Activity: </div>
+                    <ul className="w-full text-center flex flex-col items-center relative space-y-4">
+                        {Categories.map((category) => (
+
+                                <div key={category.name} className="w-full">
+                                    <button
+                                        className="w-full h-20 bg-white text-gray-600 rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
+                                        onClick={() => toggleCategory(category.name)}
+                                    >
+                                        <div>{category.name}</div>
+                                    </button>
+
+                                    {/* Drop Down Menu */}
+                                    {openCategory === category.name && (
+                                        category.activities.length > 0 ? (
+                                            <div className="flex flex-col gap-2 mt-2 w-full">
+                                                {category.activities.map((activity) => (
+
+                                                    <div key={crypto.randomUUID()} className="w-full h-10 bg-white text-gray-600 rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105">
+                                                        <button className="text-xs select-none"
+                                                                onClick={() => {
+                                                                    // Sets the activity to the temporary var to hold
+                                                                    setShowActivityScreen(false);
+                                                                    setTemporaryActivity(activity);
+                                                                    handleEditDuration();
+                                                                }}>{activity.name}</button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : null
+                                    )}
+                                </div>
+                            )
+                        )
+                        }
+                    </ul>
+                </div>
+            )}
+
+            {showActivityDetails && (
+                <div className="absolute w-1/6 min-h-screen top-20 left-0 bg-gray-600 shadow p-5 text-white text-2xl text-center flex flex-col items-center"
+                     ref={activityDetailsRef}>
+
+                </div>
+            )}
+
+            {showCalendar && (
+                <div className="fixed inset-0 bg-opacity-30 backdrop-blur-sm flex justify-center items-center z-50">
+                    <div className="bg-white p-6 rounded-xl shadow-xl scale-150">
+>>>>>>> origin/main
                         <DatePicker
                             inline
                             onChange={(date) => {
@@ -894,38 +1194,112 @@ const HomeDashboard = () => {
                                 const fullSession = {
                                     ...temporarySession,
                                     date: formatted};
+<<<<<<< HEAD
                                 setTemporarySession(fullSession);
                                 createSession(fullSession);
                                 setShowCalendar(false);
+=======
+                                setTemporarySession(fullSession); // store latest version
+                                createSession(fullSession);
+                                setShowCalendar(false); // close after picking
+>>>>>>> origin/main
                             }}
                         />
                     </div>
                 </div>
             )}
+<<<<<<< HEAD
             {showSessionTypeScreen && (
                 <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50" ref={sessionRef}>
                     <div className="bg-gray-600 p-4 rounded-xl shadow-lg w-11/12 max-w-xs sm:max-w-md flex flex-col gap-4 items-center">
                         <button
                             onClick={() => handleSessionSelect('training')}
                             className="w-full py-3 sm:py-4 bg-white rounded-2xl flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105 text-base sm:text-2xl"
+=======
+
+            {showSessionTypeScreen && (
+                <div ref={sessionRef}>
+
+                    {/* Desktop / tablet sidebar */}
+                    <div
+                        className="
+        hidden sm:absolute sm:top-20 sm:left-0 
+        sm:w-64 sm:h-auto sm:bg-gray-600 sm:shadow sm:p-5 
+        sm:text-gray-600 sm:text-2xl sm:flex sm:flex-col sm:items-center sm:space-y-4
+      "
+                    >
+                        <button
+                            onClick={() => handleSessionSelect('training')}
+                            className="
+          w-full py-4 bg-white rounded-2xl 
+          flex items-center justify-center 
+          transition-transform duration-200 ease-in-out hover:scale-105
+        "
+>>>>>>> origin/main
                         >
                             Training Session
                         </button>
                         <button
                             onClick={() => handleSessionSelect('game')}
+<<<<<<< HEAD
                             className="w-full py-3 sm:py-4 bg-white rounded-2xl flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105 text-base sm:text-2xl"
+=======
+                            className="
+          w-full py-4 bg-white rounded-2xl 
+          flex items-center justify-center 
+          transition-transform duration-200 ease-in-out hover:scale-105
+        "
+>>>>>>> origin/main
                         >
                             Game Session
                         </button>
                         <button
                             onClick={() => setSessionTypeScreen(false)}
+<<<<<<< HEAD
                             className="mt-2 text-sm text-gray-300 hover:text-white self-end"
+=======
+                            className="mt-2 text-sm text-gray-300 hover:text-white"
+>>>>>>> origin/main
                         >
                             Cancel
                         </button>
                     </div>
+<<<<<<< HEAD
                 </div>
             )}
+=======
+
+                    {/* Mobile full‐screen modal */}
+                    <div className="absolute inset-0 flex items-center justify-center sm:hidden">
+                        <div
+                            className="bg-gray-600 text-gray-600 p-4 rounded-xl shadow-lg w-11/12 mx-4 flex flex-col gap-4"
+                        >
+                            <button
+                                onClick={() => handleSessionSelect('training')}
+                                className="w-full py-4 bg-white rounded-2xl text-base flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
+                            >
+                                Training Session
+                            </button>
+                            <button
+                                onClick={() => handleSessionSelect('game')}
+                                className="w-full py-4 bg-white rounded-2xl text-base flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
+                            >
+                                Game Session
+                            </button>
+                            <button
+                                onClick={() => setSessionTypeScreen(false)}
+                                className="mt-2 self-end text-sm text-gray-300 hover:text-white"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            )}
+
+
+>>>>>>> origin/main
         </div>
     );
 };
