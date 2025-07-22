@@ -37,11 +37,7 @@ const Header = (headerLabel) => {
         <>
             <div
                 id="header"
-<<<<<<< HEAD
-                className="bg-orange-400 shadow text-white p-3 h-20 w-screen text-2xl sm:text-3xl flex items-center justify-between font-bold "
-=======
                 className="bg-orange-400 shadow text-white p-3 h-20 w-screen text-2xl sm:text-3xl flex items-center justify-between font-bold"
->>>>>>> origin/main
             >
                 <div className="flex items-center">
                     <img
@@ -57,11 +53,7 @@ const Header = (headerLabel) => {
 
             {showOptions && (
                 <div
-<<<<<<< HEAD
-                    className="absolute w-full sm:w-1/5 min-h-screen top-20 left-0 bg-gray-600 shadow p-5 text-lg sm:text-xl text-center flex flex-col items-center z-50 text-black font-bold lg:max-w-50"
-=======
                     className="absolute w-3/4 sm:w-1/6 min-h-screen top-20 left-0 bg-gray-600 shadow p-5 text-gray-600 text-lg sm:text-2xl text-center flex flex-col items-center z-50"
->>>>>>> origin/main
                     ref={optionsRef}
                 >
                     <button
@@ -71,16 +63,6 @@ const Header = (headerLabel) => {
                         Manage Activities
                     </button>
                     <br />
-<<<<<<< HEAD
-                    {/* <button
-                        className="w-full h-12 sm:h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
-                        onClick={() => navigate("/attendance")}
-                        
-                    >
-                        Attendance
-                    </button>
-                    <br /> */}
-=======
                     <button
                         className="w-full h-12 sm:h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
                         onClick={() => navigate("/attendance")}
@@ -88,7 +70,6 @@ const Header = (headerLabel) => {
                         Attendance
                     </button>
                     <br />
->>>>>>> origin/main
                     <button
                         className="w-full h-12 sm:h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
                         onClick={() => navigate("/dashboard")}
@@ -96,18 +77,7 @@ const Header = (headerLabel) => {
                         Dashboard
                     </button>
                     <br />
-<<<<<<< HEAD
-                    <button
-                        className="w-full h-12 sm:h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
-                        onClick={() => {
-                            localStorage.clear();
-                            sessionStorage.clear();
-                            navigate("/");
-                        }}
-                    >
-=======
                     <button className="w-full h-12 sm:h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105">
->>>>>>> origin/main
                         Logout
                     </button>
                 </div>
