@@ -4,11 +4,10 @@ import DatePicker from "react-datepicker";
 import { format } from 'date-fns';
 import "react-datepicker/dist/react-datepicker.css";
 import Header from "./Header.jsx";
-import {
-    DragDropContext,
-    Droppable,
-    Draggable
-} from 'react-beautiful-dnd';
+import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd';
+
+import VerticalBar_Mobile from "./VerticalBar_Mobile.jsx";
+import VerticalBar_Laptop from "./VerticalBar_Laptop.jsx";
 
 
 const HomeDashboard = () => {
@@ -26,7 +25,7 @@ const HomeDashboard = () => {
 
 
     // Temporary category which holds data before being added to categories list
-    const [temporaryCategory, setTemporaryCategory] = useState({name:null, activities:[]});
+    //const [temporaryCategory, setTemporaryCategory] = useState({name:null, activities:[]});
 
     //Stores the categories
     const [Categories, setCategories] = useState([]);
@@ -116,7 +115,7 @@ const HomeDashboard = () => {
     }
 
     // Sets the session ID
-    const handleNewActivity = () =>{
+    const handleNewSession = () =>{
         setTemporarySessionID();
         setSessionTypeScreen(prev => !prev);
     }
@@ -462,70 +461,22 @@ const HomeDashboard = () => {
 
             <div id="middleSegment" style={{display: 'flex', backgroundColor: '#AFD2BB' }} className="flex flex-col sm:flex-row bg-white min-h-screen max-w-full">
 
-                {/*Mobile Display*/}
-                <div className="w-full bg-gray-600 text-lg flex items-center py-2 overflow-x-auto sm:hidden px-4">
-                    <div className="flex flex-nowrap items-center gap-2">
-                        {sessions.map(({ id, date, type }) => {
-                            if (!date) return null;
-                            const [month, day] = date.split(' ');
-                            const isClicked = selectedSessions.includes(id);
-                            return (
-                                <button
-                                    key={id}
-                                    className={`min-w-[5rem] w-[5rem] h-18 px-2 py-2 flex-shrink-0 rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105 ${isClicked ? 'bg-orange-300' : 'bg-white'}`}
-                                    onClick={() => handleClickSelectedSessions(id)}
-                                    onContextMenu={(e) => {
-                                        e.preventDefault();
-                                        handleRemoveDate(id);
-                                    }}
-                                >
-                                    <div className="font-bold text-sm">{month} {day}</div>
-                                    <div className="text-xs text-center break-words">{type} session</div>
-                                </button>
-                            );
-                        })}
 
-                        <button
-                            className="min-w-[5rem] w-[5rem] px-2 py-2 h-20 flex-shrink-0 rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105 bg-white border-4 border-gray-600"
-                            onClick={() => handleNewActivity()}
-                        >
-                            <div className="font-bold text-xs">New Session</div>
+                <VerticalBar_Mobile
+                sessions={sessions}
+                selectedSessions={selectedSessions}
+                handleClickSelectedSessions={handleClickSelectedSessions}
+                handleRemoveDate={handleRemoveDate}
+                handleNewSession={handleNewSession}
+                />
 
-                        </button>
-                    </div>
-                </div>
-
-
-                {/*Laptop Display*/}
-                <div id="verticalBar" className="lg:max-w-50 w-1/5 bg-gray-600 text-2xl flex flex-col items-center py-0 overflow-x-visible hidden sm:flex max-w-full">
-                    <ul className="text-center flex flex-col items-center relative top-[10px]">
-                        {sessions.map(({id, date, type}) => {
-                            if (!date) return null;
-                            const [month, day] = date.split(' ');
-                            const isClicked = selectedSessions.includes(id);
-                            return (
-                                <button
-                                    key={id}
-                                    className={`w-32 h-20 mt-2 rounded-2xl flex flex-col items-center justify-center leading-none transition-transform duration-200 ease-in-out hover:scale-105 ${isClicked ? 'bg-orange-300' : 'bg-white'}`}
-                                    onClick={() => handleClickSelectedSessions(id)}
-                                    onContextMenu={(e) => {
-                                        e.preventDefault();
-                                        handleRemoveDate(id);
-                                    }}>
-                                    <div className="font-bold">{month} {day}</div>
-                                    <div className="text-sm">{type} session</div>
-                                </button>
-                            );
-                        })}
-                    </ul>
-
-                    <button
-                        className="mt-4 text-6xl w-32 h-20 bg-white border-4 border-gray-600 rounded-2xl flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
-                        onClick={() => handleNewActivity()}
-                    >
-                        <div className="font-bold text-base">New Session</div>
-                    </button>
-                </div>
+                <VerticalBar_Laptop
+                sessions={sessions}
+                selectedSessions={selectedSessions}
+                handleClickSelectedSessions={handleClickSelectedSessions}
+                handleRemoveDate={handleRemoveDate}
+                handleNewSession={handleNewSession}
+                />
 
 
                 {/*Laptop Display*/}
