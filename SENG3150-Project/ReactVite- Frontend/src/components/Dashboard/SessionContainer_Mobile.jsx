@@ -1,9 +1,9 @@
+import {calculateTotalSessionMinutes} from "./logic/SessionLogic.js";
 
 
 
 
-
-const SessionContainer_Mobile = ({sessions, selectedSessions, updateNotesForSession, calculateTotalSessionMinutes}) => {
+const SessionContainer_Mobile = ({sessions, selectedSessions, updateNotesForSession}) => {
 
     return (
         <>

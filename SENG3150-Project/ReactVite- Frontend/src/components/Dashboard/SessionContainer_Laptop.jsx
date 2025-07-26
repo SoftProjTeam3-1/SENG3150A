@@ -1,9 +1,8 @@
+import {onDragStart, getOnDragEnd} from "./logic/DragDropLogic.js";
+import {calculateTotalSessionMinutes} from "./logic/SessionLogic.js";
+import {handleRemoveActivityFromSession} from "./logic/ActivityLogic.js";
 
-
-
-
-
-const SessionContainer_Laptop = ({DragDropContext, Droppable, Draggable, onDragStart, onDragEnd, sessions, selectedSessions, updateNotesForSession, handleRemoveActivityFromSession, handleActivityScreenClick, calculateTotalSessionMinutes}) => {
+const SessionContainer_Laptop = ({sessions, setSessions, selectedSessions, updateNotesForSession, handleActivityScreenClick, DragDropContext, Droppable, Draggable}) => {
 
     return (
         <>
@@ -13,8 +12,9 @@ const SessionContainer_Laptop = ({DragDropContext, Droppable, Draggable, onDragS
             <div id="userDisplay" className="hidden sm:block">
 
                 {/* Drag Drop Container */}
-                <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
-                    <div className="p-5 flex flex-wrap gap-4">
+                <DragDropContext onDragStart={onDragStart} onDragEnd={(result) => getOnDragEnd(result, setSessions)}>
+
+                <div className="p-5 flex flex-wrap gap-4">
                         {sessions.filter(dateObj => selectedSessions.includes(dateObj.id))
                             .map((session) => {
                                 const { id, date, type, notes } = session;
@@ -66,7 +66,7 @@ const SessionContainer_Laptop = ({DragDropContext, Droppable, Draggable, onDragS
                                                             {/* Drag Zones for Each Row */}
                                                             {Object.keys(groupedActivities).length === 0 ? (
                                                                 // Handle empty session case (no rows yet)
-                                                                <Droppable droppableId={`${id}__row-0`} key={"row-0"}>
+                                                                <Droppable droppableId={`${id}__row-0`} key={"row-0"} isDropDisabled={false} isCombineEnabled={false}  ignoreContainerClipping={false}>
                                                                     {(provided) => (
                                                                         <div
                                                                             ref={provided.innerRef}
@@ -85,6 +85,7 @@ const SessionContainer_Laptop = ({DragDropContext, Droppable, Draggable, onDragS
                                                                         <Droppable
                                                                             droppableId={`${id}__row-${rowKey}`}
                                                                             key={rowKey}
+                                                                            isDropDisabled={false} isCombineEnabled={false}  ignoreContainerClipping={false}
                                                                         >
                                                                             {(provided) => (
                                                                                 <div
@@ -97,6 +98,8 @@ const SessionContainer_Laptop = ({DragDropContext, Droppable, Draggable, onDragS
                                                                                             key={activity.id}
                                                                                             draggableId={activity.id}
                                                                                             index={index}
+                                                                                            isDragDisabled={false}
+                                                                                            disableInteractiveElementBlocking={false}
                                                                                         >
                                                                                             {(dragProvided) => (
                                                                                                 <div
@@ -107,7 +110,7 @@ const SessionContainer_Laptop = ({DragDropContext, Droppable, Draggable, onDragS
                                                                                                 >
                                                                                                     <button
                                                                                                         className="absolute top-0 right-1 text-red-600 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                                                                                                        onClick={() => handleRemoveActivityFromSession(session.id, activity)}
+                                                                                                        onClick={() => handleRemoveActivityFromSession({sessionId: session.id, activity: activity, setSessions})}
                                                                                                     >
                                                                                                         ×
                                                                                                     </button>

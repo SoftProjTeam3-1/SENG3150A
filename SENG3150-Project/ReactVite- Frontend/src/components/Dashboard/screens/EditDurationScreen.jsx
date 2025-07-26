@@ -1,6 +1,6 @@
+import {handleClickActivity} from "../logic/ActivityLogic.js";
 
-
-const EditDurationScreen = ({editRef, durationInput, setDurationInput, handleEditDuration, temporaryActivity, handleClickActivity, setTemporaryActivity, setShowEditDurationScreen}) => {
+const EditDurationScreen = ({editRef, durationInput, setDurationInput, handleEditDuration, temporaryActivity, setTemporaryActivity, setShowEditDurationScreen, setSessions, singleSelectedSession}) => {
     return (
         <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50 ">
             <div className="bg-gray-600 shadow p-5 rounded-xl text-white text-lg sm:text-2xl text-center flex flex-col items-center w-11/12 max-w-xs sm:max-w-md" ref={editRef}>
@@ -17,7 +17,7 @@ const EditDurationScreen = ({editRef, durationInput, setDurationInput, handleEdi
                     onClick={() => {
                         handleEditDuration()
                         const activityWithDuration = { ...temporaryActivity, duration: durationInput };
-                        handleClickActivity(activityWithDuration);
+                        handleClickActivity({activity: activityWithDuration, setSessions, singleSelectedSession});
                         setTemporaryActivity({name: null, description: null, time: null, category: null, duration: 0, row: null});
                         setDurationInput(0);
                     }}
