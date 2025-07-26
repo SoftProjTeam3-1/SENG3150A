@@ -10,6 +10,11 @@ import VerticalBar_Mobile from "./VerticalBar_Mobile.jsx";
 import VerticalBar_Laptop from "./VerticalBar_Laptop.jsx";
 import SessionContainer_Laptop from "./SessionContainer_Laptop.jsx";
 import SessionContainer_Mobile from "./SessionContainer_Mobile.jsx";
+import EditDurationScreen from "./EditDurationScreen.jsx";
+import ActivityScreen from "./ActivityScreen.jsx";
+import ActivityDetailScreen from "./ActivityDetailScreen.jsx";
+import CalendarScreen from "./CalendarScreen.jsx";
+import SessionTypeScreen from "./SessionTypeScreen.jsx";
 
 
 const HomeDashboard = () => {
@@ -504,147 +509,51 @@ const HomeDashboard = () => {
 
             </div>
 
-
-
             {showEditDurationScreen && (
-                <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50 ">
-                    <div className="bg-gray-600 shadow p-5 rounded-xl text-white text-lg sm:text-2xl text-center flex flex-col items-center w-11/12 max-w-xs sm:max-w-md" ref={editRef}>
-                        <div className="mb-2">Edit Duration (Minutes):</div>
-                        <input
-                            type="number"
-                            min="1"
-                            className="w-20 h-10 rounded text-white text-center border-2 border-white mb-4"
-                            value={durationInput}
-                            onChange={(e) => setDurationInput(e.target.value)}
-                        />
-                        <button
-                            className="bg-white text-gray-800 rounded px-4 py-2 hover:bg-gray-300"
-                            onClick={() => {
-                                handleEditDuration()
-                                const activityWithDuration = { ...temporaryActivity, duration: durationInput };
-                                handleClickActivity(activityWithDuration);
-                                setTemporaryActivity({name: null, description: null, time: null, category: null, duration: 0, row: null});
-                                setDurationInput(0);
-                            }}
-                        >
-                            Confirm
-                        </button>
-                        <button
-                            onClick={() => setShowEditDurationScreen(false)}
-                            className="mt-2 text-sm text-gray-300 hover:text-white self-end"
-                        >
-                            Cancel
-                        </button>
-                    </div>
-                </div>
+                <EditDurationScreen
+                editRef={editRef}
+                durationInput={durationInput}
+                setDurationInput={setDurationInput}
+                handleEditDuration={handleEditDuration}
+                temporaryActivity={temporaryActivity}
+                handleClickActivity={handleClickActivity}
+                setTemporaryActivity={setTemporaryActivity}
+                setShowEditDurationScreen={setShowEditDurationScreen}
+                />
             )}
+
             {showActivityScreen && (
-                <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50" ref={activityRef}>
-                    <div className="bg-gray-600 w-11/12 max-w-xs sm:max-w-md shadow p-5 rounded-xl text-gray-600 text-lg sm:text-2xl flex flex-col items-center space-y-4 h-auto max-h-[90vh] overflow-y-auto">
-                        <div className="mb-2 text-white">Select Activity:</div>
-                        <ul className="w-full text-center flex flex-col items-center gap-2">
-                            {openCategory === null ? (
-                                // Show all categories when no category is selected
-                                Categories.map((category) => (
-                                    <div key={category.name} className="w-full">
-                                        <button
-                                            className="w-full h-20 bg-white text-gray-600 rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
-                                            onClick={() => toggleCategory(category.name)}
-                                        >
-                                            <div>{category.name}</div>
-                                        </button>
-                                    </div>
-                                ))
-                            ) : (
-                                // Show only the selected category dropdown
-                                <div className="w-full">
-                                    <button
-                                        className="w-full h-20 bg-white text-gray-600 rounded-2xl flex flex-col items-center justify-center"
-                                        onClick={() => toggleCategory(null)}  // allow collapsing back
-                                    >
-                                        <div>Back to Categories</div>
-                                    </button>
-
-                                    <div className="flex flex-col gap-2 mt-2 w-full">
-                                        {Categories.find(c => c.name === openCategory)?.activities.map((activity, index) => (
-                                            <button
-                                                key={index}
-                                                className="w-full h-10 bg-white text-gray-600 rounded-2xl flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105 text-xs select-none"
-                                                onClick={() => {
-                                                    setShowActivityScreen(false);
-                                                    setTemporaryActivity(activity);
-                                                    handleEditDuration();
-                                                    setOpenCategory(null);
-                                                }}
-                                            >
-                                                {activity.name}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-                        </ul>
-
-                        <button
-                            onClick={() => {
-                                setShowActivityScreen(false);
-                                setOpenCategory(null);
-                            }}
-                            className="mt-2 text-sm text-gray-300 hover:text-white self-end"
-                        >
-                            Cancel
-                        </button>
-                    </div>
-                </div>
+                <ActivityScreen
+                activityRef={activityRef}
+                openCategory={openCategory}
+                Categories={Categories}
+                toggleCategory={toggleCategory}
+                setShowActivityScreen={setShowActivityScreen}
+                setTemporaryActivity={setTemporaryActivity}
+                handleEditDuration={handleEditDuration}
+                setOpenCategory={setOpenCategory}/>
             )}
+
             {showActivityDetails && (
-                <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50">
-                    <div className="bg-gray-600 shadow p-5 rounded-xl text-white text-lg sm:text-2xl text-center flex flex-col items-center w-11/12 max-w-xs sm:max-w-md" ref={activityDetailsRef}>
-                    </div>
-                </div>
+                <ActivityDetailScreen/>
             )}
+
             {showCalendar && (
-                <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex justify-center items-center z-50">
-                    <div className="bg-white p-4 sm:p-6 rounded-xl shadow-xl w-11/12 max-w-xs sm:max-w-md flex justify-center items-center">
-                        <DatePicker
-                            inline
-                            onChange={(date) => {
-                                const formatted = format(date, 'MMM dd');
-                                setTemporarySessionDate(formatted);
-                                const fullSession = {
-                                    ...temporarySession,
-                                    date: formatted};
-                                setTemporarySession(fullSession);
-                                createSession(fullSession);
-                                setShowCalendar(false);
-                            }}
-                        />
-                    </div>
-                </div>
+                <CalendarScreen
+                DatePicker={DatePicker}
+                format={format}
+                setTemporarySessionDate={setTemporarySessionDate}
+                temporarySession={temporarySession}
+                setTemporarySession={setTemporarySession}
+                createSession={createSession}
+                setShowCalendar={setShowCalendar}/>
             )}
+
             {showSessionTypeScreen && (
-                <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50" ref={sessionRef}>
-                    <div className="bg-gray-600 p-4 rounded-xl shadow-lg w-11/12 max-w-xs sm:max-w-md flex flex-col gap-4 items-center">
-                        <button
-                            onClick={() => handleSessionSelect('training')}
-                            className="w-full py-3 sm:py-4 bg-white rounded-2xl flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105 text-base sm:text-2xl"
-                        >
-                            Training Session
-                        </button>
-                        <button
-                            onClick={() => handleSessionSelect('game')}
-                            className="w-full py-3 sm:py-4 bg-white rounded-2xl flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105 text-base sm:text-2xl"
-                        >
-                            Game Session
-                        </button>
-                        <button
-                            onClick={() => setSessionTypeScreen(false)}
-                            className="mt-2 text-sm text-gray-300 hover:text-white self-end"
-                        >
-                            Cancel
-                        </button>
-                    </div>
-                </div>
+                <SessionTypeScreen
+                sessionRef={sessionRef}
+                handleSessionSelect={handleSessionSelect}
+                setSessionTypeScreen={setSessionTypeScreen}/>
             )}
         </div>
     );
