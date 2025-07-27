@@ -1,7 +1,7 @@
 
+import {createSession, setTemporarySessionDate} from '../logic/VerticalBarSessionLogic.js'
 
-
-const CalendarScreen = ({DatePicker, format, setTemporarySessionDate, temporarySession, setTemporarySession, createSession, setShowCalendar}) => {
+const CalendarScreen = ({DatePicker, format, temporarySession, setTemporarySession, setShowCalendar, setSessions}) => {
     return (
         <>
             <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex justify-center items-center z-50">
@@ -10,12 +10,12 @@ const CalendarScreen = ({DatePicker, format, setTemporarySessionDate, temporaryS
                         inline
                         onChange={(date) => {
                             const formatted = format(date, 'MMM dd');
-                            setTemporarySessionDate(formatted);
+                            setTemporarySessionDate({date: formatted, setTemporarySession});
                             const fullSession = {
                                 ...temporarySession,
                                 date: formatted};
                             setTemporarySession(fullSession);
-                            createSession(fullSession);
+                            createSession({session: fullSession, setSessions: setSessions, setTemporarySession: setTemporarySession});
                             setShowCalendar(false);
                         }}
                     />

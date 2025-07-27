@@ -1,6 +1,6 @@
-import EditDurationScreen from "./EditDurationScreen.jsx";
+import {handleEditDuration, toggleCategory} from "../logic/ActivityLogic.js";
 
-const ActivityScreen = ({activityRef, openCategory, Categories, toggleCategory, setShowActivityScreen, setTemporaryActivity, handleEditDuration, setOpenCategory}) => {
+const ActivityScreen = ({activityRef, openCategory, Categories, setShowActivityScreen, setTemporaryActivity, setOpenCategory, setShowEditDurationScreen}) => {
     return (
         <>
             <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50" ref={activityRef}>
@@ -13,7 +13,7 @@ const ActivityScreen = ({activityRef, openCategory, Categories, toggleCategory, 
                                 <div key={category.name} className="w-full">
                                     <button
                                         className="w-full h-20 bg-white text-gray-600 rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
-                                        onClick={() => toggleCategory(category.name)}
+                                        onClick={() => toggleCategory({categoryName: category.name, setOpenCategory, Categories})}
                                     >
                                         <div>{category.name}</div>
                                     </button>
@@ -24,7 +24,7 @@ const ActivityScreen = ({activityRef, openCategory, Categories, toggleCategory, 
                             <div className="w-full">
                                 <button
                                     className="w-full h-20 bg-white text-gray-600 rounded-2xl flex flex-col items-center justify-center"
-                                    onClick={() => toggleCategory(null)}  // allow collapsing back
+                                    onClick={() => toggleCategory({categoryName: null, setOpenCategory, Categories})}  // allow collapsing back
                                 >
                                     <div>Back to Categories</div>
                                 </button>
@@ -37,7 +37,7 @@ const ActivityScreen = ({activityRef, openCategory, Categories, toggleCategory, 
                                             onClick={() => {
                                                 setShowActivityScreen(false);
                                                 setTemporaryActivity(activity);
-                                                handleEditDuration();
+                                                handleEditDuration(setShowEditDurationScreen);
                                                 setOpenCategory(null);
                                             }}
                                         >

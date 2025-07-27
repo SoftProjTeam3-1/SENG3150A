@@ -1,8 +1,7 @@
 import {onDragStart, getOnDragEnd} from "./logic/DragDropLogic.js";
-import {calculateTotalSessionMinutes} from "./logic/SessionLogic.js";
-import {handleRemoveActivityFromSession} from "./logic/ActivityLogic.js";
+import {calculateTotalSessionMinutes, handleRemoveActivityFromSession, handleActivityScreenClick, updateNotesForSession} from "./logic/SessionContainerLogic.js";
 
-const SessionContainer_Laptop = ({sessions, setSessions, selectedSessions, updateNotesForSession, handleActivityScreenClick, DragDropContext, Droppable, Draggable}) => {
+const SessionContainer_Laptop = ({sessions, setSessions, selectedSessions, DragDropContext, Droppable, Draggable, setShowActivityScreen, setSingleSelectedSession}) => {
 
     return (
         <>
@@ -49,7 +48,7 @@ const SessionContainer_Laptop = ({sessions, setSessions, selectedSessions, updat
                                                                 className="w-65 h-110 resize-none py-3 outline-none focus:outline-none"
                                                                 placeholder="Write something here..."
                                                                 value={notes}
-                                                                onChange={(e) => updateNotesForSession(id, e.target.value)}
+                                                                onChange={(e) => updateNotesForSession({id:id, newNotes:e.target.value, setSessions})}
                                                             />
                                                             </div>
                                                         </div>
@@ -135,7 +134,7 @@ const SessionContainer_Laptop = ({sessions, setSessions, selectedSessions, updat
                                                         <div className="w-64 h-24 flex items-center justify-center">
                                                             <button
                                                                 className="text-4xl sm:text-6xl min-w-[4rem] sm:w-32 h-16 sm:h-20 bg-orange-400 text-white shadow-emerald-50 rounded-2xl flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
-                                                                onClick={() => handleActivityScreenClick(id)}
+                                                                onClick={() => handleActivityScreenClick({id:id, setShowActivityScreen, setSingleSelectedSession})}
                                                             >
                                                                 <div className="leading-none text-base font-bold">New Activity</div>
                                                             </button>
@@ -155,7 +154,7 @@ const SessionContainer_Laptop = ({sessions, setSessions, selectedSessions, updat
                                                                 className="w-65 h-110 resize-none py-3 outline-none focus:outline-none"
                                                                 placeholder="Write something here..."
                                                                 value={notes}
-                                                                onChange={(e) => updateNotesForSession(id, e.target.value)}
+                                                                onChange={(e) => updateNotesForSession({id:id, newNotes:e.target.value, setSessions})}
                                                             />
                                                     </div>
                                                 </div>

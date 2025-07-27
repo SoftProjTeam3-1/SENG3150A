@@ -30,8 +30,8 @@ const HomeDashboard = () => {
     // Stores selected local sessions the user has clicked
     const [selectedSessions, setSelectedSessions] = useState([]);
 
-    // Temporary category which holds data before being added to categories list
-    const [temporaryCategory, setTemporaryCategory] = useState({name:null, activities:[]});
+    // Temporary category which holds data before being added to categories list: NOT USED, but good to see
+    //const [temporaryCategory, setTemporaryCategory] = useState({name:null, activities:[]});
 
     //Stores the categories
     const [Categories, setCategories] = useState([]);
@@ -58,103 +58,13 @@ const HomeDashboard = () => {
     // Category Menu Functions
     const [openCategory, setOpenCategory] = useState(null);
 
-    const toggleCategory = (categoryName) => {
-        console.log(categoryName);
-        setOpenCategory(prev => (prev === categoryName ? null : categoryName));
-        console.log(categoryName);
-        console.log(Categories);
-    };
-
-
-    //Functions for setting a temporary session
-    const setTemporarySessionID = () => {
-        setTemporarySession(prev => ({ ...prev, id: crypto.randomUUID() }));
-    };
-
-    const setTemporarySessionType = (type) => {
-        setTemporarySession(prev => ({ ...prev, type }));
-    };
-
-    const setTemporarySessionDate = (date) => {
-        setTemporarySession(prev => ({ ...prev, date }));
-    };
-
-    // Creates a new session
-    const createSession = async (session) => {
-
-        const newSession = { ...session }; // this creates a shallow copy
-        setSessions(prev => [...prev, newSession]);
-
-        // Reset teh temp session so no previous data is saved
-        setTemporarySession({
-            id: null,
-            date: null,
-            type: null,
-            activities: [],
-            notes: "",
-        });
-    };
-
-
-    // Functionality for when a date box is clicked
-    const handleClickSelectedSessions = (id) =>{
-        setSelectedSessions(prev =>
-            prev.includes(id)
-                ? prev.filter(clickedId => clickedId !== id) // unselect
-                : [...prev, id] // select
-        );
-    }
-
-    // Functionality for when date box is right-clicked to be removed
-    const handleRemoveDate = (id) =>{
-        setSelectedSessions(prev => prev.filter(dateObj => dateObj.id !== id));
-        setSelectedSessions(prev => prev.filter(clickedId => clickedId !== id));
-    }
-
-    // Sets the session ID
-    const handleNewSession = () =>{
-        setTemporarySessionID();
-        setSessionTypeScreen(prev => !prev);
-    }
-
-    // Sets the Session type and opens calendar
-    const handleSessionSelect = (type) => {
-        setTemporarySessionType(type);
-        setSessionTypeScreen(false);
-        setShowCalendar(true);
-    };
-
-    const updateNotesForSession = (id, newNotes) => {
-        setSessions(prev =>
-            prev.map(session =>
-                session.id === id ? { ...session, notes: newNotes } : session
-            )
-        );
-    };
-
-    const handleActivityScreenClick = (id) => {
-        setShowActivityScreen(prev => ! prev);
-        // Sets the ID so we know which box to add the activity to
-        setSingleSelectedSession(id);
-    }
 
     // Handles Adding the Activity to the session
-
     const [singleSelectedSession, setSingleSelectedSession] = useState(); // Sets session ID in order to know where to add the activity to
 
 
-
-
-
     // Handles Duration of Activity Functions
-
     const [durationInput, setDurationInput] = useState(0);
-
-    const handleEditDuration = () => {
-        setShowEditDurationScreen(prev => !prev);
-    }
-
-
 
 
     // Show sessions in console for debugging
@@ -216,17 +126,17 @@ const HomeDashboard = () => {
                 <VerticalBar_Mobile
                 sessions={sessions}
                 selectedSessions={selectedSessions}
-                handleClickSelectedSessions={handleClickSelectedSessions}
-                handleRemoveDate={handleRemoveDate}
-                handleNewSession={handleNewSession}
+                setSessionTypeScreen={setSessionTypeScreen}
+                setSelectedSessions={setSelectedSessions}
+                setTemporarySession={setTemporarySession}
                 />
 
                 <VerticalBar_Laptop
                 sessions={sessions}
                 selectedSessions={selectedSessions}
-                handleClickSelectedSessions={handleClickSelectedSessions}
-                handleRemoveDate={handleRemoveDate}
-                handleNewSession={handleNewSession}
+                setSessionTypeScreen={setSessionTypeScreen}
+                setSelectedSessions={setSelectedSessions}
+                setTemporarySession={setTemporarySession}
                 />
 
 
@@ -234,17 +144,16 @@ const HomeDashboard = () => {
                     sessions={sessions}
                     setSessions={setSessions}
                     selectedSessions={selectedSessions}
-                    updateNotesForSession={updateNotesForSession}
-                    handleActivityScreenClick={handleActivityScreenClick}
                     DragDropContext={DragDropContext}
                     Droppable={Droppable}
                     Draggable={Draggable}
+                    setShowActivityScreen={setShowActivityScreen}
+                    setSingleSelectedSession={setSingleSelectedSession}
                 />
 
                 <SessionContainer_Mobile
                 sessions={sessions}
                 selectedSessions={selectedSessions}
-                updateNotesForSession={updateNotesForSession}
                 />
 
             </div>
@@ -254,7 +163,6 @@ const HomeDashboard = () => {
                 editRef={editRef}
                 durationInput={durationInput}
                 setDurationInput={setDurationInput}
-                handleEditDuration={handleEditDuration}
                 temporaryActivity={temporaryActivity}
                 setTemporaryActivity={setTemporaryActivity}
                 setShowEditDurationScreen={setShowEditDurationScreen}
@@ -268,11 +176,10 @@ const HomeDashboard = () => {
                 activityRef={activityRef}
                 openCategory={openCategory}
                 Categories={Categories}
-                toggleCategory={toggleCategory}
                 setShowActivityScreen={setShowActivityScreen}
                 setTemporaryActivity={setTemporaryActivity}
-                handleEditDuration={handleEditDuration}
-                setOpenCategory={setOpenCategory}/>
+                setOpenCategory={setOpenCategory}
+                setShowEditDurationScreen={setShowEditDurationScreen}/>
             )}
 
             {showActivityDetails && (
@@ -283,18 +190,18 @@ const HomeDashboard = () => {
                 <CalendarScreen
                 DatePicker={DatePicker}
                 format={format}
-                setTemporarySessionDate={setTemporarySessionDate}
                 temporarySession={temporarySession}
                 setTemporarySession={setTemporarySession}
-                createSession={createSession}
+                setSessions={setSessions}
                 setShowCalendar={setShowCalendar}/>
             )}
 
             {showSessionTypeScreen && (
                 <SessionTypeScreen
                 sessionRef={sessionRef}
-                handleSessionSelect={handleSessionSelect}
-                setSessionTypeScreen={setSessionTypeScreen}/>
+                setSessionTypeScreen={setSessionTypeScreen}
+                setShowCalendar={setShowCalendar}
+                setTemporarySession={setTemporarySession}/>
             )}
         </div>
     );

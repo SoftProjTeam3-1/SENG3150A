@@ -1,9 +1,7 @@
-import {calculateTotalSessionMinutes} from "./logic/SessionLogic.js";
+import {calculateTotalSessionMinutes, updateNotesForSession} from "./logic/SessionContainerLogic.js";
 
 
-
-
-const SessionContainer_Mobile = ({sessions, selectedSessions, updateNotesForSession}) => {
+const SessionContainer_Mobile = ({sessions, selectedSessions, setSessions}) => {
 
     return (
         <>
@@ -45,7 +43,7 @@ const SessionContainer_Mobile = ({sessions, selectedSessions, updateNotesForSess
                                                                     className="w-65 h-110 resize-none py-3 outline-none focus:outline-none"
                                                                     placeholder="Write something here..."
                                                                     value={notes}
-                                                                    onChange={(e) => updateNotesForSession(id, e.target.value)}
+                                                                    onChange={(e) => updateNotesForSession({id:id, newNotes:e.target.value, setSessions})}
                                                                 />
                                                     </div>
                                                 </div>
@@ -93,7 +91,7 @@ const SessionContainer_Mobile = ({sessions, selectedSessions, updateNotesForSess
                                                                     className="w-65 h-110 resize-none py-3 outline-none focus:outline-none"
                                                                     placeholder="Write something here..."
                                                                     value={notes}
-                                                                    onChange={(e) => updateNotesForSession(id, e.target.value)}
+                                                                    onChange={(e) => updateNotesForSession({id:id, newNotes:e.target.value, setSessions})}
                                                                 />
                                             </div>
                                         </div>

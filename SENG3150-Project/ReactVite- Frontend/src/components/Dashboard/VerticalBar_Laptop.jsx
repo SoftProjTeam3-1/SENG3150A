@@ -6,7 +6,9 @@
 // handleRemoveDate = The function that is called when a user clicks a session. It removes it from selectedSessions
 // handleNewSession = Creates a new session.
 
-const VerticalBar_Laptop = ({sessions, selectedSessions, handleClickSelectedSessions, handleRemoveDate, handleNewSession}) => {
+import {handleNewSession, handleRemoveDate, handleClickSelectedSessions} from "./logic/VerticalBarSessionLogic.js"
+
+const VerticalBar_Laptop = ({sessions, selectedSessions, setSessionTypeScreen, setSelectedSessions, setTemporarySession}) => {
 
     return(
         <>
@@ -22,10 +24,10 @@ const VerticalBar_Laptop = ({sessions, selectedSessions, handleClickSelectedSess
                             <button
                                 key={id}
                                 className={`w-32 h-20 mt-2 rounded-2xl flex flex-col items-center justify-center leading-none transition-transform duration-200 ease-in-out hover:scale-105 ${isClicked ? 'bg-orange-300' : 'bg-white'}`}
-                                onClick={() => handleClickSelectedSessions(id)}
+                                onClick={() => handleClickSelectedSessions({id: id, setSelectedSessions})}
                                 onContextMenu={(e) => {
                                     e.preventDefault();
-                                    handleRemoveDate(id);
+                                    handleRemoveDate({id: id, setSelectedSessions});
                                 }}>
                                 <div className="font-bold">{month} {day}</div>
                                 <div className="text-sm">{type} session</div>
@@ -36,7 +38,7 @@ const VerticalBar_Laptop = ({sessions, selectedSessions, handleClickSelectedSess
 
                 <button
                     className="mt-4 text-6xl w-32 h-20 bg-white border-4 border-gray-600 rounded-2xl flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
-                    onClick={() => handleNewSession()}
+                    onClick={() => handleNewSession({setSessionTypeScreen, setTemporarySession})}
                 >
                     <div className="font-bold text-base">New Session</div>
                 </button>
