@@ -13,5 +13,5 @@ public interface SessionActivityRepository extends JpaRepository<SessionActivity
     SessionActivity findById(int id);
     List<SessionActivity> findBySession(Session session);
     List<SessionActivity> findByActivity(Activity activity);
-    
+    SessionActivity findDistinctBySessionAndActivity(Session session, Activity activity);
 }

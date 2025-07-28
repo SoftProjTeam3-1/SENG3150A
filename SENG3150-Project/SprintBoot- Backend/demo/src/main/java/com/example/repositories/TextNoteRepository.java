@@ -1,6 +1,8 @@
 package com.example.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -12,4 +14,9 @@ public interface TextNoteRepository extends JpaRepository<TextNote, Integer> {
     List<TextNote> findByText(String text);
     List<TextNote> findBySession(Session session);
     
+    @Query(value = "SELECT text FROM text_note tn INNER JOIN session s ON s.sessionid = tn.sessionid WHERE s.sessionid = :sessionId", nativeQuery = true)
+    String findTextBySessionId(@Param("sessionId") int sessionId);
+
+    @Query(value = "UPDATE text_note SET text = :text WHERE sessionID = :sessionID", nativeQuery = true)
+    void updateTextBySessionId(@Param("text") String text, @Param("sessionId") int sessionID);
 }
