@@ -1,7 +1,7 @@
 /*
     This file makes a tile for the tile layout of the Manage Activities page.
     Each tile is a category.
-    The body of the tile is a list of activities in that category.
+    The body of the tile is a list of activities in that category. WOAH!
 */
 import React from 'react';
 import ActivityTileBody from './TileBody';
