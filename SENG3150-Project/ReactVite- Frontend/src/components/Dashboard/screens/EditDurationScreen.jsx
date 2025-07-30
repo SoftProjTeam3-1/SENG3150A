@@ -14,6 +14,8 @@ const EditDurationScreen = ({editRef, durationInput, setDurationInput, temporary
                     onChange={(e) => setDurationInput(e.target.value)}
                 />
                 <button
+                    //NOTE: This button statically changes the duration of the activity for that particular session. 
+                    //we may need to add durationt to sessionactivity in the backend. If that is the case, we will need to put a hook here
                     className="bg-white text-gray-800 rounded px-4 py-2 hover:bg-gray-300"
                     onClick={() => {
                         handleEditDuration(setShowEditDurationScreen)

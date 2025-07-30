@@ -30,6 +30,7 @@ export const handleSessionSelect = ({type, setSessionTypeScreen, setShowCalendar
 };
 
 // Creates a new session
+//TODO: Hook this up to the backend. This is the creation second of the session
 export const createSession = async ({session, setSessions, setTemporarySession}) => {
 
     const newSession = { ...session }; // this creates a shallow copy
