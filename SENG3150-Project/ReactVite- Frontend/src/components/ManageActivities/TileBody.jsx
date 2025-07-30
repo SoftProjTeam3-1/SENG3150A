@@ -4,6 +4,10 @@ import '@progress/kendo-theme-default/dist/all.css';
 import { X } from 'lucide-react';
 
 const TileBody = ({ categoryName }) => {
+
+  // State variables for updating the activity list
+  const [updateSwitch, setUpdateSwitch] = useState(false);
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -35,7 +39,7 @@ const TileBody = ({ categoryName }) => {
       }
     }
     fetchData();
-  }, [categoryName]);
+  }, [updateSwitch]);
 
   const [activityList, setActivityList] = useState([]);
   const [activityDescriptionList, setActivityDescriptionList] = useState([]);
@@ -88,7 +92,9 @@ const TileBody = ({ categoryName }) => {
         }
 
         await response.json();
-        location.reload();
+        // updates the activity list
+        setUpdateSwitch(!updateSwitch);
+        //reload
       } catch (error) {
         console.error('Error adding activity:', error);
       }
@@ -163,7 +169,9 @@ const TileBody = ({ categoryName }) => {
       }
 
       await response.json();
-      location.reload();
+      // update the activity list
+      setUpdateSwitch(!updateSwitch);
+      //location.reload();
     } catch (error) {
       console.error('Error deleting activity:', error);
     }
