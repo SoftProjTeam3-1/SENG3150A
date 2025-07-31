@@ -1,19 +1,26 @@
-
+import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd';
 import { useState, useEffect, useRef } from "react";
 import DatePicker from "react-datepicker";
 import { format } from 'date-fns';
 import "react-datepicker/dist/react-datepicker.css";
+
+
+
 import Header from "./Header.jsx";
-import {
-    DragDropContext,
-    Droppable,
-    Draggable
-} from 'react-beautiful-dnd';
+import VerticalBar_Mobile from "./VerticalBar_Mobile.jsx";
+import VerticalBar_Laptop from "./VerticalBar_Laptop.jsx";
+import SessionContainer_Laptop from "./SessionContainer_Laptop.jsx";
+import SessionContainer_Mobile from "./SessionContainer_Mobile.jsx";
+import EditDurationScreen from "./screens/EditDurationScreen.jsx";
+import ActivityScreen from "./screens/ActivityScreen.jsx";
+import ActivityDetailScreen from "./screens/ActivityDetailScreen.jsx";
+import CalendarScreen from "./screens/CalendarScreen.jsx";
+import SessionTypeScreen from "./screens/SessionTypeScreen.jsx";
+
+import {populateDefaultCategories} from "./logic/PopulatingLogic.js";
 
 
 const HomeDashboard = () => {
-
-
     // Temporary session which holds data before creation to db
     const [temporarySession, setTemporarySession] = useState({ id:null, date:null, type:null, activities:[], notes:""});
 
@@ -23,19 +30,14 @@ const HomeDashboard = () => {
     // Stores selected local sessions the user has clicked
     const [selectedSessions, setSelectedSessions] = useState([]);
 
-
-
-    // Temporary category which holds data before being added to categories list
-    const [temporaryCategory, setTemporaryCategory] = useState({name:null, activities:[]});
+    // Temporary category which holds data before being added to categories list: NOT USED, but good to see
+    //const [temporaryCategory, setTemporaryCategory] = useState({name:null, activities:[]});
 
     //Stores the categories
     const [Categories, setCategories] = useState([]);
 
-
-
     // Temporary activity to be stored inside categories
     const [temporaryActivity, setTemporaryActivity] = useState({name: null, description: null, time: null, category: null, duration: 0, row: null});
-
 
 
     // Used to show user menus
@@ -56,185 +58,23 @@ const HomeDashboard = () => {
     // Category Menu Functions
     const [openCategory, setOpenCategory] = useState(null);
 
-    const toggleCategory = (categoryName) => {
-        console.log(categoryName);
-        setOpenCategory(prev => (prev === categoryName ? null : categoryName));
-        console.log(categoryName);
-        console.log(Categories);
-    };
-
-
-    //Functions for setting a temporary session
-    const setTemporarySessionID = () => {
-        setTemporarySession(prev => ({ ...prev, id: crypto.randomUUID() }));
-    };
-
-    const setTemporarySessionType = (type) => {
-        setTemporarySession(prev => ({ ...prev, type }));
-    };
-
-    const setTemporarySessionDate = (date) => {
-        setTemporarySession(prev => ({ ...prev, date }));
-    };
-
-    // Creates a new session on the db
-    const createSession = async (session) => {
-        // const res = await fetch('http://localhost:8080/api/sessions', {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(session)
-        // });
-        // const newSession = await res.json();
-
-        const newSession = { ...session }; // this creates a shallow copy
-        setSessions(prev => [...prev, newSession]);
-
-        // Reset teh temp session so no previous data is saved
-        setTemporarySession({
-            id: null,
-            date: null,
-            type: null,
-            activities: [],
-            notes: "",
-        });
-    };
-
-
-    // Functionality for when a date box is clicked
-    const handleClickSelectedSessions = (id) =>{
-        setSelectedSessions(prev =>
-            prev.includes(id)
-                ? prev.filter(clickedId => clickedId !== id) // unselect
-                : [...prev, id] // select
-        );
-    }
-
-    // Functionality for when date box is right-clicked to be removed
-    const handleRemoveDate = (id) =>{
-        setSelectedSessions(prev => prev.filter(dateObj => dateObj.id !== id));
-        setSelectedSessions(prev => prev.filter(clickedId => clickedId !== id));
-    }
-
-    // Sets the session ID
-    const handleNewActivity = () =>{
-        setTemporarySessionID();
-        setSessionTypeScreen(prev => !prev);
-    }
-
-    // Sets the Session type and opens calendar
-    const handleSessionSelect = (type) => {
-        setTemporarySessionType(type);
-        setSessionTypeScreen(false);
-        setShowCalendar(true);
-    };
-
-    const updateNotesForSession = (id, newNotes) => {
-        setSessions(prev =>
-            prev.map(session =>
-                session.id === id ? { ...session, notes: newNotes } : session
-            )
-        );
-    };
-
-    const handleActivityScreenClick = (id) => {
-        setShowActivityScreen(prev => ! prev);
-        // Sets the ID so we know which box to add the activity to
-        setSingleSelectedSession(id);
-    }
 
     // Handles Adding the Activity to the session
-
     const [singleSelectedSession, setSingleSelectedSession] = useState(); // Sets session ID in order to know where to add the activity to
-
-    const handleClickActivity = (activity) => {
-        setSessions(prevSessions =>
-            prevSessions.map(session => {
-                if (session.id === singleSelectedSession) {
-                    // Determine the max existing row number
-                    const maxRow = session.activities.length > 0
-                        ? Math.max(...session.activities.map(act => act.row ?? 0))
-                        : 0;
-
-                    // Create the new activity with the next available row
-                    const newActivity = {
-                        ...activity,
-                        row: maxRow + 1
-                    };
-
-                    return {
-                        ...session,
-                        activities: [...session.activities, newActivity]
-                    };
-                }
-                return session;
-            })
-        );
-    };
 
 
     // Handles Duration of Activity Functions
-
     const [durationInput, setDurationInput] = useState(0);
 
-    const handleEditDuration = () => {
-        setShowEditDurationScreen(prev => !prev);
-    }
 
-    const handleRemoveActivityFromSession = (sessionId, activity) => {
-        setSessions(prev =>
-            prev.map(session =>
-                session.id === sessionId
-                    ? {
-                        ...session,
-                        activities: session.activities.filter(
-                            a => !(a.name === activity.name && a.row === activity.row)
-                        )
-                    }
-                    : session
-            )
-        );
-    };
-
-
+    // Show sessions in console for debugging
     useEffect(() => {
         console.log("Sessions updated:", sessions);
     }, [sessions]);
 
-    // Populates the categories
-    const populateDefaultCategories = () => {
-        const defaultCategories = [
-            {
-                name: "Warm Up",
-                activities: [
-                    { name: "Jogging", description: "Light jogging to warm up", duration: 30, category:"Warm Up" },
-                    { name: "Dynamic Stretches", description: "Full body stretches", duration: 20, category:"Warm Up" },
-                ]
-            },
-            {
-                name: "Skills Practice",
-                activities: [
-                    { name: "Passing", description: "Short and long passes", duration: 20, category:"Skills Practice" },
-                    { name: "Dribbling", description: "Cone dribbling drills", duration: 30, category:"Skills Practice" },
-                ]
-            },
-            {
-                name: "Games",
-                activities: [
-                    { name: "Small-sided Game", description: "4v4 half-pitch game", duration: 15, category:"Games" },
-                    { name: "Scrimmage", description: "Full team practice match", duration: 30, category:"Games" },
-                ]
-            }
-        ];
 
-        setCategories(defaultCategories);
-    };
-
+    // When a User clicks away from a menu, the pop-up screen disappears
     useEffect(() => {
-        // fetch('http://localhost:8080/api/sessions')
-        //     .then(res => res.json())
-        //     .then(data => setSessions(data))
-        //     .catch(err => console.error("Error loading sessions", err));
-
         const handleClickOutside = (event) => {
             if (
                 showSessionTypeScreen &&
@@ -266,497 +106,103 @@ const HomeDashboard = () => {
     }, [showSessionTypeScreen, showActivityScreen, showActivityDetails]);
 
 
-    // Calculate total minutes
-    const calculateTotalSessionMinutes = (session) => {
-        if (!session.activities || session.activities.length === 0) return 0;
-
-        // Group activities by their row
-        const rowMap = {};
-
-        session.activities.forEach(activity => {
-            const row = activity.row ?? 0;
-            if (!rowMap[row]) rowMap[row] = [];
-            rowMap[row].push(activity.duration || 0);
-        });
-
-        // Sum the maximum duration per row
-        let total = 0;
-        Object.values(rowMap).forEach(durations => {
-            total += Math.max(...durations);
-        });
-
-        return total;
-    };
-
+    // POPULATES DASHBOARD -- REMOVE WHEN HOOKS WORK
     useEffect(() => {
-        populateDefaultCategories();
+        populateDefaultCategories({setCategories});
     }, []);
 
 
-    const parseDroppableId = (id) => {
-        const [sessionId, rowStr] = id.split('__row-');
-        return {
-            sessionId,
-            rowIndex: parseInt(rowStr, 10)
-        };
-    };
-    const parseDraggableId = (id) => {
-        const [sessionId, rest] = id.split('__');
-        const [activityName, indexStr] = rest.split('-');
-        return {
-            sessionId,
-            activityName,
-            index: parseInt(indexStr, 10)
-        };
-    };
-
-    const onDragStart = (start) => {
-        console.log("Drag started:");
-        console.log("Draggable ID:", start.draggableId);
-        console.log("Source Droppable ID:", start.source.droppableId);
-    };
-
-    const handleActivityMove = ({ draggableId, source, destination }) => {
-        const { sessionId: srcSessionId, rowIndex: srcRow } = parseDroppableId(source.droppableId);
-        const { sessionId: dstSessionId, rowIndex: dstRow } = parseDroppableId(destination.droppableId);
-        const { activityName } = parseDraggableId(draggableId);
-
-        // If dropped in same spot, do nothing
-        if (
-            srcSessionId === dstSessionId &&
-            srcRow === dstRow &&
-            source.index === destination.index
-        ) return;
-
-        setSessions(prevSessions => {
-            const updatedSessions = [...prevSessions];
-
-            const srcSessionIndex = updatedSessions.findIndex(s => s.id === srcSessionId);
-            const dstSessionIndex = updatedSessions.findIndex(s => s.id === dstSessionId);
-            if (srcSessionIndex === -1 || dstSessionIndex === -1) return prevSessions;
-
-            const srcSession = { ...updatedSessions[srcSessionIndex] };
-            const dstSession = srcSessionId === dstSessionId ? srcSession : { ...updatedSessions[dstSessionIndex] };
-
-            const srcActivities = [...srcSession.activities];
-            const dstActivities = srcSessionId === dstSessionId ? srcActivities : [...dstSession.activities];
-
-            // Intra-row reorder
-            if (srcSessionId === dstSessionId && srcRow === dstRow) {
-                //const rowItems = srcActivities.filter(a => a.row === srcRow);
-
-                //const rowActivity = rowItems[source.index];
-                const globalIndices = srcActivities.reduce((acc, a, i) => {
-                    if (a.row === srcRow) acc.push(i);
-                    return acc;
-                }, []);
-
-                const [removed] = srcActivities.splice(globalIndices[source.index], 1);
-                srcActivities.splice(globalIndices[destination.index], 0, removed);
-
-                updatedSessions[srcSessionIndex] = { ...srcSession, activities: srcActivities };
-                return updatedSessions;
-            }
-
-            // Inter-row or inter-session move
-            const srcIdx = srcActivities.findIndex(
-                (a) => a.name === activityName && a.row === srcRow
-            );
-            if (srcIdx === -1) return prevSessions;
-
-            const [movedItem] = srcActivities.splice(srcIdx, 1);
-            movedItem.row = dstRow;
-
-            // Find global insert index
-            const insertAt = dstActivities.reduce(
-                (acc, a, i) => (a.row === dstRow && acc.count++ === destination.index ? { idx: i, found: true, count: acc.count } : acc),
-                { idx: dstActivities.length, count: 0, found: false }
-            ).idx;
-
-            dstActivities.splice(insertAt, 0, movedItem);
-
-            updatedSessions[srcSessionIndex] = { ...srcSession, activities: srcActivities };
-            if (srcSessionId !== dstSessionId) {
-                updatedSessions[dstSessionIndex] = { ...dstSession, activities: dstActivities };
-            }
-
-            return updatedSessions;
-        });
-    };
-
-
-
-
-
-
-    const onDragEnd = (result) => {
-        const { source, destination, draggableId } = result;
-
-        if (!destination) {
-            console.warn("Dropped outside a valid droppable.");
-            return;
-        }
-
-        handleActivityMove({ draggableId, source, destination });
-    };
 
 
 
     return(
-        <div className="w-full m-0 p-0">
+        <div className="w-full m-0 p-0 max-w-full">
 
             <Header headerLabel={"Mayfield Soccer Team - Dashboard"}/>
 
-            <div id="middleSegment" style={{display: 'flex'}} className="bg-white min-h-screen">
-                <div id="verticalBar" className="w-2/3 sm:w-1/6 bg-gray-600 text-2xl flex flex-col items-center ">
-                    <ul className="text-center flex flex-col items-center relative top-[10px]">
-                        {sessions.map(({id, date, type}) => {
-                            if (!date) return null;
-
-                            const [month, day] = date.split(' ');
-                            const isClicked = selectedSessions.includes(id);
-                            return (
-                                <button
-                                    key={id}
-                                    className={`mt-2 h-20 w-35 rounded-2xl flex flex-col items-center justify-center leading-none transition-transform duration-200 ease-in-out hover:scale-105
-                                ${isClicked ? 'bg-orange-300 ' : 'bg-white '}`}
-                                    onClick={() => handleClickSelectedSessions(id)}
-                                    onContextMenu={(e) => {
-                                        e.preventDefault(); // prevent browser context menu
-                                        handleRemoveDate(id);
-                                    }}>
-
-                                    <div className="leading-none font-bold">{month} {day}</div>
-                                    <br/>
-                                    <div className="leading-none -mt-5 text-sm">{type} session</div>
-                                </button>
-                            );
-                        })}
-                    </ul>
-
-                    <button
-                        className="mt-2 relative top-[10px] text-6xl h-20 w-20 bg-white border-5 border-gray-600 rounded-2xl flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
-                        onClick={() => handleNewActivity()}
-                    >
-                        <div className="leading-none -mt-2 text-center">
-                            +
-                        </div>
-                    </button>
-                </div>
-
-                <div id="userDisplay">
-                    {/* Drag Drop Container */}
-                    <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
-                        <div className="p-5 flex flex-wrap gap-4">
-                            {sessions.filter(dateObj => selectedSessions.includes(dateObj.id))
-                                .map((session) => {
-                                    const { id, date, type, notes } = session;
-                                    const [month, day] = date.split(' ');
-
-                                    const groupedActivities = {};
-                                    session.activities.forEach((activity) => {
-                                        const row = activity.row || 0;
-                                        if (!groupedActivities[row]) groupedActivities[row] = [];
-                                        groupedActivities[row].push(activity);
-                                    });
-
-                                    return (
-                                        <div className="flex flex-col gap-y-5 ">
-
-                                            {/* Determines if game or training was selected */}
-                                            {type === 'game' ? (
-                                                <>
-                                                    <div className="border-gray-600 border-2 rounded-2xl">
-                                                        <div
-                                                            key={id}
-                                                            className="w-75 h-140 bg-white rounded-2xl flex flex-col items-center text-black "
-                                                        >
-                                                            <div className="text-xl w-full text-center py-3 font-bold">{month} {day}</div>
-
-                                                            <div
-                                                                className="text-l py-3 w-75 h-125 bg-white rounded-2xl flex flex-col items-center text-black overflow-y-auto"
-                                                            >
-                                                                <div className="font-bold">Notes</div>
-                                                                <div>
-                                                            <textarea
-                                                                className="w-65 h-110 resize-none py-3"
-                                                                placeholder="Write something here..."
-                                                                value={notes}
-                                                                onChange={(e) => updateNotesForSession(id, e.target.value)}
-                                                            />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <div className="gap-y-3 w-75 h-140 bg-gray-600 rounded-2xl flex flex-col items-center text-black pb-3 py-2 border-gray-600 border-2">
-                                                        <div className="text-xl w-full text-center text-white font-bold">{month} {day}</div>
-                                                        <div className="overflow-y-auto flex flex-wrap w-full justify-center py-3">
-
-                                                            <div>
-                                                                {/* Drag Zones for Each Row */}
-                                                                {Object.keys(groupedActivities)
-                                                                    .sort((a, b) => parseInt(a) - parseInt(b))
-                                                                    .map((rowKey) => (
-                                                                        <Droppable
-                                                                            droppableId={`${id}__row-${rowKey}`}
-                                                                            //direction="horizontal"
-                                                                            key={rowKey}
-                                                                        >
-                                                                            {(provided) => (
-                                                                                <div
-                                                                                    ref={provided.innerRef}
-                                                                                    {...provided.droppableProps}
-                                                                                    className="flex gap-2 mb-2"
-                                                                                >
-                                                                                    {groupedActivities[rowKey].map((activity, index) => (
-                                                                                        <Draggable
-                                                                                            key={`${id}__${activity.name}-${index}`}
-                                                                                            draggableId={`${id}__${activity.name}-${index}`}
-                                                                                            index={index}
-
-                                                                                        >
-                                                                                            {(dragProvided) => (
-                                                                                                <div
-                                                                                                    ref={dragProvided.innerRef}
-                                                                                                    {...dragProvided.draggableProps}
-                                                                                                    {...dragProvided.dragHandleProps}
-                                                                                                    className="relative group bg-orange-100 px-4 py-2 rounded shadow text-center select-none transition-transform duration-200 ease-in-out hover:scale-105"
-                                                                                                >
-                                                                                                    <button
-                                                                                                        className="absolute top-0 right-1 text-red-600 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                                                                                                        onClick={() => handleRemoveActivityFromSession(session.id, activity)}
-                                                                                                    >
-                                                                                                        ×
-                                                                                                    </button>
-                                                                                                    <div className="font-bold">{activity.name}</div>
-                                                                                                    <div className="text-sm !k-font-style-italic">{activity.category}</div>
-                                                                                                    <div className="font-bold">{activity.duration} minutes</div>
-                                                                                                </div>
-                                                                                            )}
-                                                                                        </Draggable>
-                                                                                    ))}
-                                                                                    {provided.placeholder}
-                                                                                </div>
-                                                                            )}
-                                                                        </Droppable>
-                                                                    ))}
-                                                            </div>
-
-                                                            {/* Plus Button */}
-                                                            <div className="w-64 h-24 flex items-center justify-center">
-                                                                <button
-                                                                    className="text-6xl w-20 h-20 bg-orange-400 text-white shadow-emerald-50 rounded-2xl flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
-                                                                    onClick={() => handleActivityScreenClick(id)}
-                                                                >
-                                                                    <div className="leading-none -mt-2">+</div>
-                                                                </button>
-                                                            </div>
+            <div id="middleSegment" style={{display: 'flex', backgroundColor: '#AFD2BB' }} className="flex flex-col sm:flex-row bg-white min-h-screen max-w-full">
 
 
-                                                        </div>
-                                                        {/* Total Time */}
-                                                        <div className="text-center mt-auto pt-3 text-white font-bold">
-                                                            Total Time: {calculateTotalSessionMinutes(session)} Minutes
-                                                        </div>
+                <VerticalBar_Mobile
+                    sessions={sessions}
+                    selectedSessions={selectedSessions}
+                    setSessionTypeScreen={setSessionTypeScreen}
+                    setSelectedSessions={setSelectedSessions}
+                    setTemporarySession={setTemporarySession}
+                />
+
+                <VerticalBar_Laptop
+                    sessions={sessions}
+                    selectedSessions={selectedSessions}
+                    setSessionTypeScreen={setSessionTypeScreen}
+                    setSelectedSessions={setSelectedSessions}
+                    setTemporarySession={setTemporarySession}
+                />
 
 
-                                                    </div>
+                <SessionContainer_Laptop
+                    sessions={sessions}
+                    setSessions={setSessions}
+                    selectedSessions={selectedSessions}
+                    DragDropContext={DragDropContext}
+                    Droppable={Droppable}
+                    Draggable={Draggable}
+                    setShowActivityScreen={setShowActivityScreen}
+                    setSingleSelectedSession={setSingleSelectedSession}
+                />
 
+                <SessionContainer_Mobile
+                    sessions={sessions}
+                    selectedSessions={selectedSessions}
+                />
 
-                                                    {/* Notes */}
-                                                    <div className="text-l py-3 w-75 h-125 bg-white rounded-2xl flex flex-col items-center text-black border-gray-600 border-2">
-                                                        <div className="font-bold">Notes</div>
-                                                        <div>
-                                                            <textarea
-                                                                className="w-65 h-110 resize-none py-3"
-                                                                placeholder="Write something here..."
-                                                                value={notes}
-                                                                onChange={(e) => updateNotesForSession(id, e.target.value)}
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                </>
-                                            )}
-                                        </div>
-                                    );
-                                })}
-                        </div>
-                    </DragDropContext>
-                </div>
             </div>
 
             {showEditDurationScreen && (
-                <div className="absolute w-1/6 min-h-screen top-20 left-0 bg-gray-600 shadow p-5 text-white text-2xl text-center flex flex-col items-center"
-                     ref={editRef}>
-                    <div className="text-m"> Edit Duration (Minutes): </div>
-
-                    <input
-                        type="number"
-                        className="w-20 h-10 rounded text-white text-center border-2 border-white"
-                        value={durationInput}
-                        onChange={(e) => setDurationInput(e.target.value)}
-                    />
-                    <button
-                        className="mt-4 bg-white text-gray-800 rounded px-4 py-2 hover:bg-gray-300"
-                        onClick={() => {
-
-                            handleEditDuration()
-
-                            const activityWithDuration = { ...temporaryActivity, duration: durationInput };
-
-                            handleClickActivity(activityWithDuration);
-
-                            // Resets the temporary Category
-                            setTemporaryActivity({name: null, description: null, time: null, category: null, duration: 0, row: null});
-                        }}
-                    >
-                        Confirm
-                    </button>
-
-                </div>
+                <EditDurationScreen
+                    editRef={editRef}
+                    durationInput={durationInput}
+                    setDurationInput={setDurationInput}
+                    temporaryActivity={temporaryActivity}
+                    setTemporaryActivity={setTemporaryActivity}
+                    setShowEditDurationScreen={setShowEditDurationScreen}
+                    setSessions={setSessions}
+                    singleSelectedSession={singleSelectedSession}
+                />
             )}
 
             {showActivityScreen && (
-                <div  className="hidden sm:block absolute top-20 left-0 bg-gray-600 w-2/3 sm:w-1/6 shadow p-5 text-gray-600 text-2xl flex flex-col items-center space-y-4 h-auto sm:h-full"
-                      ref={activityRef}>
-                    <div className="text-m"> Select Activity: </div>
-                    <ul className="w-full text-center flex flex-col items-center relative space-y-4">
-                        {Categories.map((category) => (
-
-                                <div key={category.name} className="w-full">
-                                    <button
-                                        className="w-full h-20 bg-white text-gray-600 rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
-                                        onClick={() => toggleCategory(category.name)}
-                                    >
-                                        <div>{category.name}</div>
-                                    </button>
-
-                                    {/* Drop Down Menu */}
-                                    {openCategory === category.name && (
-                                        category.activities.length > 0 ? (
-                                            <div className="flex flex-col gap-2 mt-2 w-full">
-                                                {category.activities.map((activity) => (
-
-                                                    <div key={crypto.randomUUID()} className="w-full h-10 bg-white text-gray-600 rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105">
-                                                        <button className="text-xs select-none"
-                                                                onClick={() => {
-                                                                    // Sets the activity to the temporary var to hold
-                                                                    setShowActivityScreen(false);
-                                                                    setTemporaryActivity(activity);
-                                                                    handleEditDuration();
-                                                                }}>{activity.name}</button>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        ) : null
-                                    )}
-                                </div>
-                            )
-                        )
-                        }
-                    </ul>
-                </div>
+                <ActivityScreen
+                    activityRef={activityRef}
+                    openCategory={openCategory}
+                    Categories={Categories}
+                    setShowActivityScreen={setShowActivityScreen}
+                    setTemporaryActivity={setTemporaryActivity}
+                    setOpenCategory={setOpenCategory}
+                    setShowEditDurationScreen={setShowEditDurationScreen}/>
             )}
 
             {showActivityDetails && (
-                <div className="absolute w-1/6 min-h-screen top-20 left-0 bg-gray-600 shadow p-5 text-white text-2xl text-center flex flex-col items-center"
-                     ref={activityDetailsRef}>
-
-                </div>
+                <ActivityDetailScreen/>
             )}
 
             {showCalendar && (
-                <div className="fixed inset-0 bg-opacity-30 backdrop-blur-sm flex justify-center items-center z-50">
-                    <div className="bg-white p-6 rounded-xl shadow-xl scale-150">
-                        <DatePicker
-                            inline
-                            onChange={(date) => {
-                                const formatted = format(date, 'MMM dd');
-                                setTemporarySessionDate(formatted);
-                                const fullSession = {
-                                    ...temporarySession,
-                                    date: formatted};
-                                setTemporarySession(fullSession); // store latest version
-                                createSession(fullSession);
-                                setShowCalendar(false); // close after picking
-                            }}
-                        />
-                    </div>
-                </div>
+                <CalendarScreen
+                    DatePicker={DatePicker}
+                    format={format}
+                    temporarySession={temporarySession}
+                    setTemporarySession={setTemporarySession}
+                    setSessions={setSessions}
+                    setShowCalendar={setShowCalendar}/>
             )}
 
             {showSessionTypeScreen && (
-                <div ref={sessionRef}>
-
-                    {/* Desktop / tablet sidebar */}
-                    <div
-                        className="
-        hidden sm:absolute sm:top-20 sm:left-0 
-        sm:w-64 sm:h-auto sm:bg-gray-600 sm:shadow sm:p-5 
-        sm:text-gray-600 sm:text-2xl sm:flex sm:flex-col sm:items-center sm:space-y-4
-      "
-                    >
-                        <button
-                            onClick={() => handleSessionSelect('training')}
-                            className="
-          w-full py-4 bg-white rounded-2xl 
-          flex items-center justify-center 
-          transition-transform duration-200 ease-in-out hover:scale-105
-        "
-                        >
-                            Training Session
-                        </button>
-                        <button
-                            onClick={() => handleSessionSelect('game')}
-                            className="
-          w-full py-4 bg-white rounded-2xl 
-          flex items-center justify-center 
-          transition-transform duration-200 ease-in-out hover:scale-105
-        "
-                        >
-                            Game Session
-                        </button>
-                        <button
-                            onClick={() => setSessionTypeScreen(false)}
-                            className="mt-2 text-sm text-gray-300 hover:text-white"
-                        >
-                            Cancel
-                        </button>
-                    </div>
-
-                    {/* Mobile full‐screen modal */}
-                    <div className="absolute inset-0 flex items-center justify-center sm:hidden">
-                        <div
-                            className="bg-gray-600 text-gray-600 p-4 rounded-xl shadow-lg w-11/12 mx-4 flex flex-col gap-4"
-                        >
-                            <button
-                                onClick={() => handleSessionSelect('training')}
-                                className="w-full py-4 bg-white rounded-2xl text-base flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
-                            >
-                                Training Session
-                            </button>
-                            <button
-                                onClick={() => handleSessionSelect('game')}
-                                className="w-full py-4 bg-white rounded-2xl text-base flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105"
-                            >
-                                Game Session
-                            </button>
-                            <button
-                                onClick={() => setSessionTypeScreen(false)}
-                                className="mt-2 self-end text-sm text-gray-300 hover:text-white"
-                            >
-                                Cancel
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
+                <SessionTypeScreen
+                    sessionRef={sessionRef}
+                    setSessionTypeScreen={setSessionTypeScreen}
+                    setShowCalendar={setShowCalendar}
+                    setTemporarySession={setTemporarySession}/>
             )}
-
-
         </div>
     );
 };
