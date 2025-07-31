@@ -71,8 +71,11 @@ export const handleActivityScreenClick = ({id, setShowActivityScreen, setSingleS
 
 // TO DO: Hook this up to the backend to update the notes for the session
 export const updateNotesForSession = ({id, newNotes, setSessions}) => {
+    //set session
     setSessions(prev =>
+        //map through the sessions saved in state
         prev.map(session =>
+            //if the session ID is found, the notes within that sessuion specifically are updated. 
             session.id === id ? { ...session, notes: newNotes } : session
         )
     );

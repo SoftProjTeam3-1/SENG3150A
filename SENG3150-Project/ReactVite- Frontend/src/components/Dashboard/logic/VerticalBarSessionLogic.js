@@ -1,4 +1,4 @@
-
+import { createSessionInBackend } from './hooks/js';
 
 //Functions for setting a temporary session. A temporary session is made first before being added to the sessions list
 export const setTemporarySessionID = ({setTemporarySession}) => {
@@ -44,6 +44,9 @@ export const createSession = async ({session, setSessions, setTemporarySession})
         activities: [],
         notes: "",
     });
+
+    //hook below, the function location is in hooks.js::
+    createSessionInBackend(newSession); // This function would handle the backend logic
 };
 
 // Functionality for when a date box is clicked
