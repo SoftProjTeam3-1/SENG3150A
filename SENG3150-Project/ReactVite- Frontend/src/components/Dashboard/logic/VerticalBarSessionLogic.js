@@ -1,4 +1,5 @@
-import { createSessionInBackend } from './hooks/js';
+import { createSessionInBackend, deleteSession } from './hooks/js';
+import {selectedSessions} from '../HomeDashboard.jsx';
 
 //Functions for setting a temporary session. A temporary session is made first before being added to the sessions list
 export const setTemporarySessionID = ({setTemporarySession}) => {
@@ -63,5 +64,7 @@ export const handleClickSelectedSessions = ({id, setSelectedSessions}) =>{
 export const handleRemoveDate = ({id, setSelectedSessions}) =>{
     setSelectedSessions(prev => prev.filter(dateObj => dateObj.id !== id));
     setSelectedSessions(prev => prev.filter(clickedId => clickedId !== id));
+
+    deleteSession(selectedSessions);
 }
 
