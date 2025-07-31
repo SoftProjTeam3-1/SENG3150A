@@ -39,3 +39,37 @@ async function deleteSession(selectedSessions){
         console.error("Error deleting session in backend:", error);
     }
 };
+
+
+async function addSessionActivity(activity){
+    try{
+        const response = await fetch('/api/sessionActivity/addSessionActivity',{
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(activity)
+        });
+
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        await response.json();
+
+    }
+    catch(error){
+        console.error("Error adding session Activity:", error);
+    }
+}
+
+async function deleteSessionActivity(activity){
+    try{
+        const response = await fetch('/api/sessionActivity/deleteSessionActivity',{
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(activity)
+        });
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        await response.json();
+    }
+    catch(error){
+        console.error("Error deleting session Activity:", error);
+    }
+}
+

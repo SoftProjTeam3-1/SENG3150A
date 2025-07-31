@@ -60,7 +60,7 @@ export const handleClickSelectedSessions = ({id, setSelectedSessions}) =>{
 }
 
 // Functionality for when date box is right-clicked to be removed
-//TO DO: Hook this up to the backend DELETE SESSION
+//TODO: Hook this up to the backend DELETE SESSION
 export const handleRemoveDate = ({id, setSelectedSessions}) =>{
     setSelectedSessions(prev => prev.filter(dateObj => dateObj.id !== id));
     setSelectedSessions(prev => prev.filter(clickedId => clickedId !== id));
