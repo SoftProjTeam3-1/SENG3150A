@@ -340,13 +340,13 @@ const TileBody = ({ categoryName }) => {
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="bg-[#202C39] hover:bg-[#8C9195] transition-colors duration-200 text-white border-none rounded px-3 py-1 cursor-pointer"
+                  className="hover:bg-[#8C9195] transition-colors duration-200 text-[#202C39] border-none rounded px-4 py-2 cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="hover:bg-[#8C9195] transition-colors duration-200 text-[#202C39] border-none rounded px-4 py-2 cursor-pointer"
+                  className="bg-[#202C39] hover:bg-[#8C9195] transition-colors duration-200 text-white border-none rounded px-3 py-1 cursor-pointer"
                 >
                   Add
                 </button>
