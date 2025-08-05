@@ -255,36 +255,79 @@ const TileBody = ({ categoryName }) => {
         {showActivityInfo &&
           ReactDOM.createPortal(
             <div className="fixed inset-0 flex items-center justify-center z-50 bg-white/30 backdrop-blur-sm">
-          <div className="bg-white rounded shadow-lg p-6 w-full max-w-md">
-            {/* Display activity details */}
-            <h3 className="text-lg font-semibold mb-4">Activity Details</h3>
-            <div className="mb-2 flex">
-              <span className="font-bold min-w-[10rem]">Activity Name:</span>
-              <span>{selectedActivity}</span>
-            </div>
-            <div className="mb-2 flex items-start">
-              <span className="font-bold min-w-[10rem]">Description:</span>
-              <span className="break-words">{selectedActivityDescription || 'No description provided.'}</span>
-            </div>
-            <div className="mb-2 flex">
-              <span className="font-bold min-w-[10rem]">Time Required:</span>
-              <span>{selectedActivityTime}</span>
-            </div>
-            <div className="mb-2 flex">
-              <span className="font-bold min-w-[10rem]">People Required:</span>
-              <span>{selectedActivityPeopleRequired}</span>
-            </div>
-            {/* close button */}
-            <div className="flex justify-end space-x-3">
-              <button
-            type="button"
-            onClick={() => setShowActivityInfo(false)}
-            className="bg-[#202C39] hover:bg-[#8C9195] transition-colors duration-200 text-white border-none rounded px-3 py-1 cursor-pointer"
-              >
-            Close
-              </button>
-            </div>
-          </div>
+          <form
+              className="bg-white rounded shadow-lg p-6 w-full max-w-md"
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (newActivity.trim() === '') {
+                  alert('Please enter a valid activity name.');
+                  return;
+                }
+                // TODO: Update the activity details
+                handleUpdateActivity();
+                alert('Updating the activity details.');
+              }}
+            >
+              <h3 className="text-lg font-semibold mb-4">Edit Activity Details</h3>
+              <label className="block mb-2 text-sm font-medium text-gray-700">
+                Activity Name:
+              </label>
+              <input
+                type="text"
+                defaultValue={selectedActivity}
+                onChange={(e) => setNewActivity(e.target.value)}
+                placeholder="Enter activity name"
+                required
+                className="block w-full rounded border border-gray-300 p-2 mb-2"
+              />
+              <label className="block mb-2 text-sm font-medium text-gray-700">
+                Activity Description:
+              </label>
+              <textarea
+                placeholder="Enter activity description"
+                onChange={(e) => setNewActivityDescription(e.target.value)}
+                defaultValue={selectedActivityDescription}
+                className="block w-full rounded border border-gray-300 p-2 mb-2"
+                rows="4"
+              />
+              <label className="block mb-2 text-sm font-medium text-gray-700">
+                People Required:
+              </label>
+              <input
+                type="number"
+                placeholder="Enter the number of people required"
+                onChange={(e) => setNewActivityPeopleRequired(e.target.value)}
+                defaultValue={selectedActivityPeopleRequired === 0 ? '' : selectedActivityPeopleRequired}
+                className="block w-full rounded border border-gray-300 p-2 mb-2"
+                min="1"
+              />
+              <label className="block mb-2 text-sm font-medium text-gray-700">
+                Time Required (in minutes):
+              </label>
+              <input
+                type="number"
+                placeholder="Enter time in minutes"
+                onChange={(e) => setNewActivityTime(e.target.value)}
+                defaultValue={selectedActivityTime === 0 ? '' : selectedActivityTime}
+                className="block w-full rounded border border-gray-300 p-2 mb-2"
+                min="1"
+              />
+              <div className="flex justify-end space-x-3">
+                <button
+                  type="button"
+                  onClick={() => setShowActivityInfo(false)}
+                  className="hover:bg-[#8C9195] transition-colors duration-200 text-[#202C39] border-none rounded px-4 py-2 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-[#202C39] hover:bg-[#8C9195] transition-colors duration-200 text-white border-none rounded px-3 py-1 cursor-pointer"
+                >
+                  Save
+                </button>
+              </div>
+            </form>
             </div>,
             document.getElementById('form-root')
           )}
