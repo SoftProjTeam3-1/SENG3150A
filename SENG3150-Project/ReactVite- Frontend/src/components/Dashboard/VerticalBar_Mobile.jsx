@@ -28,7 +28,7 @@ const VerticalBar_Mobile = ({sessions, selectedSessions, setSessionTypeScreen,se
                                 onClick={() => handleClickSelectedSessions({id: id, setSelectedSessions})}
                                 onContextMenu={(e) => {
                                     e.preventDefault();
-                                    handleRemoveDate({id: id, setSelectedSessions});
+                                    handleRemoveDate({id: id, setSelectedSessions, selectedSessions});
                                 }}
                             >
                                 <div className="font-bold text-sm">{month} {day}</div>

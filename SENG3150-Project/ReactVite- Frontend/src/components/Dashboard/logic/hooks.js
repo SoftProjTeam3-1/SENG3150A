@@ -1,5 +1,5 @@
 
-async function createSessionInBackend(newSession){
+export async function createSessionInBackend(newSession){
     try{
         // need to sanitise newSession here. 
         var sanitisedSession = {
@@ -24,7 +24,7 @@ async function createSessionInBackend(newSession){
     }
 };
 
-async function deleteSession(selectedSessions){
+export async function deleteSession(selectedSessions){
     try{
         const response = await fetch('/api/session/deleteSessions', {
             method: 'POST',
@@ -41,7 +41,7 @@ async function deleteSession(selectedSessions){
 };
 
 
-async function addSessionActivity(activity){
+export async function addSessionActivity(activity){
     try{
         const response = await fetch('/api/sessionActivity/addSessionActivity',{
             method: 'POST',
@@ -58,7 +58,7 @@ async function addSessionActivity(activity){
     }
 }
 
-async function deleteSessionActivity(activity){
+export async function deleteSessionActivity(activity){
     try{
         const response = await fetch('/api/sessionActivity/deleteSessionActivity',{
             method: 'POST',

@@ -1,5 +1,4 @@
-import { createSessionInBackend, deleteSession } from './hooks/js';
-import {selectedSessions} from '../HomeDashboard.jsx';
+import { createSessionInBackend, deleteSession } from './hooks.js';
 
 //Functions for setting a temporary session. A temporary session is made first before being added to the sessions list
 export const setTemporarySessionID = ({setTemporarySession}) => {
@@ -47,7 +46,7 @@ export const createSession = async ({session, setSessions, setTemporarySession})
     });
 
     //hook below, the function location is in hooks.js::
-    createSessionInBackend(newSession); // This function would handle the backend logic
+    await createSessionInBackend(newSession); // This function would handle the backend logic
 };
 
 // Functionality for when a date box is clicked
@@ -61,10 +60,10 @@ export const handleClickSelectedSessions = ({id, setSelectedSessions}) =>{
 
 // Functionality for when date box is right-clicked to be removed
 //TODO: Hook this up to the backend DELETE SESSION
-export const handleRemoveDate = ({id, setSelectedSessions}) =>{
+export const handleRemoveDate = ({id, setSelectedSessions, selectedSessions}) =>{
     setSelectedSessions(prev => prev.filter(dateObj => dateObj.id !== id));
     setSelectedSessions(prev => prev.filter(clickedId => clickedId !== id));
 
-    deleteSession(selectedSessions);
+   deleteSession(selectedSessions);
 }
 
