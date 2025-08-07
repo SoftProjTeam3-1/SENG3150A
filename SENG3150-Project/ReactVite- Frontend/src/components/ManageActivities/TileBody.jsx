@@ -110,6 +110,13 @@ const TileBody = ({ categoryName }) => {
   }
 
   async function handleUpdateActivity() {
+    console.log("hook reached for updating activity")
+    console.log(selectedActivity, 
+      selectedActivityDescription, 
+      selectedActivityTime, 
+      selectedActivityPeopleRequired, 
+      categoryName);
+      
     if (newActivity.trim() !== '') {
       try {
         const response = await fetch('/api/activity/update', {
