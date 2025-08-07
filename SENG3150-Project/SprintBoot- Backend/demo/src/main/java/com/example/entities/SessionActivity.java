@@ -18,6 +18,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 
 @Entity
 public class SessionActivity {
@@ -25,6 +26,10 @@ public class SessionActivity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int sessionActivityID;
 
+    @Column(name = "row_num")
+    private int rowNum;
+
+    private String duration;
 
     @ManyToOne
     @JoinColumn(name = "sessionID")
@@ -35,9 +40,11 @@ public class SessionActivity {
     private Activity activity;
 
     public SessionActivity(){}
-    public SessionActivity(Session session, Activity activity) {
+    public SessionActivity(Session session, int rowNum, String duration, Activity activity) {
         this.session = session;
         this.activity = activity;
+        this.rowNum = rowNum;
+        this.duration = duration;
     }
 
     public int getId() {
@@ -46,6 +53,22 @@ public class SessionActivity {
 
     public void setId(int sessionActivityID) {
         this.sessionActivityID = sessionActivityID;
+    }
+
+    public int getRow() {
+        return rowNum;
+    }
+
+    public void setRow(int row) {
+        this.rowNum = row;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
     }
 
     public Session getSession() {
