@@ -4,6 +4,7 @@
 
 package com.example.session_controllers;
 
+import com.example.entities.User;
 import org.springframework.stereotype.Service;
 
 import com.example.repositories.SessionRepository;
@@ -87,5 +88,8 @@ public class SessionService {
             System.out.println("Error deleting session: " + e.getMessage());
             return false;
         }
+    }
+    public List<Session> getSessionsByUser(User user) {
+        return sessionRepository.findByUser(user);
     }
 }

@@ -18,6 +18,8 @@ import CalendarScreen from "./screens/CalendarScreen.jsx";
 import SessionTypeScreen from "./screens/SessionTypeScreen.jsx";
 
 import {populateDefaultCategories} from "./logic/PopulatingLogic.js";
+import {fetchSessions} from "./logic/hooks.js";
+import {transformSessions} from "./logic/CleanInputs.js";
 
 
 const HomeDashboard = () => {
@@ -72,6 +74,31 @@ const HomeDashboard = () => {
         console.log("Sessions updated:", sessions);
     }, [sessions]);
 
+    // After User Logs in
+    useEffect(() => {
+        fetchSessions()
+            .then((sessions) => {
+                console.log("Fetched sessions:", sessions);
+                if (sessions === null) {
+                    console.warn("Returned Sessions list is null");
+                } else {
+                    const fetchAndClean = async () => {
+                        const rawSessions = await fetchSessions();
+                        const cleanedSessions = await transformSessions(rawSessions);
+                        console.log("Cleaned Sessions: ", cleanedSessions);
+                        setSessions(cleanedSessions);
+                    };
+                    fetchAndClean();
+                }
+            })
+            .catch((err) => {
+                console.error("Failed to fetch sessions", err);
+                // optionally redirect to login if 403
+            });
+    }, []);
+
+
+
 
     // When a User clicks away from a menu, the pop-up screen disappears
     useEffect(() => {
@@ -116,6 +143,7 @@ const HomeDashboard = () => {
 
 
     return(
+
         <div className="w-full m-0 p-0 max-w-full">
 
             <Header headerLabel={"Mayfield Soccer Team - Dashboard"}/>

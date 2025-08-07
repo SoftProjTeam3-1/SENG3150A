@@ -61,21 +61,24 @@ const LoginForm = () => {
 
     try {
       const response = await fetch('/api/user/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({email, password})
+          method: 'POST',
+          headers: {
+                'Content-Type': 'application/json'},
+          body: JSON.stringify({email, password}),
+          credentials: 'include'
       })
 
-      const object = await response.text();
-      const data = JSON.parse(object);
+        const data = await response.json();
       console.log(data);
 
-      if(data.response){
-        console.log('User logged in successfully!')
-        window.location.href = '/dashboard'
-      } else {
+        if (data.response && data.user) {
+
+            console.log('User logged in successfully!');
+            window.location.href = '/dashboard';
+        } else {
+            console.error('User missing from response:', data);
+            toast.error('Login Failed');
+
         toast.error("Login Failed", {
           position: "top-right",
           autoClose: 5000,

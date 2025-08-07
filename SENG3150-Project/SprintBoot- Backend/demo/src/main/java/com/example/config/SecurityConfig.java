@@ -31,7 +31,8 @@ public class SecurityConfig {
                                  "/api/activity/create",
                                  "/api/activity/getAll",
                                  "/api/activity/getByActivityType",
-                                 "/api/activity/delete").permitAll()
+                                 "/api/activity/delete",
+                                 "/api/session/fetchSessions").permitAll()
                 .anyRequest().authenticated()
             )
             .httpBasic(httpBasic -> httpBasic.disable());
@@ -43,7 +44,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         // Allow requests from any origin (for development/testing only) FUCK cors
-        configuration.setAllowedOriginPatterns(List.of("*"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.addAllowedHeader("*");
         configuration.addExposedHeader("*");
