@@ -58,6 +58,11 @@ const TileBody = ({ categoryName }) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [confirmationMessage, setConfirmationMessage] = useState('');
   const [activityToDelete, setActivityToDelete] = useState(null);
+  const [edittedActivity, setEdittedActivity] = useState(null);
+  const [edittedActivityDescription, setEdittedActivityDescription] = useState(null);
+  const [edittedActivityTime, setEdittedActivityTime] = useState(null);
+  const [edittedActivityPeopleRequired, setEdittedActivityPeopleRequired] = useState(null);
+
 
   const handleClick = (item) => {
     setSelectedActivity(item);
@@ -116,15 +121,53 @@ const TileBody = ({ categoryName }) => {
       selectedActivityTime, 
       selectedActivityPeopleRequired, 
       categoryName);
+
+    console.log(edittedActivity, 
+      edittedActivityDescription, 
+      edittedActivityTime, 
+      edittedActivityPeopleRequired, 
+      categoryName);  
+
+      let newName, newDescription, newTime, newPeopleRequired;
+
+      if (edittedActivity === null || edittedActivity.trim() === '') {
+        newName = selectedActivity.trim();
+      }
+      else{
+        newName = edittedActivity.trim();
+      }
+
+      if (edittedActivityDescription === null || edittedActivityDescription.trim() === '') {
+        newDescription = selectedActivityDescription.trim();
+      }
+      else{
+        newDescription = edittedActivityDescription.trim();
+      }
+
+      if (edittedActivityTime === null || edittedActivityTime === 0) {
+        newTime = selectedActivityTime+ 'mins';
+      }
+      else{
+        newTime = edittedActivityTime+ 'mins';
+      }
+
+      if (edittedActivityPeopleRequired === null || edittedActivityPeopleRequired === 0) {
+        newPeopleRequired = selectedActivityPeopleRequired;
+      }
+      else{
+        newPeopleRequired = edittedActivityPeopleRequired;
+      }
+
+    console.log("New Activity: ", newName, newDescription, newTime, newPeopleRequired, categoryName);
       
-    if (newActivity.trim() !== '') {
-      try {
-        const response = await fetch('/api/activity/update', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
+    try {
+      const response = await fetch('/api/activity/update', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          originalActivity: {
             name: selectedActivity.trim(),
             description: selectedActivityDescription.trim(),
             duration: selectedActivityTime,
@@ -132,24 +175,34 @@ const TileBody = ({ categoryName }) => {
             activityType: {
               name: categoryName,
               description: null,
-            },
-          }),
-        });
+            }, 
+          },
+          changedActivity: {
+            name: newName,
+            description: newDescription,
+            duration: newTime,
+            peopleRequired: newPeopleRequired,
+            activityType: {
+              name: categoryName,
+              description: null,
+            }
+          }
+        }),
+      });
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        await response.json();
-        location.reload();
-      } catch (error) {
-        console.error('Error updating activity:', error);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
+
+      await response.json();
+      location.reload();
+    } catch (error) {
+      console.error('Error updating activity:', error);
     }
-    setNewActivity('');
-    setNewActivityDescription('');
-    setNewActivityTime(0);
-    setNewActivityPeopleRequired(0);
+    setEdittedActivity('');
+    setEdittedActivityDescription('');
+    setEdittedActivityTime(0);
+    setEdittedActivityPeopleRequired(0);
   }
 
   async function handleDeleteActivity() {
@@ -266,13 +319,7 @@ const TileBody = ({ categoryName }) => {
               className="bg-white rounded shadow-lg p-6 w-full max-w-md"
               onSubmit={(e) => {
                 e.preventDefault();
-                if (newActivity.trim() === '') {
-                  alert('Please enter a valid activity name.');
-                  return;
-                }
-                // TODO: Update the activity details
                 handleUpdateActivity();
-                alert('Updating the activity details.');
               }}
             >
               <h3 className="text-lg font-semibold mb-4">Edit Activity Details</h3>
@@ -282,7 +329,7 @@ const TileBody = ({ categoryName }) => {
               <input
                 type="text"
                 defaultValue={selectedActivity}
-                onChange={(e) => setNewActivity(e.target.value)}
+                onChange={(e) => setEdittedActivity(e.target.value)}
                 placeholder="Enter activity name"
                 required
                 className="block w-full rounded border border-gray-300 p-2 mb-2"
@@ -292,7 +339,7 @@ const TileBody = ({ categoryName }) => {
               </label>
               <textarea
                 placeholder="Enter activity description"
-                onChange={(e) => setNewActivityDescription(e.target.value)}
+                onChange={(e) => setEdittedActivityDescription(e.target.value)}
                 defaultValue={selectedActivityDescription}
                 className="block w-full rounded border border-gray-300 p-2 mb-2"
                 rows="4"
@@ -303,7 +350,7 @@ const TileBody = ({ categoryName }) => {
               <input
                 type="number"
                 placeholder="Enter the number of people required"
-                onChange={(e) => setNewActivityPeopleRequired(e.target.value)}
+                onChange={(e) => setEdittedActivityPeopleRequired(e.target.value)}
                 defaultValue={selectedActivityPeopleRequired === 0 ? '' : selectedActivityPeopleRequired}
                 className="block w-full rounded border border-gray-300 p-2 mb-2"
                 min="1"
@@ -314,7 +361,7 @@ const TileBody = ({ categoryName }) => {
               <input
                 type="number"
                 placeholder="Enter time in minutes"
-                onChange={(e) => setNewActivityTime(e.target.value)}
+                onChange={(e) => setEdittedActivityTime(e.target.value)}
                 defaultValue={selectedActivityTime === 0 ? '' : selectedActivityTime}
                 className="block w-full rounded border border-gray-300 p-2 mb-2"
                 min="1"
