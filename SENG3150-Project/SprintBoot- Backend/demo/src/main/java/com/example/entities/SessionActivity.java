@@ -24,7 +24,7 @@ import jakarta.persistence.Column;
 public class SessionActivity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int sessionActivityID;
+    private Integer sessionActivityID;
 
     @Column(name = "row_num")
     private int rowNum;

@@ -11,7 +11,8 @@ export async function transformSessions(rawSessions) {
                 name: a.name || "Unnamed Activity",
                 description: a.description || "",
                 duration: parseInt(a.duration) || "0",
-                category: a.category || "General"
+                category: a.category || "General",
+                row: sa.row || 0
             };
         })
     }));
