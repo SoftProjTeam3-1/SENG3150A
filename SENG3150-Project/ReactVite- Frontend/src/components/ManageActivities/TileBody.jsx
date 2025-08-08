@@ -195,7 +195,8 @@ const TileBody = ({ categoryName }) => {
       }
 
       await response.json();
-      location.reload();
+      //location.reload();
+      setUpdateSwitch(!updateSwitch);
     } catch (error) {
       console.error('Error updating activity:', error);
     }
@@ -203,6 +204,7 @@ const TileBody = ({ categoryName }) => {
     setEdittedActivityDescription('');
     setEdittedActivityTime(0);
     setEdittedActivityPeopleRequired(0);
+    setShowActivityInfo(false);
   }
 
   async function handleDeleteActivity() {
