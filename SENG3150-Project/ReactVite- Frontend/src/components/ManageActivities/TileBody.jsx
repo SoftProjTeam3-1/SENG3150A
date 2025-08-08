@@ -58,6 +58,11 @@ const TileBody = ({ categoryName }) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [confirmationMessage, setConfirmationMessage] = useState('');
   const [activityToDelete, setActivityToDelete] = useState(null);
+  const [edittedActivity, setEdittedActivity] = useState(null);
+  const [edittedActivityDescription, setEdittedActivityDescription] = useState(null);
+  const [edittedActivityTime, setEdittedActivityTime] = useState(null);
+  const [edittedActivityPeopleRequired, setEdittedActivityPeopleRequired] = useState(null);
+
 
   const handleClick = (item) => {
     setSelectedActivity(item);
@@ -110,14 +115,59 @@ const TileBody = ({ categoryName }) => {
   }
 
   async function handleUpdateActivity() {
-    if (newActivity.trim() !== '') {
-      try {
-        const response = await fetch('/api/activity/update', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
+    console.log("hook reached for updating activity")
+    console.log(selectedActivity, 
+      selectedActivityDescription, 
+      selectedActivityTime, 
+      selectedActivityPeopleRequired, 
+      categoryName);
+
+    console.log(edittedActivity, 
+      edittedActivityDescription, 
+      edittedActivityTime, 
+      edittedActivityPeopleRequired, 
+      categoryName);  
+
+      let newName, newDescription, newTime, newPeopleRequired;
+
+      if (edittedActivity === null || edittedActivity.trim() === '') {
+        newName = selectedActivity.trim();
+      }
+      else{
+        newName = edittedActivity.trim();
+      }
+
+      if (edittedActivityDescription === null || edittedActivityDescription.trim() === '') {
+        newDescription = selectedActivityDescription.trim();
+      }
+      else{
+        newDescription = edittedActivityDescription.trim();
+      }
+
+      if (edittedActivityTime === null || edittedActivityTime === 0) {
+        newTime = selectedActivityTime+ 'mins';
+      }
+      else{
+        newTime = edittedActivityTime+ 'mins';
+      }
+
+      if (edittedActivityPeopleRequired === null || edittedActivityPeopleRequired === 0) {
+        newPeopleRequired = selectedActivityPeopleRequired;
+      }
+      else{
+        newPeopleRequired = edittedActivityPeopleRequired;
+      }
+
+    console.log("New Activity: ", newName, newDescription, newTime, newPeopleRequired, categoryName);
+      
+    try {
+      const response = await fetch('/api/activity/update', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          originalActivity: {
             name: selectedActivity.trim(),
             description: selectedActivityDescription.trim(),
             duration: selectedActivityTime,
@@ -125,24 +175,36 @@ const TileBody = ({ categoryName }) => {
             activityType: {
               name: categoryName,
               description: null,
-            },
-          }),
-        });
+            }, 
+          },
+          changedActivity: {
+            name: newName,
+            description: newDescription,
+            duration: newTime,
+            peopleRequired: newPeopleRequired,
+            activityType: {
+              name: categoryName,
+              description: null,
+            }
+          }
+        }),
+      });
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        await response.json();
-        location.reload();
-      } catch (error) {
-        console.error('Error updating activity:', error);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
+
+      await response.json();
+      //location.reload();
+      setUpdateSwitch(!updateSwitch);
+    } catch (error) {
+      console.error('Error updating activity:', error);
     }
-    setNewActivity('');
-    setNewActivityDescription('');
-    setNewActivityTime(0);
-    setNewActivityPeopleRequired(0);
+    setEdittedActivity('');
+    setEdittedActivityDescription('');
+    setEdittedActivityTime(0);
+    setEdittedActivityPeopleRequired(0);
+    setShowActivityInfo(false);
   }
 
   async function handleDeleteActivity() {
@@ -255,36 +317,73 @@ const TileBody = ({ categoryName }) => {
         {showActivityInfo &&
           ReactDOM.createPortal(
             <div className="fixed inset-0 flex items-center justify-center z-50 bg-white/30 backdrop-blur-sm">
-          <div className="bg-white rounded shadow-lg p-6 w-full max-w-md">
-            {/* Display activity details */}
-            <h3 className="text-lg font-semibold mb-4">Activity Details</h3>
-            <div className="mb-2 flex">
-              <span className="font-bold min-w-[10rem]">Activity Name:</span>
-              <span>{selectedActivity}</span>
-            </div>
-            <div className="mb-2 flex items-start">
-              <span className="font-bold min-w-[10rem]">Description:</span>
-              <span className="break-words">{selectedActivityDescription || 'No description provided.'}</span>
-            </div>
-            <div className="mb-2 flex">
-              <span className="font-bold min-w-[10rem]">Time Required:</span>
-              <span>{selectedActivityTime}</span>
-            </div>
-            <div className="mb-2 flex">
-              <span className="font-bold min-w-[10rem]">People Required:</span>
-              <span>{selectedActivityPeopleRequired}</span>
-            </div>
-            {/* close button */}
-            <div className="flex justify-end space-x-3">
-              <button
-            type="button"
-            onClick={() => setShowActivityInfo(false)}
-            className="bg-[#202C39] hover:bg-[#8C9195] transition-colors duration-200 text-white border-none rounded px-3 py-1 cursor-pointer"
-              >
-            Close
-              </button>
-            </div>
-          </div>
+          <form
+              className="bg-white rounded shadow-lg p-6 w-full max-w-md"
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleUpdateActivity();
+              }}
+            >
+              <h3 className="text-lg font-semibold mb-4">Edit Activity Details</h3>
+              <label className="block mb-2 text-sm font-medium text-gray-700">
+                Activity Name:
+              </label>
+              <input
+                type="text"
+                defaultValue={selectedActivity}
+                onChange={(e) => setEdittedActivity(e.target.value)}
+                placeholder="Enter activity name"
+                required
+                className="block w-full rounded border border-gray-300 p-2 mb-2"
+              />
+              <label className="block mb-2 text-sm font-medium text-gray-700">
+                Activity Description:
+              </label>
+              <textarea
+                placeholder="Enter activity description"
+                onChange={(e) => setEdittedActivityDescription(e.target.value)}
+                defaultValue={selectedActivityDescription}
+                className="block w-full rounded border border-gray-300 p-2 mb-2"
+                rows="4"
+              />
+              <label className="block mb-2 text-sm font-medium text-gray-700">
+                People Required:
+              </label>
+              <input
+                type="number"
+                placeholder="Enter the number of people required"
+                onChange={(e) => setEdittedActivityPeopleRequired(e.target.value)}
+                defaultValue={selectedActivityPeopleRequired === 0 ? '' : selectedActivityPeopleRequired}
+                className="block w-full rounded border border-gray-300 p-2 mb-2"
+                min="1"
+              />
+              <label className="block mb-2 text-sm font-medium text-gray-700">
+                Time Required (in minutes):
+              </label>
+              <input
+                type="number"
+                placeholder="Enter time in minutes"
+                onChange={(e) => setEdittedActivityTime(e.target.value)}
+                defaultValue={selectedActivityTime === 0 ? '' : selectedActivityTime}
+                className="block w-full rounded border border-gray-300 p-2 mb-2"
+                min="1"
+              />
+              <div className="flex justify-end space-x-3">
+                <button
+                  type="button"
+                  onClick={() => setShowActivityInfo(false)}
+                  className="hover:bg-[#8C9195] transition-colors duration-200 text-[#202C39] border-none rounded px-4 py-2 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-[#202C39] hover:bg-[#8C9195] transition-colors duration-200 text-white border-none rounded px-3 py-1 cursor-pointer"
+                >
+                  Save
+                </button>
+              </div>
+            </form>
             </div>,
             document.getElementById('form-root')
           )}
