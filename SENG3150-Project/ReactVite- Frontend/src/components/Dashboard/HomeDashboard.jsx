@@ -18,13 +18,13 @@ import CalendarScreen from "./screens/CalendarScreen.jsx";
 import SessionTypeScreen from "./screens/SessionTypeScreen.jsx";
 
 import {populateDefaultCategories} from "./logic/PopulatingLogic.js";
-import {fetchSessions} from "./logic/hooks.js";
-import {transformSessions} from "./logic/CleanInputs.js";
+import {fetchSessions, syncSession} from "./logic/hooks.js";
+import {transformSessionsToBack, transformSessionsToFront} from "./logic/CleanInputs.js";
 
 
 const HomeDashboard = () => {
     // Temporary session which holds data before creation to db
-    const [temporarySession, setTemporarySession] = useState({ id:null, date:null, type:null, activities:[], notes:""});
+    const [temporarySession, setTemporarySession] = useState({ id:null, shortDate:null, date:null, type:null, activities:[], notes:""});
 
     // Stores sessions from the database
     const [sessions, setSessions] = useState([]);
@@ -69,6 +69,22 @@ const HomeDashboard = () => {
     const [durationInput, setDurationInput] = useState(0);
 
 
+    useEffect(() => {
+        if (sessions && sessions.length > 0) {
+            const fetchAndClean = async () => {
+                const cleanedSessions = await transformSessionsToBack(sessions);
+                await syncSession(cleanedSessions)
+                    .then(data => {
+                        console.log("Sessions synced:", data);
+                    })
+                    .catch(err => {
+                        console.error("Error syncing sessions:", err);
+                    });
+            }
+            fetchAndClean();
+        }
+    }, [sessions]); // runs only when `sessions` changes
+
     // Show sessions in console for debugging
     useEffect(() => {
         console.log("Sessions updated:", sessions);
@@ -84,7 +100,7 @@ const HomeDashboard = () => {
                 } else {
                     const fetchAndClean = async () => {
                         const rawSessions = await fetchSessions();
-                        const cleanedSessions = await transformSessions(rawSessions);
+                        const cleanedSessions = await transformSessionsToFront(rawSessions);
                         console.log("Cleaned Sessions: ", cleanedSessions);
                         setSessions(cleanedSessions);
                     };

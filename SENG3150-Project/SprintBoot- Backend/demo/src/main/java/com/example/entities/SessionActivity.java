@@ -11,14 +11,7 @@
 
 package com.example.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
+import jakarta.persistence.*;
 
 @Entity
 public class SessionActivity {
@@ -47,11 +40,11 @@ public class SessionActivity {
         this.duration = duration;
     }
 
-    public int getId() {
+    public Integer getId() {
         return sessionActivityID;
     }
 
-    public void setId(int sessionActivityID) {
+    public void setId(Integer sessionActivityID) {
         this.sessionActivityID = sessionActivityID;
     }
 

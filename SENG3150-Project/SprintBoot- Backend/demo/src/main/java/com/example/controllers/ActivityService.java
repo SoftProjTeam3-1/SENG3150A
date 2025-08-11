@@ -9,6 +9,7 @@ import com.example.repositories.ActivityTypeRepository;
 import com.example.stored_procedures.CreateActivity;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -54,7 +55,8 @@ public class ActivityService {
 
     public boolean deleteActivity(String name){
         try {
-            Activity activity = activityRepository.findDistinctByName(name);
+            Optional<Activity> activityTemp = activityRepository.findDistinctByName(name);
+            Activity activity = activityTemp.get();
             if (activity != null) {
                 activityRepository.delete(activity);
                 return true;
@@ -72,7 +74,8 @@ public class ActivityService {
         try{
             System.out.println("\n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n" + "Reached updateActivity function in ActivityService!");
             System.out.println("Activity to update: " + activity.getName());
-            Activity existingActivity = activityRepository.findDistinctByName(activity.getName());
+            Optional<Activity> existingActivityTemp = activityRepository.findDistinctByName(activity.getName());
+            Activity existingActivity = existingActivityTemp.get();
             if (existingActivity != null) {
                 System.out.println("Existing activity found: " + existingActivity.getName());
                 activityRepository.updateActivity(existingActivity.getId(), 

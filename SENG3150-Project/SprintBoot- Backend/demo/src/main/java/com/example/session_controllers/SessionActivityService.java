@@ -15,6 +15,7 @@ import com.example.entities.SessionActivity;
 
 import java.util.List;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class SessionActivityService {
@@ -57,7 +58,8 @@ public class SessionActivityService {
 
     public Activity getActivityByName(String name) {
         try {
-            Activity activity = activityRepository.findDistinctByName(name);
+            Optional<Activity> activityTemp = activityRepository.findDistinctByName(name);
+            Activity activity = activityTemp.get();
             return activity;
         } catch (Exception e) {
             System.out.println("Error retrieving activity by name: " + e.getMessage());

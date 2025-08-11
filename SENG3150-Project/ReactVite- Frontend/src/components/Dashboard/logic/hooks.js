@@ -90,3 +90,27 @@ export async function fetchSessions() {
     }
 }
 
+export async function syncSession(sessions) {
+    try {
+        const response = await fetch("api/session/updateSessions", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include",
+            body: JSON.stringify(sessions)
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to update sessions");
+        }
+
+        const data = await response.text(); // or json() depending on backend
+        console.log("Update success:", data);
+        return data;
+    } catch (err) {
+        console.error("Error syncing sessions:", err);
+        return null;
+    }
+}
+

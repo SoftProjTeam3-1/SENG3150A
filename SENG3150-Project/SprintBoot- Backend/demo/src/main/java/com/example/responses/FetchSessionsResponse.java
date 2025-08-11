@@ -4,7 +4,7 @@ package com.example.responses;
 import com.example.entities.SessionActivity;
 import com.example.entities.SessionType;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 public class FetchSessionsResponse {

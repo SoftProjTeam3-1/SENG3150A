@@ -1,7 +1,8 @@
-export async function transformSessions(rawSessions) {
+export async function transformSessionsToFront(rawSessions) {
     return rawSessions.map(session => ({
         id: `session-${session.sessionID}`, // or a UUID from backend if exists
-        date: formatDate(session.date),     // e.g., 'Aug 14'
+        shortDate: formatDate(session.date),     // e.g., 'Aug 14'
+        date: session.date,
         type: session.sessionTypeId.toLowerCase(), // normalize case
         notes: "", // add notes if you have it
         activities: (session.activities || []).map(sa => {
@@ -18,11 +19,59 @@ export async function transformSessions(rawSessions) {
     }));
 }
 
+function normalizeSessionTypeId(v) {
+    if (v == null) return null;
+    if (typeof v === "number") return v > 0 ? v : null;
+
+    const t = String(v).trim().toLowerCase();
+    if (t === "training") return 1;
+    if (t === "game") return 2;
+
+    const n = parseInt(t, 10);
+    return Number.isFinite(n) && n > 0 ? n : null;
+}
+
+
 // Helper to format dates (to "Aug 14")
 function formatDate(dateStr) {
     const date = new Date(dateStr);
     return date.toLocaleDateString("en-US", {
         month: "short",
         day: "numeric"
+    });
+}
+
+const pick = (...xs) => xs.find(v => v !== undefined && v !== null);
+
+
+// main transform function
+export function transformSessionsToBack(transformedSessions) {
+    return transformedSessions.map(session => {
+        const rawType = pick(
+            session.sessionTypeId,
+            session.sessionTypeID,
+            session.sessionType,
+            session.type,
+            session.typeId,
+            session.type_id,
+            session.type?.id,
+            session.type?.name
+        );
+
+        return {
+            sessionID: parseInt(session.id.toString().replace("session-", "")),
+            date: new Date(session.date),
+            sessionTypeId: normalizeSessionTypeId(rawType),
+            rollID: parseInt(session.id.toString().replace("session-", "")),
+            notes: session.notes || "",
+            activities: (session.activities || []).map(a => ({
+                id: parseInt(a.id.toString().replace("activity-", "")),
+                name: a.name,
+                description: a.description,
+                duration: a.duration.toString(),
+                category: a.category,
+                row: a.row || 0
+            }))
+        };
     });
 }

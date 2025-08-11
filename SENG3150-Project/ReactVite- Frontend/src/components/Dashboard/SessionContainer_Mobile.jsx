@@ -11,8 +11,8 @@ const SessionContainer_Mobile = ({sessions, selectedSessions, setSessions}) => {
             <div className="p-5 flex flex-wrap gap-4">
                 {sessions.filter(dateObj => selectedSessions.includes(dateObj.id))
                     .map((session) => {
-                        const { id, date, type, notes } = session;
-                        const [month, day] = date.split(' ');
+                        const { id, shortDate, type, notes } = session;
+                        const [month, day] = shortDate.split(' ');
 
                         const groupedActivities = {};
                         session.activities.forEach((activity) => {

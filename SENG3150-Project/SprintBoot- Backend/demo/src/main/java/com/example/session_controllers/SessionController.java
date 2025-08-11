@@ -4,16 +4,15 @@
 
 package com.example.session_controllers;
 
-import com.example.entities.User;
-import com.example.entities.UserService;
+import com.example.entities.*;
+import com.example.repositories.SessionTypeRepository;
 import com.example.responses.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import com.example.entities.Session;
-
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,21 +25,26 @@ public class SessionController {
     private SessionService sessionService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private SessionActivityService sessionActivityService;
+    @Autowired
+    private SessionTypeService sessionTypeService;
+    @Autowired
+    private SessionTypeRepository sessionTypeRepository;
 
-    @GetMapping("/initialCall")
-    public ResponseEntity<InitialSessionGrabResponse> getSessions(){
-        List<Session> trainingSessions = sessionService.getTrainingSessions();
-        Session gameSession = sessionService.getGameSession();
-        if (gameSession == null || trainingSessions.isEmpty() || trainingSessions == null) {
-            return new ResponseEntity<>(new InitialSessionGrabResponse(null, null, "Error in session grab", false), HttpStatus.BAD_REQUEST);
-        }
-        else{
-            return new ResponseEntity<>(new InitialSessionGrabResponse(gameSession, trainingSessions, "Grabbed tasks appropriately", true), HttpStatus.OK);
-        }
-    }
+//    @GetMapping("/initialCall")
+//    public ResponseEntity<InitialSessionGrabResponse> getSessions(){
+//        List<Session> trainingSessions = sessionService.getTrainingSessions();
+//        Session gameSession = sessionService.getGameSession();
+//        if (gameSession == null || trainingSessions.isEmpty() || trainingSessions == null) {
+//            return new ResponseEntity<>(new InitialSessionGrabResponse(null, null, "Error in session grab", false), HttpStatus.BAD_REQUEST);
+//        }
+//        else{
+//            return new ResponseEntity<>(new InitialSessionGrabResponse(gameSession, trainingSessions, "Grabbed tasks appropriately", true), HttpStatus.OK);
+//        }
+//    }
 
     @PostMapping("/fetchSessions")
-    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     public ResponseEntity<List<FetchSessionsResponse>> fetchSessions(@CookieValue(value = "userId", required = false) String userId) {
 
         if (userId == null) {
@@ -70,6 +74,23 @@ public class SessionController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+
+    @PutMapping("/updateSessions")
+    public ResponseEntity<String> updateSessions(@RequestBody List<SyncSessionsResponse> sessions,  @CookieValue(value = "userId", required = false) String userId) {
+        try {
+            if (userId == null) return ResponseEntity.status(401).body("No user ID cookie");
+            sessionService.replaceUserSessions(userService.getUserByID(Integer.parseInt(userId)), sessions);
+            return ResponseEntity.ok("Sessions updated successfully.");
+        } catch (IllegalArgumentException iae) {
+            return ResponseEntity.badRequest().body(iae.getMessage());  // <-- see exact reason in Network tab
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
+
 
     @PostMapping("/getNote")
     public ResponseEntity<GetTextNoteResponse> getNote(@RequestBody Session session){
