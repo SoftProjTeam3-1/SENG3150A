@@ -16,7 +16,7 @@ const ForgetPasswordEmailEntryForm = () => {
   const [message, setMessage] = useState('');
   const [viewValidation, changeValidation] = useState(false);
   const [step, setStep] = useState(1); // 1 = email, 2 = code, 3 = password
-
+  const [loading, setLoading] = useState(false);
   const [plainTextPassword, setPassword] = useState('');
   
 
@@ -32,18 +32,23 @@ const ForgetPasswordEmailEntryForm = () => {
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
 
-
-
     changeValidation(validateForgotPasswordEmail({ email }));
+    setLoading(true);
 
     try {
       const response = await fetch('/api/user/forgotpassword', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
-      });
+    } );
+
+      console.log('Response:', loading);
 
       const data = await response.json();
+      setLoading(false);
+
+      console.log('Response:', loading);
+
       setMessage(data.message);
       if (data.error) {
         toast.error(data.error, {
@@ -68,6 +73,7 @@ const ForgetPasswordEmailEntryForm = () => {
         setStep(2);
       }
     } catch (err) {
+      setLoading(false);
       toast.error('Error submitting email: ' + err.message, {
         position: "top-right",
         autoClose: 5000,
@@ -78,7 +84,7 @@ const ForgetPasswordEmailEntryForm = () => {
         theme: "colored",
       });
       console.error('Error submitting email:', err);
-    }``
+    }
   };
 
   const handleCodeSubmit = async (e) => {
@@ -206,7 +212,7 @@ const ForgetPasswordEmailEntryForm = () => {
             />
           </div>
           <button type="submit" className="w-full bg-orange-400 py-2 rounded-md text-white font-semibold mt-4">
-            Send Code
+           {loading ? 'Sending...' : 'Send Code'}
           </button>
         </form>
       )}
