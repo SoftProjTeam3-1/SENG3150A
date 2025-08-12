@@ -1,9 +1,7 @@
-import { href, Navigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../components/Auth/AuthContext";
 
-
-export default function ProtectedRoute(isAuthenticated) {
-    console.log("ProtectedRoute", isAuthenticated);
-
-  return isAuthenticated ? href : <Navigate to="/" />;
-
+export default function ProtectedRoute({ children }) {
+    const { isAuthenticated } = useAuth();
+    return isAuthenticated ? children : <Navigate to="/" />;
 }

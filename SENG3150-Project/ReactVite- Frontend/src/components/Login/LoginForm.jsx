@@ -14,14 +14,15 @@ import './login.css';
 import { toast, ToastContainer } from 'react-toastify';
 import { sha256 } from 'js-sha256';
 import 'react-toastify/dist/ReactToastify.css';
+import { useAuth } from '../Auth/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
-    //  public User(String firstName, String surname, String email, boolean verified, String password) {
-
   const [email, setEmail] = useState('')
   const [plainTextPassword, setPassword] = useState('')
-
   let [viewValidation, changeValidation] = useState(false);
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async e => {
     e.preventDefault()
@@ -56,7 +57,6 @@ const LoginForm = () => {
       return;
     }
 
-
     const password = sha256(plainTextPassword)
 
     try {
@@ -74,7 +74,8 @@ const LoginForm = () => {
 
       if(data.response){
         console.log('User logged in successfully!')
-        window.location.href = '/dashboard'
+        login(); // Set isAuthenticated to true
+        navigate('/dashboard'); // Redirect using react-router
       } else {
         toast.error("Login Failed", {
           position: "top-right",
@@ -91,8 +92,6 @@ const LoginForm = () => {
       console.error('Error submitting user:', err)
     }
   }
-
-
 
   return (
     <div className={"login-card"}>

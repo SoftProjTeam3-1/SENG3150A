@@ -1,0 +1,16 @@
+# OS junk
+**/.DS_Store
+**/__MACOSX/
+
+# Java
+**/target/
+**/.idea/
+**/.vscode/
+
+# Node
+**/node_modules/
+dist/
+dist-ssr/
+
+# Misc
+*.log

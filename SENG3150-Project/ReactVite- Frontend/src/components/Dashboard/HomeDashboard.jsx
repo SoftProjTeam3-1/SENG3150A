@@ -387,8 +387,6 @@ const HomeDashboard = () => {
 
 
 
-
-
     const onDragEnd = (result) => {
         const { source, destination, draggableId } = result;
 
@@ -399,7 +397,6 @@ const HomeDashboard = () => {
 
         handleActivityMove({ draggableId, source, destination });
     };
-
 
 
     return(
