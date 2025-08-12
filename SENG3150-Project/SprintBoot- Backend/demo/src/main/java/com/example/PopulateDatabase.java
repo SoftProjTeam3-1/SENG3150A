@@ -1,14 +1,33 @@
 package com.example;
 
-import com.example.repositories.*;
-import com.example.entities.*;
-
-import com.google.common.hash.Hashing;
 import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+
+import com.example.entities.Activity;
+import com.example.entities.ActivityType;
+import com.example.entities.Attendance;
+import com.example.entities.Player;
+import com.example.entities.Roll;
+import com.example.entities.Session;
+import com.example.entities.SessionActivity;
+import com.example.entities.SessionType;
+import com.example.entities.TextNote;
+import com.example.entities.User;
+import com.example.repositories.ActivityRepository;
+import com.example.repositories.ActivityTypeRepository;
+import com.example.repositories.AttendanceRepository;
+import com.example.repositories.PlayerRepository;
+import com.example.repositories.RollRepository;
+import com.example.repositories.SessionActivityRepository;
+import com.example.repositories.SessionRepository;
+import com.example.repositories.SessionTypeRepository;
+import com.example.repositories.TextNoteRepository;
+import com.example.repositories.UserRepository;
+import com.example.repositories.VoiceNoteRepository;
+import com.google.common.hash.Hashing;
 
 @Component
 public class PopulateDatabase implements CommandLineRunner{
@@ -77,7 +96,7 @@ public class PopulateDatabase implements CommandLineRunner{
         Player player2 = new Player("Darcy Studdert", "Winger");
         Player player3 = new Player("Oscar Scorgie", "Forward");
         Player player4 = new Player("David Hong", "Striker");
-        Player player5 = new Player("John McDonald", "Goalkeeper");
+        Player player5 = new Player("John McDonald", "Goalkeeper"); 
         Player player6 = new Player("Tommy McDonald", "Attacking Midfielder");
         Player player7 = new Player("Ethan McDonald", "Central Midfielder");
         Player player8 = new Player("Liam Jones", "Wing-back");
@@ -101,7 +120,7 @@ public class PopulateDatabase implements CommandLineRunner{
             .hashString("JasminSchmidt123#", StandardCharsets.UTF_8)
             .toString();
         User coach = new User("Stuart", "Mendes", "stuart.mendes@gmail.com", false, stuartPassword);
-        User assistantCoach = new User("Jasmin", "Schmidt", "jazzyschnitzel@hotmail.com", false, assistantCoachPassword);
+        User assistantCoach = new User("Jasmin", "Schmidt", "`", false, assistantCoachPassword);
 
         //create sessions
         Session trainingSession1 = new Session(new Date(1746118800000L), coach, trainingSession);
