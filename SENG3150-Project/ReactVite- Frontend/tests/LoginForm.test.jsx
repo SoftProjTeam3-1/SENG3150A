@@ -1,26 +1,19 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import { vi } from 'vitest'
+import { expect, vi } from 'vitest'
 import LoginForm from '../src/components/Login/LoginForm.jsx'
+import { toast } from 'react-toastify'
+
 
 // Mock react-toastify
+// Mock the entire `react-toastify` module
 vi.mock('react-toastify', () => ({
   toast: {
-    error: vi.fn((jsx) => {
-      if (typeof jsx === 'string') return jsx;
-
-      // Flatten nested JSX into a single string
-      const flatten = (node) =>
-        Array.isArray(node)
-          ? node.map(flatten).join(' ')
-          : typeof node === 'string'
-          ? node
-          : flatten(node.props?.children);
-
-      return flatten(jsx);
-    })
+    // Simple Vitest mock for toast.error — stores whatever gets passed (string or JSX)
+    error: vi.fn()
   },
   ToastContainer: () => <div data-testid="toast-container" />
 }));
+
 
 
 // Mock validation
@@ -51,14 +44,12 @@ describe('LoginForm', () => {
     })
 
     // Click submit
-    fireEvent.click(screen.getByRole('button', { name: 'Enter' }))
-
-    const { toast } = await import('react-toastify')
-
+    fireEvent.submit(screen.getByRole('button', { name: 'Enter' }));
     // Wait for the toast to be called
+
     await waitFor(() => {
-        expect(toast.error).toHaveBeenCalled()
-        expect(toast.error.mock.results[0].value).toContain('Email must contain @')
+      expect(toast.error.mock.calls[0][0].props.children.props.children)
+        .toContain('Please enter a valid email address');
     });
   })
 })
