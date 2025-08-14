@@ -20,6 +20,7 @@ import com.example.entities.SessionActivity;
 import com.example.responses.SessionActivityGrabResponse;
 import com.example.responses.AddSessionActivityResponse;
 import com.example.responses.DeleteSessionActivityResponse;
+import com.example.responses.EditSessionActivityDurationResponse;
 
 import java.util.List;
 
@@ -81,5 +82,23 @@ public class SessionActivityController {
         }
         //run delete method in service with returned 
     }
+
+    @PostMapping("/editDuration")
+    public ResponseEntity<EditSessionActivityDurationResponse> editDuration(@RequestBody EditDurationRequest request) {
+        SessionActivity sessionActivity = sessionActivityService.getSessionActivityBySessionAndActivity(request.getSession(), request.getActivity());
+        if (sessionActivity != null) {
+            boolean result = sessionActivityService.editSessionActivityDuration(sessionActivity, request.getNewDuration());
+            if (result) {
+                return new ResponseEntity<>(new EditSessionActivityDurationResponse("Duration updated successfully", true), HttpStatus.OK);
+            }
+            else {
+                return new ResponseEntity<>(new EditSessionActivityDurationResponse("Failed to update duration", false), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        else {
+            return new ResponseEntity<>(new EditSessionActivityDurationResponse("Session activity not found", false), HttpStatus.NOT_FOUND);
+        }
+    }
+    
     
 }

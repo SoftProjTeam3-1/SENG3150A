@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Date;
 
 import com.example.entities.SessionActivity;
 
@@ -40,8 +41,8 @@ public interface SessionActivityRepository extends JpaRepository<SessionActivity
         """, nativeQuery = true)
     int updateSessionActivityDuration(
         @Param("duration") String duration,
-        @Param("sessionDate") String sessionDate,
-        @Param("sessionTypeId") Long sessionTypeId,
+        @Param("sessionDate") Date sessionDate,
+        @Param("sessionTypeId") int sessionTypeId,
         @Param("activityName") String activityName
     );
 }
