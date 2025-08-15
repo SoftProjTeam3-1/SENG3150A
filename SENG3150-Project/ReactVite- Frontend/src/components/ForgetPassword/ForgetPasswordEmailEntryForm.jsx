@@ -11,7 +11,6 @@ import eyeOpenIcon from '../../assets/eye-open.svg';
 const ForgetPasswordEmailEntryForm = () => {
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
-  const [newPassword, setNewPassword] = useState('');
 
   const [message, setMessage] = useState('');
   const [viewValidation, changeValidation] = useState(false);
@@ -140,7 +139,8 @@ const ForgetPasswordEmailEntryForm = () => {
       return;
     }
 
-    const hashedPassword = sha256(newPassword);
+    const hashedPassword = sha256(plainTextPassword);
+    console.log("password reset has", hashedPassword, hashedPassword)
 
     try {
       const response = await fetch('/api/user/reset-password', {
