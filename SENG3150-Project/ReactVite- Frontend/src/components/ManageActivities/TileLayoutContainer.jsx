@@ -3,19 +3,17 @@
     It contains the tile layout for the categories of activities
 */
 import {TileLayout} from '@progress/kendo-react-layout';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import createTile from './Tile.jsx';
 import '@progress/kendo-theme-default/dist/all.css';
 import './TileLayoutContainer.css';
 
-const TileLayoutContainer = () => {
+export const TileLayoutContainer = () => {
     //variable to store the new category name
     const [newCategoryName, setNewCategoryName] = useState('');
     const [newCategoryDescription, setNewCategoryDescription] = useState('');
     const [tiles, setTiles] = useState([]);
-    
-    const [showConfirmation, setShowConfirmation] = useState(false);
-    const [confirmationMessage, setConfirmationMessage] = useState('');
+    const [updateSwitch, setUpdateSwitch] = useState(false);
 
     //Method to create an add tile
     const AddCategoryTile = () => {
@@ -39,15 +37,6 @@ const TileLayoutContainer = () => {
                     required
                 />
                 </div>
-                {/* <div className="text-center pb-1.5">
-                <input
-                    type="text"
-                    placeholder="Enter a Description"
-                    onChange={(e) => setNewCategoryDescription(e.target.value)}
-                    value={newCategoryDescription}
-                    className="w-full rounded border border-gray-300 h-8 pl-2 text-left"
-                />
-                </div> */}
                 <div className="text-center pb-1.5 mt-2.5">
                 <button
                     type="submit"
@@ -62,9 +51,15 @@ const TileLayoutContainer = () => {
             resizable: false,
         };
     };
+    // Method to handle header click
+    const onHeaderClick = (categoryName) => {
+        // This function can be used to handle header clicks, e.g., to refresh the tile layout
+        console.log(`Header clicked for category: ${categoryName}`);
+        // You can implement any logic here, such as fetching new data or updating the UI
+        setUpdateSwitch(!updateSwitch); // Toggle the update switch to refresh the tiles
+    };
 
     // Sample of Categories as tiles
-
     useEffect(() => {
         async function fetchData() {
             try {
@@ -82,7 +77,7 @@ const TileLayoutContainer = () => {
                 const parsedData = await response.json();
 
                 const loadedTiles = parsedData.activityTypes.map((activityTypes) =>
-                    createTile(activityTypes.name, showConfirmation, confirmationMessage)
+                    createTile(activityTypes.name, onHeaderClick)
                 );
                 setTiles(loadedTiles);
             } catch (error) {
@@ -90,7 +85,8 @@ const TileLayoutContainer = () => {
             }
         }
         fetchData();
-    }, []);
+    }, [updateSwitch]);
+
 
     //Method to add a new category
     async function loadNewCategory(){
@@ -113,7 +109,7 @@ const TileLayoutContainer = () => {
             console.log('Category added successfully:', data);
             setNewCategoryName(''); // Clear the input field after successful addition
             setNewCategoryDescription('');
-            location.reload(); // Reload the page to see the new category
+            onHeaderClick(); // Call onHeaderClick to refresh the tile layout
         }
         catch(error){
             console.error('Error adding category:', error);
@@ -135,6 +131,7 @@ const TileLayoutContainer = () => {
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
+
 
     return (
         <>

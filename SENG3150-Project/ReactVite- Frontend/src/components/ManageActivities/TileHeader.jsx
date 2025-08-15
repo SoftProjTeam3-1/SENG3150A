@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { X } from 'lucide-react';
 
-const TileHead = ({ categoryName }) => {
+export const TileHead = ({ categoryName, onHeaderClick }) => {
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [confirmationMessage, setConfirmationMessage] = useState('');
+    
 
     async function handleDeleteActivityType() {
         try {
@@ -15,7 +16,12 @@ const TileHead = ({ categoryName }) => {
             });
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
             await response.json();
-            location.reload();
+            // //reload
+            if (onHeaderClick) {
+                onHeaderClick(categoryName); // tell TileLayoutContainer to update
+            }
+            
+            
         } catch (error) {
             console.error('Error deleting activity:', error);
         }

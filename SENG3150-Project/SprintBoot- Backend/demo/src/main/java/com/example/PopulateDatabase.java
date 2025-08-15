@@ -110,19 +110,19 @@ public class PopulateDatabase implements CommandLineRunner{
         Session gameSession1 = new Session(new Date(1746291600000L), coach, gameSession);
 
         //create SessionActivities
-        SessionActivity sessionActivity1 = new SessionActivity(trainingSession1, 1, "15mins", laps);
-        SessionActivity sessionActivity2 = new SessionActivity(trainingSession1, 2, "5mins", stretching);
-        SessionActivity sessionActivity3 = new SessionActivity(trainingSession1, 3, "30mins", miniGame);
+        SessionActivity sessionActivity1 = new SessionActivity(trainingSession1, laps);
+        SessionActivity sessionActivity2 = new SessionActivity(trainingSession1, stretching);
+        SessionActivity sessionActivity3 = new SessionActivity(trainingSession1, miniGame);
 
-        SessionActivity sessionActivity4 = new SessionActivity(trainingSession2, 1, "20mins", laps);
-        SessionActivity sessionActivity5 = new SessionActivity(trainingSession2, 1, "20mins", stretching);
-        SessionActivity sessionActivity6 = new SessionActivity(trainingSession2, 2, "20mins", passes);
-        SessionActivity sessionActivity7 = new SessionActivity(trainingSession2, 3, "50mins", miniGame);
+        SessionActivity sessionActivity4 = new SessionActivity(trainingSession2, laps);
+        SessionActivity sessionActivity5 = new SessionActivity(trainingSession2, stretching);
+        SessionActivity sessionActivity6 = new SessionActivity(trainingSession2, passes);
+        SessionActivity sessionActivity7 = new SessionActivity(trainingSession2, miniGame);
         
-        SessionActivity sessionActivity8 = new SessionActivity(trainingSession3, 1, "10mins", stretching);
-        SessionActivity sessionActivity9 = new SessionActivity(trainingSession3, 2, "35mins", passes);
-        SessionActivity sessionActivity10 = new SessionActivity(trainingSession3, 2, "35mins", dribbling);
-        SessionActivity sessionActivity11 = new SessionActivity(trainingSession3, 3, "45mins", miniGame);
+        SessionActivity sessionActivity8 = new SessionActivity(trainingSession3, stretching);
+        SessionActivity sessionActivity9 = new SessionActivity(trainingSession3, passes);
+        SessionActivity sessionActivity10 = new SessionActivity(trainingSession3, dribbling);
+        SessionActivity sessionActivity11 = new SessionActivity(trainingSession3, miniGame);
 
         //making notes for the sessions
         TextNote textNote1 = new TextNote("The team could ALL use practice passing accurately", trainingSession1);

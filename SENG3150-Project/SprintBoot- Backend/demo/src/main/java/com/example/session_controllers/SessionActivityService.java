@@ -95,4 +95,20 @@ public class SessionActivityService {
             return false;
         }
     }
+
+    public boolean editSessionActivityDuration(SessionActivity sessionActivity, String newDuration) {
+        try{
+            Date sessionDate = sessionActivity.getSession().getDate();
+            int sessionID = sessionActivity.getSession().getId();
+            String activityName = sessionActivity.getActivity().getName();
+
+            sessionActivityRepository.updateSessionActivityDuration(
+                newDuration, sessionDate, sessionID, activityName);
+            return true;
+        }
+        catch (Exception e) {
+            System.out.println("Error updating session activity duration: " + e.getMessage());
+            return false;
+        }
+    }
 }

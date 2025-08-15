@@ -70,7 +70,7 @@ public class ActivityService {
         }
     }
 
-    public boolean updateActivity(Activity activity){
+    public boolean updateActivity(ActivityPair activity){
         try{
             System.out.println("\n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n" + "Reached updateActivity function in ActivityService!");
             System.out.println("Activity to update: " + activity.getName());
@@ -79,14 +79,14 @@ public class ActivityService {
             if (existingActivity != null) {
                 System.out.println("Existing activity found: " + existingActivity.getName());
                 activityRepository.updateActivity(existingActivity.getId(), 
-                    activity.getPeopleRequired(),
-                    activity.getName(), 
-                    activity.getDescription(),
-                    activity.isFavourite(),  
-                    activity.getDuration());
+                    activity.getChangedActivity().getPeopleRequired(),
+                    activity.getChangedActivity().getName(), 
+                    activity.getChangedActivity().getDescription(),
+                    activity.getChangedActivity().isFavourite(),  
+                    activity.getChangedActivity().getDuration());
                 return true;
             } else {
-                System.out.println("Activity not found for update: " + activity.getName());
+                System.out.println("Activity not found for update: " + activity.getOriginalActivity().getName());
                 return false;
             }
         } catch (Exception e) {

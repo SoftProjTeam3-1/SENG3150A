@@ -22,7 +22,6 @@ public class SessionActivity {
     @Column(name = "row_num")
     private int rowNum;
 
-    private String duration;
 
     @ManyToOne
     @JoinColumn(name = "sessionID")
@@ -33,11 +32,9 @@ public class SessionActivity {
     private Activity activity;
 
     public SessionActivity(){}
-    public SessionActivity(Session session, int rowNum, String duration, Activity activity) {
+    public SessionActivity(Session session, Activity activity) {
         this.session = session;
         this.activity = activity;
-        this.rowNum = rowNum;
-        this.duration = duration;
     }
 
     public Integer getId() {
@@ -78,5 +75,13 @@ public class SessionActivity {
 
     public void setActivity(Activity activity) {
         this.activity = activity;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
     }
 }

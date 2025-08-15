@@ -1,8 +1,12 @@
 import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd';
+import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd';
 import { useState, useEffect, useRef } from "react";
 import DatePicker from "react-datepicker";
 import { format } from 'date-fns';
 import "react-datepicker/dist/react-datepicker.css";
+
+
+
 
 
 
@@ -32,6 +36,8 @@ const HomeDashboard = () => {
     // Stores selected local sessions the user has clicked
     const [selectedSessions, setSelectedSessions] = useState([]);
 
+    // Temporary category which holds data before being added to categories list: NOT USED, but good to see
+    //const [temporaryCategory, setTemporaryCategory] = useState({name:null, activities:[]});
     // Temporary category which holds data before being added to categories list: NOT USED, but good to see
     //const [temporaryCategory, setTemporaryCategory] = useState({name:null, activities:[]});
 
@@ -150,7 +156,9 @@ const HomeDashboard = () => {
 
 
     // POPULATES DASHBOARD -- REMOVE WHEN HOOKS WORK
+    // POPULATES DASHBOARD -- REMOVE WHEN HOOKS WORK
     useEffect(() => {
+        populateDefaultCategories({setCategories});
         populateDefaultCategories({setCategories});
     }, []);
 
@@ -163,6 +171,42 @@ const HomeDashboard = () => {
         <div className="w-full m-0 p-0 max-w-full">
 
             <Header headerLabel={"Mayfield Soccer Team - Dashboard"}/>
+
+            <div id="middleSegment" style={{display: 'flex', backgroundColor: '#AFD2BB' }} className="flex flex-col sm:flex-row bg-white min-h-screen max-w-full">
+
+
+                <VerticalBar_Mobile
+                    sessions={sessions}
+                    selectedSessions={selectedSessions}
+                    setSessionTypeScreen={setSessionTypeScreen}
+                    setSelectedSessions={setSelectedSessions}
+                    setTemporarySession={setTemporarySession}
+                />
+
+                <VerticalBar_Laptop
+                    sessions={sessions}
+                    selectedSessions={selectedSessions}
+                    setSessionTypeScreen={setSessionTypeScreen}
+                    setSelectedSessions={setSelectedSessions}
+                    setTemporarySession={setTemporarySession}
+                />
+
+
+                <SessionContainer_Laptop
+                    sessions={sessions}
+                    setSessions={setSessions}
+                    selectedSessions={selectedSessions}
+                    DragDropContext={DragDropContext}
+                    Droppable={Droppable}
+                    Draggable={Draggable}
+                    setShowActivityScreen={setShowActivityScreen}
+                    setSingleSelectedSession={setSingleSelectedSession}
+                />
+
+                <SessionContainer_Mobile
+                    sessions={sessions}
+                    selectedSessions={selectedSessions}
+                />
 
             <div id="middleSegment" style={{display: 'flex', backgroundColor: '#AFD2BB' }} className="flex flex-col sm:flex-row bg-white min-h-screen max-w-full">
 
@@ -213,9 +257,27 @@ const HomeDashboard = () => {
                     setSessions={setSessions}
                     singleSelectedSession={singleSelectedSession}
                 />
+                <EditDurationScreen
+                    editRef={editRef}
+                    durationInput={durationInput}
+                    setDurationInput={setDurationInput}
+                    temporaryActivity={temporaryActivity}
+                    setTemporaryActivity={setTemporaryActivity}
+                    setShowEditDurationScreen={setShowEditDurationScreen}
+                    setSessions={setSessions}
+                    singleSelectedSession={singleSelectedSession}
+                />
             )}
 
             {showActivityScreen && (
+                <ActivityScreen
+                    activityRef={activityRef}
+                    openCategory={openCategory}
+                    Categories={Categories}
+                    setShowActivityScreen={setShowActivityScreen}
+                    setTemporaryActivity={setTemporaryActivity}
+                    setOpenCategory={setOpenCategory}
+                    setShowEditDurationScreen={setShowEditDurationScreen}/>
                 <ActivityScreen
                     activityRef={activityRef}
                     openCategory={openCategory}
@@ -228,6 +290,7 @@ const HomeDashboard = () => {
 
             {showActivityDetails && (
                 <ActivityDetailScreen/>
+                <ActivityDetailScreen/>
             )}
 
             {showCalendar && (
@@ -238,9 +301,22 @@ const HomeDashboard = () => {
                     setTemporarySession={setTemporarySession}
                     setSessions={setSessions}
                     setShowCalendar={setShowCalendar}/>
+                <CalendarScreen
+                    DatePicker={DatePicker}
+                    format={format}
+                    temporarySession={temporarySession}
+                    setTemporarySession={setTemporarySession}
+                    setSessions={setSessions}
+                    setShowCalendar={setShowCalendar}/>
             )}
 
             {showSessionTypeScreen && (
+                <SessionTypeScreen
+                    sessionRef={sessionRef}
+                    setSessionTypeScreen={setSessionTypeScreen}
+                    setShowCalendar={setShowCalendar}
+                    setTemporarySession={setTemporarySession}/>
+            )}
                 <SessionTypeScreen
                     sessionRef={sessionRef}
                     setSessionTypeScreen={setSessionTypeScreen}
