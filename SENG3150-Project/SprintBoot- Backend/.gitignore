@@ -10,3 +10,9 @@ buildNumber.properties
 .mvn/timing.properties
 .mvn/wrapper/maven-wrapper.jar
 .mvn/wrapper/maven-wrapper.properties
+
+#ignore class files in SENG3150A\SENG3150-Project\SprintBoot- Backend\demo\target\classes\com\example\config
+# Class files
+*.class
+# JAR files
+*.jar
