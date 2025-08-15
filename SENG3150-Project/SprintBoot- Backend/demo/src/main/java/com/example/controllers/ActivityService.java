@@ -9,7 +9,6 @@ import com.example.repositories.ActivityTypeRepository;
 import com.example.stored_procedures.CreateActivity;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -55,8 +54,7 @@ public class ActivityService {
 
     public boolean deleteActivity(String name){
         try {
-            Optional<Activity> activityTemp = activityRepository.findDistinctByName(name);
-            Activity activity = activityTemp.get();
+            Activity activity = activityRepository.findDistinctByName(name);
             if (activity != null) {
                 activityRepository.delete(activity);
                 return true;
@@ -70,23 +68,22 @@ public class ActivityService {
         }
     }
 
-    public boolean updateActivity(ActivityPair activity){
+    public boolean updateActivity(Activity activity){
         try{
             System.out.println("\n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n" + "Reached updateActivity function in ActivityService!");
             System.out.println("Activity to update: " + activity.getName());
-            Optional<Activity> existingActivityTemp = activityRepository.findDistinctByName(activity.getName());
-            Activity existingActivity = existingActivityTemp.get();
+            Activity existingActivity = activityRepository.findDistinctByName(activity.getName());
             if (existingActivity != null) {
                 System.out.println("Existing activity found: " + existingActivity.getName());
                 activityRepository.updateActivity(existingActivity.getId(), 
-                    activity.getChangedActivity().getPeopleRequired(),
-                    activity.getChangedActivity().getName(), 
-                    activity.getChangedActivity().getDescription(),
-                    activity.getChangedActivity().isFavourite(),  
-                    activity.getChangedActivity().getDuration());
+                    activity.getPeopleRequired(),
+                    activity.getName(), 
+                    activity.getDescription(),
+                    activity.isFavourite(),  
+                    activity.getDuration());
                 return true;
             } else {
-                System.out.println("Activity not found for update: " + activity.getOriginalActivity().getName());
+                System.out.println("Activity not found for update: " + activity.getName());
                 return false;
             }
         } catch (Exception e) {
