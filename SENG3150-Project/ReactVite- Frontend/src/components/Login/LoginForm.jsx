@@ -58,6 +58,7 @@ const LoginForm = () => {
     }
 
     const password = sha256(plainTextPassword)
+    console.log("login form", password, plainTextPassword)
 
     try {
       const response = await fetch('/api/user/login', {

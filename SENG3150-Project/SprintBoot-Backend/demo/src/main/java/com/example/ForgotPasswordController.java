@@ -19,7 +19,7 @@ import com.example.entities.UserService;
 public class ForgotPasswordController {
 
     @Autowired
-    private JavaMailSender mailSender;  // TEMP: sanity check
+    private JavaMailSender mailSender;  
 
     @Autowired
     private UserService userService;
@@ -55,7 +55,7 @@ public class ForgotPasswordController {
         String email = payload.get("email");
         String code = payload.get("code");
         String newPassword = payload.get("newPassword");
-
+        System.out.println("Resetting password for email:" + newPassword );
         String storedCode = userService.getResetToken(email);
         if (storedCode == null || !storedCode.equals(code)) {
             return Map.of("error", "Invalid or expired reset code.");
