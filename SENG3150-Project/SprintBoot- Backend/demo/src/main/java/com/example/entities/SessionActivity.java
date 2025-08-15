@@ -25,6 +25,8 @@ public class SessionActivity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int sessionActivityID;
 
+    String duration;
+
 
     @ManyToOne
     @JoinColumn(name = "sessionID")
@@ -35,9 +37,10 @@ public class SessionActivity {
     private Activity activity;
 
     public SessionActivity(){}
-    public SessionActivity(Session session, Activity activity) {
+    public SessionActivity(Session session, Activity activity, String duration) {
         this.session = session;
         this.activity = activity;
+        this.duration = duration;
     }
 
     public int getId() {
@@ -62,5 +65,13 @@ public class SessionActivity {
 
     public void setActivity(Activity activity) {
         this.activity = activity;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
     }
 }
