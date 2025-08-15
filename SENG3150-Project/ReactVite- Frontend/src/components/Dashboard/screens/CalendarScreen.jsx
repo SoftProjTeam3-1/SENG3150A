@@ -9,11 +9,13 @@ const CalendarScreen = ({DatePicker, format, temporarySession, setTemporarySessi
                     <DatePicker
                         inline
                         onChange={(date) => {
-                            const formatted = format(date, 'MMM dd');
-                            setTemporarySessionDate({date: formatted, setTemporarySession});
+                            const formatted1 = format(date, 'MMM dd');
+                            setTemporarySessionDate({shortDate: formatted1, date:date, setTemporarySession});
                             const fullSession = {
                                 ...temporarySession,
-                                date: formatted};
+                                shortDate: formatted1,
+                                date:date
+                            };
                             setTemporarySession(fullSession);
                             createSession({session: fullSession, setSessions: setSessions, setTemporarySession: setTemporarySession});
                             setShowCalendar(false);

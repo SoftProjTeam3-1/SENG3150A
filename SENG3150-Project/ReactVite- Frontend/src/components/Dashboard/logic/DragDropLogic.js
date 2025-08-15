@@ -17,6 +17,7 @@ export const onDragStart = (start) => {
     console.log("Source Droppable ID:", start.source.droppableId);
 };
 
+//Hook, remove session activity and add session activity
 const handleActivityMove = ({ draggableId, source, destination, setSessions }) => {
     const { sessionId: srcSessionId, rowIndex: srcRow } = parseDroppableId(source.droppableId);
     const { sessionId: dstSessionId, rowIndex: dstRowOriginal } = parseDroppableId(destination.droppableId);

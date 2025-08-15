@@ -16,9 +16,9 @@ const VerticalBar_Laptop = ({sessions, selectedSessions, setSessionTypeScreen, s
             {/*Laptop Display*/}
             <div id="verticalBar" className="lg:max-w-50 w-1/5 bg-gray-600 text-2xl flex flex-col items-center py-0 overflow-x-visible hidden sm:flex max-w-full">
                 <ul className="text-center flex flex-col items-center relative top-[10px]">
-                    {sessions.map(({id, date, type}) => {
-                        if (!date) return null;
-                        const [month, day] = date.split(' ');
+                    {sessions.map(({id, shortDate, type}) => {
+                        if (!shortDate) return null;
+                        const [month, day] = shortDate.split(' ');
                         const isClicked = selectedSessions.includes(id);
                         return (
                             <button
@@ -27,7 +27,7 @@ const VerticalBar_Laptop = ({sessions, selectedSessions, setSessionTypeScreen, s
                                 onClick={() => handleClickSelectedSessions({id: id, setSelectedSessions})}
                                 onContextMenu={(e) => {
                                     e.preventDefault();
-                                    handleRemoveDate({id: id, setSelectedSessions});
+                                    handleRemoveDate({id: id, setSelectedSessions, selectedSessions});
                                 }}>
                                 <div className="font-bold">{month} {day}</div>
                                 <div className="text-sm">{type} session</div>

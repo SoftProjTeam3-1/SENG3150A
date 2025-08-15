@@ -1,5 +1,7 @@
 package com.example.entities;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,10 +40,18 @@ public class UserController {
 
     // login
     @PostMapping("/api/user/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody User entity) {
+    public ResponseEntity<LoginResponse> login(@RequestBody User entity, HttpServletResponse response) {
         User user = new User();
         user.setEmail(entity.getEmail());
         user.setPassword(entity.getPassword());
+
+        // Create cookie
+        Cookie cookie = new Cookie("userId", String.valueOf(userService.getUser(entity.getEmail()).getId())); // There was an issue here where the id wasn't matching the db id - Oscar
+        cookie.setPath("/");                 // Cookie is valid for all paths
+        cookie.setHttpOnly(true);           // JS can't access it (more secure)
+        cookie.setMaxAge(24 * 60 * 60);     // 1 day
+        cookie.setSecure(false); // for localhost testing only
+        response.addCookie(cookie);
 
         System.out.println("Login Temp User: " + user.getEmail() + " " + user.getPassword());
 
@@ -49,12 +59,12 @@ public class UserController {
 
         if (result != null && result.getPassword().equals(user.getPassword())) {
             System.err.println("User found: " + result.getFirstName());
-            LoginResponse loginResponse = new LoginResponse(true, "Login successful");
+            LoginResponse loginResponse = new LoginResponse(true, "Login successful", result);
             return new ResponseEntity<>(loginResponse, HttpStatus.OK);
 
         } else {
             System.out.println("User not found " + user.getEmail() + " " + user.getPassword());
-            LoginResponse loginResponse = new LoginResponse(false, "Login failed");
+            LoginResponse loginResponse = new LoginResponse(false, "Login failed", null);
             return new ResponseEntity<>(loginResponse, HttpStatus.OK);
         }
     }

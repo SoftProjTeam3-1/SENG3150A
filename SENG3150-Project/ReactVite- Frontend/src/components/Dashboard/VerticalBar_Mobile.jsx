@@ -17,9 +17,9 @@ const VerticalBar_Mobile = ({sessions, selectedSessions, setSessionTypeScreen,se
             {/*Mobile Display*/}
             <div className="w-full bg-gray-600 text-lg flex items-center py-2 overflow-x-auto sm:hidden px-4">
                 <div className="flex flex-nowrap items-center gap-2">
-                    {sessions.map(({ id, date, type }) => {
-                        if (!date) return null;
-                        const [month, day] = date.split(' ');
+                    {sessions.map(({ id, shortDate, type }) => {
+                        if (!shortDate) return null;
+                        const [month, day] = shortDate.split(' ');
                         const isClicked = selectedSessions.includes(id);
                         return (
                             <button
@@ -28,7 +28,7 @@ const VerticalBar_Mobile = ({sessions, selectedSessions, setSessionTypeScreen,se
                                 onClick={() => handleClickSelectedSessions({id: id, setSelectedSessions})}
                                 onContextMenu={(e) => {
                                     e.preventDefault();
-                                    handleRemoveDate({id: id, setSelectedSessions});
+                                    handleRemoveDate({id: id, setSelectedSessions, selectedSessions});
                                 }}
                             >
                                 <div className="font-bold text-sm">{month} {day}</div>

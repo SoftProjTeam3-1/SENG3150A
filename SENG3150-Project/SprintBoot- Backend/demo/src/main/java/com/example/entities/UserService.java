@@ -46,7 +46,10 @@ public  class UserService {
         }
         return false;
     }
-    
+
+    public User getUserByID(int userId) {
+        return (User) userRepository.findById(userId);
+    }
 
 /*    public boolean loginUser(String email, String password) {
         User existingUser = userStore.get(email);

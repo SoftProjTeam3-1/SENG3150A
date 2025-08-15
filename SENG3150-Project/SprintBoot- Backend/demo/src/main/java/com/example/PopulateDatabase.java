@@ -51,7 +51,7 @@ public class PopulateDatabase implements CommandLineRunner{
     @Override
     public void run(String... args){
         //clean the database
-        attendanceR.deleteAll();
+        /* attendanceR.deleteAll();
         rollR.deleteAll();
         textNoteR.deleteAll();
         voiceNoteR.deleteAll();
@@ -61,7 +61,7 @@ public class PopulateDatabase implements CommandLineRunner{
         activityR.deleteAll();
         playerR.deleteAll();
         sessionTypeR.deleteAll();
-        activityTypeR.deleteAll();
+        activityTypeR.deleteAll(); */
 
         //create activity types
         ActivityType warmup = new ActivityType("Warmup", "Typically first in a training session");
@@ -110,19 +110,19 @@ public class PopulateDatabase implements CommandLineRunner{
         Session gameSession1 = new Session(new Date(1746291600000L), coach, gameSession);
 
         //create SessionActivities
-        SessionActivity sessionActivity1 = new SessionActivity(trainingSession1, laps, "15mins");
-        SessionActivity sessionActivity2 = new SessionActivity(trainingSession1, stretching, "5mins");
-        SessionActivity sessionActivity3 = new SessionActivity(trainingSession1, miniGame, "30mins");
+        SessionActivity sessionActivity1 = new SessionActivity(trainingSession1, laps);
+        SessionActivity sessionActivity2 = new SessionActivity(trainingSession1, stretching);
+        SessionActivity sessionActivity3 = new SessionActivity(trainingSession1, miniGame);
 
-        SessionActivity sessionActivity4 = new SessionActivity(trainingSession2, laps, "20mins");
-        SessionActivity sessionActivity5 = new SessionActivity(trainingSession2, stretching, "20mins");
-        SessionActivity sessionActivity6 = new SessionActivity(trainingSession2, passes, "20mins");
-        SessionActivity sessionActivity7 = new SessionActivity(trainingSession2, miniGame, "50mins");
+        SessionActivity sessionActivity4 = new SessionActivity(trainingSession2, laps);
+        SessionActivity sessionActivity5 = new SessionActivity(trainingSession2, stretching);
+        SessionActivity sessionActivity6 = new SessionActivity(trainingSession2, passes);
+        SessionActivity sessionActivity7 = new SessionActivity(trainingSession2, miniGame);
         
-        SessionActivity sessionActivity8 = new SessionActivity(trainingSession3, stretching, "10mins");
-        SessionActivity sessionActivity9 = new SessionActivity(trainingSession3, passes, "35mins");
-        SessionActivity sessionActivity10 = new SessionActivity(trainingSession3, dribbling, "35mins");
-        SessionActivity sessionActivity11 = new SessionActivity(trainingSession3, miniGame, "45mins");
+        SessionActivity sessionActivity8 = new SessionActivity(trainingSession3, stretching);
+        SessionActivity sessionActivity9 = new SessionActivity(trainingSession3, passes);
+        SessionActivity sessionActivity10 = new SessionActivity(trainingSession3, dribbling);
+        SessionActivity sessionActivity11 = new SessionActivity(trainingSession3, miniGame);
 
         //making notes for the sessions
         TextNote textNote1 = new TextNote("The team could ALL use practice passing accurately", trainingSession1);

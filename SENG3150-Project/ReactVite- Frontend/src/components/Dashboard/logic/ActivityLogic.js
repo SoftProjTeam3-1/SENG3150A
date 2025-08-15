@@ -1,4 +1,5 @@
-
+// to do: hook here, need to change DB to store database duration in session activity instead of session
+// backend will need to be written for this as well.
 // For when changing the duration of an activity
 export const handleEditDuration = (setShowEditDurationScreen) => {
     setShowEditDurationScreen(prev => !prev);

@@ -56,7 +56,8 @@ public class SessionActivityController {
             return new ResponseEntity<>(new AddSessionActivityResponse("Session or Activity not found", false), HttpStatus.NOT_FOUND);
         }
         else{
-            boolean result = sessionActivityService.saveSessionActivity(new SessionActivity(persistedSession, persistedActivity, persistedActivity.getDuration()));
+            //please fix this later btw!
+            boolean result = sessionActivityService.saveSessionActivity(new SessionActivity(persistedSession, 1, "0mins", persistedActivity));
             if(result){
                 return new ResponseEntity<>(new AddSessionActivityResponse("Session activity added successfully", true), HttpStatus.OK);
             } else {

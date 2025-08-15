@@ -1,5 +1,5 @@
 
-
+//TO DO: Hook this up to the backend to grab the activities and activity types. (will need to write backend code for this))
 export const populateDefaultCategories = ({setCategories}) => {
     const defaultCategories = [
         {
