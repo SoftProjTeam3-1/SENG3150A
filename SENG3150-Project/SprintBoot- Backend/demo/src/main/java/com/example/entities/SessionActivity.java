@@ -31,10 +31,14 @@ public class SessionActivity {
     @JoinColumn(name = "activityID")
     private Activity activity;
 
+    private String duration;
+
     public SessionActivity(){}
-    public SessionActivity(Session session, Activity activity) {
+    public SessionActivity(Session session, Activity activity, String duration, int rowNum) {
         this.session = session;
         this.activity = activity;
+        this.duration = duration;
+        this.rowNum = rowNum;
     }
 
     public Integer getId() {
@@ -75,13 +79,5 @@ public class SessionActivity {
 
     public void setActivity(Activity activity) {
         this.activity = activity;
-    }
-
-    public String getDuration() {
-        return duration;
-    }
-
-    public void setDuration(String duration) {
-        this.duration = duration;
     }
 }

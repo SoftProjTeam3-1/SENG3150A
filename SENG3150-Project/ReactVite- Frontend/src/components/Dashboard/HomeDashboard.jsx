@@ -1,12 +1,8 @@
 import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd';
-import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd';
 import { useState, useEffect, useRef } from "react";
 import DatePicker from "react-datepicker";
 import { format } from 'date-fns';
 import "react-datepicker/dist/react-datepicker.css";
-
-
-
 
 
 
@@ -22,13 +18,11 @@ import CalendarScreen from "./screens/CalendarScreen.jsx";
 import SessionTypeScreen from "./screens/SessionTypeScreen.jsx";
 
 import {populateDefaultCategories} from "./logic/PopulatingLogic.js";
-import {fetchSessions, syncSession} from "./logic/hooks.js";
-import {transformSessionsToBack, transformSessionsToFront} from "./logic/CleanInputs.js";
 
 
 const HomeDashboard = () => {
     // Temporary session which holds data before creation to db
-    const [temporarySession, setTemporarySession] = useState({ id:null, shortDate:null, date:null, type:null, activities:[], notes:""});
+    const [temporarySession, setTemporarySession] = useState({ id:null, date:null, type:null, activities:[], notes:""});
 
     // Stores sessions from the database
     const [sessions, setSessions] = useState([]);
@@ -36,8 +30,6 @@ const HomeDashboard = () => {
     // Stores selected local sessions the user has clicked
     const [selectedSessions, setSelectedSessions] = useState([]);
 
-    // Temporary category which holds data before being added to categories list: NOT USED, but good to see
-    //const [temporaryCategory, setTemporaryCategory] = useState({name:null, activities:[]});
     // Temporary category which holds data before being added to categories list: NOT USED, but good to see
     //const [temporaryCategory, setTemporaryCategory] = useState({name:null, activities:[]});
 
@@ -75,51 +67,10 @@ const HomeDashboard = () => {
     const [durationInput, setDurationInput] = useState(0);
 
 
-    useEffect(() => {
-        if (sessions && sessions.length > 0) {
-            const fetchAndClean = async () => {
-                const cleanedSessions = await transformSessionsToBack(sessions);
-                await syncSession(cleanedSessions)
-                    .then(data => {
-                        console.log("Sessions synced:", data);
-                    })
-                    .catch(err => {
-                        console.error("Error syncing sessions:", err);
-                    });
-            }
-            fetchAndClean();
-        }
-    }, [sessions]); // runs only when `sessions` changes
-
     // Show sessions in console for debugging
     useEffect(() => {
         console.log("Sessions updated:", sessions);
     }, [sessions]);
-
-    // After User Logs in
-    useEffect(() => {
-        fetchSessions()
-            .then((sessions) => {
-                console.log("Fetched sessions:", sessions);
-                if (sessions === null) {
-                    console.warn("Returned Sessions list is null");
-                } else {
-                    const fetchAndClean = async () => {
-                        const rawSessions = await fetchSessions();
-                        const cleanedSessions = await transformSessionsToFront(rawSessions);
-                        console.log("Cleaned Sessions: ", cleanedSessions);
-                        setSessions(cleanedSessions);
-                    };
-                    fetchAndClean();
-                }
-            })
-            .catch((err) => {
-                console.error("Failed to fetch sessions", err);
-                // optionally redirect to login if 403
-            });
-    }, []);
-
-
 
 
     // When a User clicks away from a menu, the pop-up screen disappears
@@ -156,9 +107,7 @@ const HomeDashboard = () => {
 
 
     // POPULATES DASHBOARD -- REMOVE WHEN HOOKS WORK
-    // POPULATES DASHBOARD -- REMOVE WHEN HOOKS WORK
     useEffect(() => {
-        populateDefaultCategories({setCategories});
         populateDefaultCategories({setCategories});
     }, []);
 
@@ -167,46 +116,9 @@ const HomeDashboard = () => {
 
 
     return(
-
         <div className="w-full m-0 p-0 max-w-full">
 
             <Header headerLabel={"Mayfield Soccer Team - Dashboard"}/>
-
-            <div id="middleSegment" style={{display: 'flex', backgroundColor: '#AFD2BB' }} className="flex flex-col sm:flex-row bg-white min-h-screen max-w-full">
-
-
-                <VerticalBar_Mobile
-                    sessions={sessions}
-                    selectedSessions={selectedSessions}
-                    setSessionTypeScreen={setSessionTypeScreen}
-                    setSelectedSessions={setSelectedSessions}
-                    setTemporarySession={setTemporarySession}
-                />
-
-                <VerticalBar_Laptop
-                    sessions={sessions}
-                    selectedSessions={selectedSessions}
-                    setSessionTypeScreen={setSessionTypeScreen}
-                    setSelectedSessions={setSelectedSessions}
-                    setTemporarySession={setTemporarySession}
-                />
-
-
-                <SessionContainer_Laptop
-                    sessions={sessions}
-                    setSessions={setSessions}
-                    selectedSessions={selectedSessions}
-                    DragDropContext={DragDropContext}
-                    Droppable={Droppable}
-                    Draggable={Draggable}
-                    setShowActivityScreen={setShowActivityScreen}
-                    setSingleSelectedSession={setSingleSelectedSession}
-                />
-
-                <SessionContainer_Mobile
-                    sessions={sessions}
-                    selectedSessions={selectedSessions}
-                />
 
             <div id="middleSegment" style={{display: 'flex', backgroundColor: '#AFD2BB' }} className="flex flex-col sm:flex-row bg-white min-h-screen max-w-full">
 
@@ -257,27 +169,9 @@ const HomeDashboard = () => {
                     setSessions={setSessions}
                     singleSelectedSession={singleSelectedSession}
                 />
-                <EditDurationScreen
-                    editRef={editRef}
-                    durationInput={durationInput}
-                    setDurationInput={setDurationInput}
-                    temporaryActivity={temporaryActivity}
-                    setTemporaryActivity={setTemporaryActivity}
-                    setShowEditDurationScreen={setShowEditDurationScreen}
-                    setSessions={setSessions}
-                    singleSelectedSession={singleSelectedSession}
-                />
             )}
 
             {showActivityScreen && (
-                <ActivityScreen
-                    activityRef={activityRef}
-                    openCategory={openCategory}
-                    Categories={Categories}
-                    setShowActivityScreen={setShowActivityScreen}
-                    setTemporaryActivity={setTemporaryActivity}
-                    setOpenCategory={setOpenCategory}
-                    setShowEditDurationScreen={setShowEditDurationScreen}/>
                 <ActivityScreen
                     activityRef={activityRef}
                     openCategory={openCategory}
@@ -290,7 +184,6 @@ const HomeDashboard = () => {
 
             {showActivityDetails && (
                 <ActivityDetailScreen/>
-                <ActivityDetailScreen/>
             )}
 
             {showCalendar && (
@@ -301,22 +194,9 @@ const HomeDashboard = () => {
                     setTemporarySession={setTemporarySession}
                     setSessions={setSessions}
                     setShowCalendar={setShowCalendar}/>
-                <CalendarScreen
-                    DatePicker={DatePicker}
-                    format={format}
-                    temporarySession={temporarySession}
-                    setTemporarySession={setTemporarySession}
-                    setSessions={setSessions}
-                    setShowCalendar={setShowCalendar}/>
             )}
 
             {showSessionTypeScreen && (
-                <SessionTypeScreen
-                    sessionRef={sessionRef}
-                    setSessionTypeScreen={setSessionTypeScreen}
-                    setShowCalendar={setShowCalendar}
-                    setTemporarySession={setTemporarySession}/>
-            )}
                 <SessionTypeScreen
                     sessionRef={sessionRef}
                     setSessionTypeScreen={setSessionTypeScreen}

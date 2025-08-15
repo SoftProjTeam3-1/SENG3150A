@@ -57,7 +57,7 @@ public class SessionActivityController {
         }
         else{
             //please fix this later btw!
-            boolean result = sessionActivityService.saveSessionActivity(new SessionActivity(persistedSession, 1, "0mins", persistedActivity));
+            boolean result = sessionActivityService.saveSessionActivity(new SessionActivity(persistedSession, persistedActivity, entity.getDuration(), entity.getRow()));
             if(result){
                 return new ResponseEntity<>(new AddSessionActivityResponse("Session activity added successfully", true), HttpStatus.OK);
             } else {

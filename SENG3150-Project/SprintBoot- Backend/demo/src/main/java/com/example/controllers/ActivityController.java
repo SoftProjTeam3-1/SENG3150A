@@ -66,11 +66,8 @@ public class ActivityController {
     }
 
     @PostMapping(value="/update")
-    public ResponseEntity<UpdateActivityResponse> updateActivity(@RequestBody ActivityPair entity){
-        System.out.println("\n\n\n\nREACHED THE UPDATE MAPPING LETS GO!");
-        System.out.println();
-        System.out.println("Original Activity: " + entity.getOriginalActivity().getName());
-        System.out.println("Changed Activity: " + entity.getChangedActivity().getName());
+    public ResponseEntity<UpdateActivityResponse> updateActivity(@RequestBody Activity entity){
+        System.out.println("REACHED THE UPDATE MAPPING LETS GO!");
         boolean result = activityService.updateActivity(entity);
         if(result){
             return new ResponseEntity<>(new UpdateActivityResponse(true, "Activity updated successfully"), HttpStatus.OK);
@@ -78,4 +75,4 @@ public class ActivityController {
             return new ResponseEntity<>(new UpdateActivityResponse(false, "Activity update failed"), HttpStatus.OK);
         }
     }
-}
+}   
