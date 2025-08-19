@@ -3,3 +3,6 @@
 *.class
 # JAR files
 *.jar
+SENG3150-Project/SprintBoot- Backend/demo/target/classes/com/.DS_Store
+SENG3150-Project/SprintBoot- Backend/demo/target/classes/application.properties
+SENG3150-Project/SprintBoot- Backend/demo/target/classes/.DS_Store
