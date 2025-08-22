@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.mockito.ArgumentMatchers.any;
 
-public class UserControllerTestRegister {
+public class UserControllerRegisterTest {
 
     @Mock
     private UserService userService;
