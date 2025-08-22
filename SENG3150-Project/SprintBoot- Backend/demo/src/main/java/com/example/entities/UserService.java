@@ -1,27 +1,18 @@
 package com.example.entities;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import com.example.stored_procedures.CreateUser;
-import com.example.stored_procedures.GetUser;
-
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import com.example.repositories.UserRepository;
-
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.example.repositories.UserRepository;
+import com.example.stored_procedures.CreateUser;
 
 @Service
+@Transactional
 public  class UserService {
 
     private final UserRepository userRepository;
 
-/*     private final Map<String, User> userStore = new HashMap<>();
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(); */
-    private final Map<String, String> resetCodeStore = new HashMap<>();
+
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -45,6 +36,15 @@ public  class UserService {
             return true;
         }
         return false;
+    }
+
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    
+    public void save(User user) {
+        userRepository.save(user); 
     }
 
     public User getUserByID(int userId) {
@@ -90,16 +90,22 @@ public  class UserService {
     //     return Optional.ofNullable(resetCodeStore.get(token));
     // }
 
+    @Transactional
     public void saveResetToken(String email, String code) {
-        resetCodeStore.put(email, code);
+        User user = userRepository.findByEmail(email);
+        if (user != null) {
+            user.setEmailCodeSent(code);
+            user.setEmailCodeSentTo(email);
+            userRepository.save(user);
+        }
     }
-
+    
 
 
     public String getResetToken(String email) {
-        return resetCodeStore.get(email);
+        User user = userRepository.findByEmail(email);
+        return (user != null) ? user.getEmailCodeSent() : null;
     }
-    
 /*     public void updatePassword(String email, String newPassword) {
         User user = userStore.get(email);
         if (user != null) {
