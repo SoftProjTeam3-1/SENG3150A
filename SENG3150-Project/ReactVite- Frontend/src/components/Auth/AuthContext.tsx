@@ -1,13 +1,21 @@
 // context/AuthContext.js
+import React from 'react';
 import { createContext, useContext, useState } from 'react';
 
-const AuthContext = createContext(null);
+interface AuthContextType {
+  isAuthenticated: boolean;
+  login: () => void;
+  logout: () => void;
+}
+
+const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const login = () => setIsAuthenticated(true);
+  const login = () => setIsAuthenticated(true); 
   const logout = () => setIsAuthenticated(false);
+
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
