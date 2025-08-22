@@ -40,7 +40,7 @@ public class UserControllerTestRegister {
     }
 
     @Test
-    public void testLoginSuccess() throws Exception {
+    public void testRegisterSuccess() throws Exception {
         Mockito.when(userService.registerUser(any(User.class))).thenReturn(true);
 
         mockMvc.perform(post("/api/user/register")
@@ -51,7 +51,7 @@ public class UserControllerTestRegister {
     }
 
     @Test
-    public void testLoginFailure() throws Exception {
+    public void testRegisterFailure() throws Exception {
         Mockito.when(userService.registerUser(any(User.class))).thenReturn(false);
 
         mockMvc.perform(post("/api/user/register")
