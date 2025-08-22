@@ -45,23 +45,21 @@ public class UserController {
         user.setEmail(entity.getEmail());
         user.setPassword(entity.getPassword());
 
-        // Create cookie
-        Cookie cookie = new Cookie("userId", String.valueOf(userService.getUser(entity.getEmail()).getId())); // There was an issue here where the id wasn't matching the db id - Oscar
-        cookie.setPath("/");                 // Cookie is valid for all paths
-        cookie.setHttpOnly(true);           // JS can't access it (more secure)
-        cookie.setMaxAge(24 * 60 * 60);     // 1 day
-        cookie.setSecure(false); // for localhost testing only
-        response.addCookie(cookie);
-
-        System.out.println("Login Temp User: " + user.getEmail() + " " + user.getPassword());
-
+        //fetch user
         User result = userService.getUser(user.getEmail());
 
-        if (result != null && result.getPassword().equals(user.getPassword())) {
+        if(result != null && result.getPassword().equals(user.getPassword())){
+            // Create cookie
+            Cookie cookie = new Cookie("userId", String.valueOf(userService.getUser(entity.getEmail()).getId())); // There was an issue here where the id wasn't matching the db id - Oscar
+            cookie.setPath("/");                 // Cookie is valid for all paths
+            cookie.setHttpOnly(true);           // JS can't access it (more secure)
+            cookie.setMaxAge(24 * 60 * 60);     // 1 day
+            cookie.setSecure(false); // for localhost testing only
+            response.addCookie(cookie);
+
             System.err.println("User found: " + result.getFirstName());
             LoginResponse loginResponse = new LoginResponse(true, "Login successful", result);
             return new ResponseEntity<>(loginResponse, HttpStatus.OK);
-
         } else {
             System.out.println("User not found " + user.getEmail() + " " + user.getPassword());
             LoginResponse loginResponse = new LoginResponse(false, "Login failed", null);
