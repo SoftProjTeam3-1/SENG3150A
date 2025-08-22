@@ -14,20 +14,25 @@ import './login.css';
 import { toast, ToastContainer } from 'react-toastify';
 import { sha256 } from 'js-sha256';
 import 'react-toastify/dist/ReactToastify.css';
+import { useAuth } from '../Auth/AuthContext';
+import { Route, useNavigate , Link} from 'react-router-dom';
+import ProtectedRoute from '../ProtectedRoute.jsx';
 
 const LoginForm = () => {
-    //  public User(String firstName, String surname, String email, boolean verified, String password) {
 
   const [email, setEmail] = useState('')
   const [plainTextPassword, setPassword] = useState('')
 
-  let [viewValidation, changeValidation] = useState(false);
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+
 
   const handleSubmit = async e => {
     e.preventDefault()
 
     let s = validateLogin({emailId:email,passwordId:plainTextPassword});
-    changeValidation(s.valid);
+    //changeValidation(s.valid);
 
     if (!s.valid) {
       // directly handle client-side validation fail here
@@ -56,8 +61,8 @@ const LoginForm = () => {
       return;
     }
 
-
     const password = sha256(plainTextPassword)
+    console.log("login form", password, plainTextPassword)
 
     try {
       const response = await fetch('/api/user/login', {
@@ -68,14 +73,15 @@ const LoginForm = () => {
           credentials: 'include'
       })
 
-        const data = await response.json();
+      const data = await response.json();
       console.log(data);
 
-        if (data.response && data.user) {
+      if(data.response){
+        console.log('User logged in successfully!')
+        login(); // Set isAuthenticated to true
+        navigate('/dashboard'); // Redirect using react-router
 
-            console.log('User logged in successfully!');
-            window.location.href = '/dashboard';
-        } else {
+      } else {
             console.error('User missing from response:', data);
             toast.error('Login Failed');
 
@@ -94,8 +100,6 @@ const LoginForm = () => {
       console.error('Error submitting user:', err)
     }
   }
-
-
 
   return (
     <div className={"login-card"}>

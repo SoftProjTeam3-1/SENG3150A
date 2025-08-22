@@ -1,16 +1,20 @@
+import { LogOut } from "lucide-react";
 import optionsIMG from "../../assets/options.png";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../Auth/AuthContext";
 
 const Header = (headerLabel) => {
     headerLabel = headerLabel.headerLabel || "Dashboard";
 
     const navigate = useNavigate();
+     const { logout } = useAuth();
     const [showOptions, setShowOptions] = useState(false);
 
     const handleOptionsClick = () => {
         setShowOptions((prev) => !prev);
     };
+
 
     const iconRef = useRef(null);
     const optionsRef = useRef(null);
@@ -77,7 +81,16 @@ const Header = (headerLabel) => {
                         Dashboard
                     </button>
                     <br />
-                    <button className="w-full h-12 sm:h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105">
+                    <button 
+                        onClick={() => {
+                            // Handle logout logic here
+                            console.log("User logged out");
+                            // Optionally, redirect to login page or perform other actions
+                            logout(); // Set isAuthenticated to true
+                            navigate('/'); // Redirect using react-router
+                    
+                        }}
+                        className="w-full h-12 sm:h-20 bg-white rounded-2xl flex flex-col items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105">
                         Logout
                     </button>
                 </div>

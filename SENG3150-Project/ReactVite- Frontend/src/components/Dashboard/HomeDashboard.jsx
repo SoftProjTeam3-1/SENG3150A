@@ -112,7 +112,110 @@ const HomeDashboard = () => {
     }, []);
 
 
+    const parseDroppableId = (id) => {
+        const [sessionId, rowStr] = id.split('__row-');
+        return {
+            sessionId,
+            rowIndex: parseInt(rowStr, 10)
+        };
+    };
+    const parseDraggableId = (id) => {
+        const [sessionId, rest] = id.split('__');
+        const [activityName, indexStr] = rest.split('-');
+        return {
+            sessionId,
+            activityName,
+            index: parseInt(indexStr, 10)
+        };
+    };
 
+    const onDragStart = (start) => {
+        console.log("Drag started:");
+        console.log("Draggable ID:", start.draggableId);
+        console.log("Source Droppable ID:", start.source.droppableId);
+    };
+
+    const handleActivityMove = ({ draggableId, source, destination }) => {
+        const { sessionId: srcSessionId, rowIndex: srcRow } = parseDroppableId(source.droppableId);
+        const { sessionId: dstSessionId, rowIndex: dstRow } = parseDroppableId(destination.droppableId);
+        const { activityName } = parseDraggableId(draggableId);
+
+        // If dropped in same spot, do nothing
+        if (
+            srcSessionId === dstSessionId &&
+            srcRow === dstRow &&
+            source.index === destination.index
+        ) return;
+
+        setSessions(prevSessions => {
+            const updatedSessions = [...prevSessions];
+
+            const srcSessionIndex = updatedSessions.findIndex(s => s.id === srcSessionId);
+            const dstSessionIndex = updatedSessions.findIndex(s => s.id === dstSessionId);
+            if (srcSessionIndex === -1 || dstSessionIndex === -1) return prevSessions;
+
+            const srcSession = { ...updatedSessions[srcSessionIndex] };
+            const dstSession = srcSessionId === dstSessionId ? srcSession : { ...updatedSessions[dstSessionIndex] };
+
+            const srcActivities = [...srcSession.activities];
+            const dstActivities = srcSessionId === dstSessionId ? srcActivities : [...dstSession.activities];
+
+            // Intra-row reorder
+            if (srcSessionId === dstSessionId && srcRow === dstRow) {
+                //const rowItems = srcActivities.filter(a => a.row === srcRow);
+
+                //const rowActivity = rowItems[source.index];
+                const globalIndices = srcActivities.reduce((acc, a, i) => {
+                    if (a.row === srcRow) acc.push(i);
+                    return acc;
+                }, []);
+
+                const [removed] = srcActivities.splice(globalIndices[source.index], 1);
+                srcActivities.splice(globalIndices[destination.index], 0, removed);
+
+                updatedSessions[srcSessionIndex] = { ...srcSession, activities: srcActivities };
+                return updatedSessions;
+            }
+
+            // Inter-row or inter-session move
+            const srcIdx = srcActivities.findIndex(
+                (a) => a.name === activityName && a.row === srcRow
+            );
+            if (srcIdx === -1) return prevSessions;
+
+            const [movedItem] = srcActivities.splice(srcIdx, 1);
+            movedItem.row = dstRow;
+
+            // Find global insert index
+            const insertAt = dstActivities.reduce(
+                (acc, a, i) => (a.row === dstRow && acc.count++ === destination.index ? { idx: i, found: true, count: acc.count } : acc),
+                { idx: dstActivities.length, count: 0, found: false }
+            ).idx;
+
+            dstActivities.splice(insertAt, 0, movedItem);
+
+            updatedSessions[srcSessionIndex] = { ...srcSession, activities: srcActivities };
+            if (srcSessionId !== dstSessionId) {
+                updatedSessions[dstSessionIndex] = { ...dstSession, activities: dstActivities };
+            }
+
+            return updatedSessions;
+        });
+    };
+
+
+
+
+    const onDragEnd = (result) => {
+        const { source, destination, draggableId } = result;
+
+        if (!destination) {
+            console.warn("Dropped outside a valid droppable.");
+            return;
+        }
+
+        handleActivityMove({ draggableId, source, destination });
+    };
 
 
     return(
