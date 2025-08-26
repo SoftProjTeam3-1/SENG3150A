@@ -31,6 +31,9 @@ public class SessionActivity {
     @JoinColumn(name = "activityID")
     private Activity activity;
 
+    @Version
+    private Long version;
+
     private String duration;
 
     public SessionActivity(){}
