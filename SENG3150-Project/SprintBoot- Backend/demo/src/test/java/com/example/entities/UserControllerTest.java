@@ -30,7 +30,7 @@ public class UserControllerTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this); // ✅ initializes @Mock and @InjectMocks
+        MockitoAnnotations.openMocks(this);
         objectMapper = new ObjectMapper();
         mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
 
