@@ -4,16 +4,15 @@
 
 package com.example.session_controllers;
 
-import com.example.entities.User;
-import com.example.entities.UserService;
+import com.example.controllers.ActivityService;
+import com.example.controllers.ActivityTypeService;
+import com.example.entities.*;
 import com.example.repositories.SessionTypeRepository;
 import com.example.responses.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import com.example.entities.Session;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,7 +31,9 @@ public class SessionController {
     @Autowired
     private SessionTypeService sessionTypeService;
     @Autowired
-    private SessionTypeRepository sessionTypeRepository;
+    ActivityTypeService activityTypeService;
+    @Autowired
+    ActivityService activityService;
 	
     // @GetMapping("/initialCall")
     // public ResponseEntity<InitialSessionGrabResponse> getSessions(){
@@ -149,6 +150,36 @@ public class SessionController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/fetchCategoriesAndActivities")
+    public ResponseEntity<FetchCategoriesAndActivitiesResponse> fetchCategoriesAndActivities(@CookieValue(value = "userId", required = false) String userId) {
+        if (userId == null) {
+            System.out.println("No user ID found in cookies");
+        }else{
+            System.out.println("USerID HERE: "+ userId);
+        }
+        try {
+
+            User user = userService.getUserByID(Integer.parseInt(userId)); // Needs to parse id here
+
+            System.out.println("WE GOT THE USER: "+user);
+
+            List<ActivityType> activityTypes = activityTypeService.getAllActivityTypes();
+
+            FetchCategoriesAndActivitiesResponse output = new FetchCategoriesAndActivitiesResponse();
+
+            for (ActivityType activityType : activityTypes) {
+                String name = activityType.getName();
+                List<Activity> activities = activityService.getActivitiesByType(name);
+                FetchSpecificCategoriesAndActivitiesResponse newEntry = new FetchSpecificCategoriesAndActivitiesResponse(name, activities);
+                output.addToList(newEntry);
+            }
+
+            return new ResponseEntity<>(output, HttpStatus.OK );
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
