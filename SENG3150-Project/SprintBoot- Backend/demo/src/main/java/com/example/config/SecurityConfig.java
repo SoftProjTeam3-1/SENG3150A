@@ -34,7 +34,8 @@ public class SecurityConfig {
                                  "/api/activity/getByActivityType",
                                  "/api/activity/delete",
                                  "/api/session/fetchSessions",
-                                 "api/session/updateSessions").permitAll()
+                                 "api/session/updateSessions",
+                                    "api/session/fetchCategoriesAndActivities").permitAll()
                 .anyRequest().authenticated()
             )
             .httpBasic(httpBasic -> httpBasic.disable());
