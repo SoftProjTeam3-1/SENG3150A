@@ -5,17 +5,13 @@
 package com.example.session_controllers;
 
 import com.example.entities.*;
-import com.example.repositories.ActivityRepository;
+import com.example.repositories.*;
 import com.example.responses.SyncSessionsActivityResponse;
 import com.example.responses.SyncSessionsResponse;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.example.repositories.SessionRepository;
-import com.example.repositories.SessionTypeRepository;
-import com.example.repositories.TextNoteRepository;
 
 import java.util.List;
 
@@ -26,14 +22,16 @@ public class SessionService {
     private final SessionTypeRepository sessionTypeRepository;
     private final ActivityRepository activityRepository;
     private final TextNoteRepository textNoteRepository;
+    private final SessionActivityRepository sessionActivityRepository;
 
     public SessionService(SessionRepository sessionRepository,
-        SessionTypeRepository sessionTypeRepository, TextNoteRepository textNoteRepository, ActivityRepository activityRepository
+        SessionTypeRepository sessionTypeRepository, TextNoteRepository textNoteRepository, ActivityRepository activityRepository, SessionActivityRepository sessionActivityRepository
     ) {
         this.sessionRepository = sessionRepository;
         this.sessionTypeRepository = sessionTypeRepository;
         this.textNoteRepository = textNoteRepository;
         this.activityRepository = activityRepository;
+        this.sessionActivityRepository = sessionActivityRepository;
     }
 
     // public List<Session> getTrainingSessions() {
@@ -128,52 +126,59 @@ public class SessionService {
     }
 
     @Transactional
-    public void replaceUserSessions(User user, List<SyncSessionsResponse> sessions){
+    public void replaceUserSessions(User user, List<SyncSessionsResponse> sessions) {
 
         prevalidate(sessions);
 
-        deleteAllUserSessions(user);
+        // ---- SAFE DELETE (uses orphanRemoval on children) ----
+        List<Session> existing = sessionRepository.findAllByUser(user); // add this repo method
+        sessionActivityRepository.deleteBySessionIn(existing);
+        sessionRepository.deleteAll(existing);
+        sessionRepository.flush();
+        em.clear(); // <<< IMPORTANT: ensure nothing stale is still managed
 
+        // 2) recreate sessions cleanly
         int i = 0;
-
-        for (SyncSessionsResponse session : sessions) {
+        for (SyncSessionsResponse req : sessions) {
             Session s = new Session();
             s.setUser(user);
-            s.setDate(session.getDate());
+            s.setDate(req.getDate());
 
-            if (session.getSessionTypeId() == null) {
+            if (req.getSessionTypeId() == null) {
                 throw new IllegalArgumentException("session[" + i + "]: sessionTypeId is required");
             }
-
             int finalI = i;
-            SessionType sessionType = sessionTypeRepository.findById(session.getSessionTypeId()).orElseThrow(() -> new IllegalArgumentException("session[" + finalI + "]: sessionTypeId "
-                    + session.getSessionTypeId() + " not found"));
-            s.setType(sessionType);
+            SessionType st = sessionTypeRepository.findById(req.getSessionTypeId())
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            "session[" + finalI + "]: sessionTypeId " + req.getSessionTypeId() + " not found"));
+            s.setType(st);
 
-            Roll r = new Roll();
-//            r.setId(s.getId());
-//            s.setRoll(r);
+            // If you need a roll, just attach a new one; do NOT set its id
+            s.setRoll(new Roll());
 
-            int i1 = 0;
-            for(SyncSessionsActivityResponse sessionActivity : session.getActivities()){
+            int j = 0;
+            for (SyncSessionsActivityResponse aReq : req.getActivities()) {
                 SessionActivity sa = new SessionActivity();
                 sa.setSession(s);
-                sa.setRow(sessionActivity.getRow());
-                sa.setDuration(sessionActivity.getDuration().toString());
+                sa.setRow(aReq.getRow());
+                sa.setDuration(aReq.getDuration().toString());
 
                 int finalI1 = i;
-                Activity a = activityRepository.findDistinctByNameOptional(sessionActivity.getName()).orElseThrow(() -> new IllegalArgumentException("session[" + finalI + "] activity[" + finalI1 + "]: name '"
-                        + sessionActivity.getName() + "' not found"));
+                int finalJ = j;
+                Activity a = activityRepository.findDistinctByNameOptional(aReq.getName())
+                        .orElseThrow(() -> new IllegalArgumentException(
+                                "session[" + finalI1 + "] activity[" + finalJ + "]: name '" + aReq.getName() + "' not found"));
                 sa.setActivity(a);
 
-
                 s.getSessionActivities().add(sa);
-                i1++;
+                j++;
             }
 
-            sessionRepository.save(s);
+            sessionRepository.save(s); // cascades will persist children + roll
             i++;
         }
+
         sessionRepository.flush();
     }
+
 }

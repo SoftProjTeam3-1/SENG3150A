@@ -54,8 +54,6 @@ public class Session {
     @JoinColumn(name = "rollID")
     private Roll roll;
 
-    @Version
-    private Long version;
 
     public Session(){}
     public Session(Date date, User user, SessionType type) {

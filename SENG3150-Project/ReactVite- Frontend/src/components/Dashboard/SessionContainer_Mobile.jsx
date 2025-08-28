@@ -60,7 +60,7 @@ const SessionContainer_Mobile = ({sessions, selectedSessions, setSessions}) => {
                                                     {Object.keys(groupedActivities)
                                                         .sort((a, b) => parseInt(a) - parseInt(b))
                                                         .map((rowKey) => (
-                                                            <div className="flex gap-2 mb-2 px-3">
+                                                            <div key={`${id}-row-${rowKey}`}   className="flex gap-2 mb-2 px-3">
                                                                 {groupedActivities[rowKey].map((activity) => (
                                                                     <div key={activity.id} className="flex-1 basis-0 relative group bg-orange-100 px-4 py-2 rounded shadow">
                                                                         <div className="font-bold !k-text-center">{activity.name}</div>
