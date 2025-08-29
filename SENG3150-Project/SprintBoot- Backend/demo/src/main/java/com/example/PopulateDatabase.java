@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.example.entities.Activity;
@@ -42,6 +43,8 @@ public class PopulateDatabase implements CommandLineRunner{
     private final VoiceNoteRepository voiceNoteR;
     private final RollRepository rollR;
     private final AttendanceRepository attendanceR;
+    private final PasswordEncoder passwordEncoder;
+
 
     public PopulateDatabase(ActivityTypeRepository activityTypeR,
         SessionTypeRepository sessionTypeR,
@@ -53,7 +56,8 @@ public class PopulateDatabase implements CommandLineRunner{
         TextNoteRepository textNoteR,
         VoiceNoteRepository voiceNoteR,
         RollRepository rollR,
-        AttendanceRepository attendanceR){
+        AttendanceRepository attendanceR
+        , PasswordEncoder passwordEncoder) {
             this.activityTypeR = activityTypeR;
             this.sessionTypeR = sessionTypeR;
             this.playerR = playerR;
@@ -65,7 +69,10 @@ public class PopulateDatabase implements CommandLineRunner{
             this.voiceNoteR = voiceNoteR;
             this.rollR = rollR;
             this.attendanceR = attendanceR;
+            this.passwordEncoder = passwordEncoder;
+
         }
+
 
     @Override
     public void run(String... args){
@@ -112,9 +119,9 @@ public class PopulateDatabase implements CommandLineRunner{
         Activity miniGame = new Activity("Mini Game", "Play a small sided game to practice skills", 8, "30mins", game);
 
         //create users
-        String stuartPassword = Hashing.sha256()
-            .hashString("SENG3150isfun!", StandardCharsets.UTF_8)
-            .toString();
+        String stuartPassword = passwordEncoder.encode("StuartMendes123#");
+
+
         
         String assistantCoachPassword = Hashing.sha256()
             .hashString("JasminSchmidt123#", StandardCharsets.UTF_8)
