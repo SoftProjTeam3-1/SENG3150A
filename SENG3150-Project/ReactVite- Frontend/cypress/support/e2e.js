@@ -16,3 +16,7 @@
 // Import commands.js using ES2015 syntax:
 import './commands'
 import 'cypress-mailslurp';
+
+Cypress.config({
+    defaultCommandTimeout: 30000, // 60 seconds
+});
