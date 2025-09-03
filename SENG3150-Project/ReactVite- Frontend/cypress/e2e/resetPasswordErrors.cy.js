@@ -1,5 +1,3 @@
-// npm install --save-dev cypress-mailslurp
-
 import { MailSlurp } from 'mailslurp-client';
 
 describe('Reset Password Flow', () => {
@@ -24,9 +22,8 @@ describe('Reset Password Flow', () => {
         });
     });
 
-    // Enter valid email, click on send code, check for success message, get code, enter code and submit, 
-    //new password, confirm password, be back in login page and login with new password
-    it('Should successfully reset password', function () {
+    // Test NewPassword invalid
+    it('Should show error for invalid new password', function () {
         cy.get('input[type="email"]').type('dannydavino6@gmail.com');
         cy.get('button[type="submit"]').click();
 
@@ -56,20 +53,43 @@ describe('Reset Password Flow', () => {
                 throw new Error('Reset code not found in email body');
             }
         });
-        // Enter new password
-        cy.get('input[name="password"]').type('NewPassword123!');
-        cy.get('button[type="submit"]').click();
-        
-        // should be in login page http://localhost:5173/
-        cy.url().should('eq', 'http://localhost:5173/');
-        // test new password
-        cy.get('input[name="email"]').type('dannydavino6@gmail.com');
-        cy.get('input[name="password"]').type('NewPassword123!');
-        cy.get('button[type="submit"]').click();
 
-        // Verify successful login
-        cy.url().should('eq', 'http://localhost:5173/dashboard');
+        // Enter invalid new password
+        cy.get('input[name="password"]').type('short');
+
+        // Submit should be disabled
+        cy.get('button[type="submit"]').should('be.disabled');
     });
 
+    // Test entering wrong code
+    it('Should show error for wrong code', function () {
+        cy.get('input[type="email"]').type('dannydavino6@gmail.com');
+        cy.get('button[type="submit"]').click();
+
+        // Wait for the success message
+        cy.contains('Sending...').should('be.visible');
+        cy.wait(3000); // wait for 3 seconds to simulate email sending delay
+        cy.contains('Password reset code sent').should('be.visible');
+
+        // enter 0000 as wrong code
+        cy.get('input[type="text"]').type('0000');
+        cy.get('button[type="submit"]').click();
+        cy.contains('Invalid or expired reset code.').should('be.visible');
+
+        // Clean up inbox
+        cy.mailslurp({
+            apiKey: apiKey,
+            inboxId: inboxId
+        }).then(function (mailslurp) {
+        });
+    });
+
+    // Tests all types of inputs
+    // Email doesnt exist
+    it('Should show error for non-existent email', function () {
+        cy.get('input[type="email"]').type('nonexistent-email@example.com');
+        cy.get('button[type="submit"]').click();
+        cy.contains('No account found for that email').should('be.visible');
+    });
 
 });
