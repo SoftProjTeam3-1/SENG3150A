@@ -130,14 +130,13 @@ public class SessionService {
 
         prevalidate(sessions);
 
-        // ---- SAFE DELETE (uses orphanRemoval on children) ----
-        List<Session> existing = sessionRepository.findAllByUser(user); // add this repo method
+        List<Session> existing = sessionRepository.findAllByUser(user);
         sessionActivityRepository.deleteBySessionIn(existing);
         sessionRepository.deleteAll(existing);
         sessionRepository.flush();
-        em.clear(); // <<< IMPORTANT: ensure nothing stale is still managed
+        em.clear();
 
-        // 2) recreate sessions cleanly
+
         int i = 0;
         for (SyncSessionsResponse req : sessions) {
             Session s = new Session();
@@ -153,7 +152,7 @@ public class SessionService {
                             "session[" + finalI + "]: sessionTypeId " + req.getSessionTypeId() + " not found"));
             s.setType(st);
 
-            // If you need a roll, just attach a new one; do NOT set its id
+
             s.setRoll(new Roll());
 
             int j = 0;

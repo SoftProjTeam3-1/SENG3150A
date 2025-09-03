@@ -18,8 +18,8 @@ import CalendarScreen from "./screens/CalendarScreen.jsx";
 import SessionTypeScreen from "./screens/SessionTypeScreen.jsx";
 
 import {populateDefaultCategories} from "./logic/PopulatingLogic.js";
-import {fetchSessions, syncSession} from "./logic/hooks.js";
-import {transformSessionsToBack, transformSessionsToFront} from "./logic/CleanInputs.js";
+import {fetchCategoriesAndActivities, fetchSessions, syncSession} from "./logic/hooks.js";
+import {transformCategoriesToFront, transformSessionsToBack, transformSessionsToFront} from "./logic/CleanInputs.js";
 
 
 
@@ -90,6 +90,13 @@ const HomeDashboard = () => {
         console.log("Sessions updated:", sessions);
     }, [sessions]);
 
+
+
+    // Get Categories and Activities
+    useEffect(() => {
+        console.log("Got Categories:", Categories);
+    }, [Categories]);
+
     // After User Logs in
     useEffect(() => {
         fetchSessions()
@@ -103,6 +110,10 @@ const HomeDashboard = () => {
                         const cleanedSessions = await transformSessionsToFront(rawSessions);
                         console.log("Cleaned Sessions: ", cleanedSessions);
                         setSessions(cleanedSessions);
+
+                        const rawCategories = await fetchCategoriesAndActivities();
+                        const cleanCategories = await transformCategoriesToFront(rawCategories);
+                        setCategories(cleanCategories);
                     };
                     fetchAndClean();
                 }
@@ -148,9 +159,9 @@ const HomeDashboard = () => {
 
 
     // POPULATES DASHBOARD -- REMOVE WHEN HOOKS WORK
-    useEffect(() => {
-        populateDefaultCategories({setCategories});
-    }, []);
+    // useEffect(() => {
+    //     populateDefaultCategories({setCategories});
+    // }, []);
 
 
     const parseDroppableId = (id) => {
