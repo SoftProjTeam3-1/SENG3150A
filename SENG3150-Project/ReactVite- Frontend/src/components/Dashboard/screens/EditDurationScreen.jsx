@@ -18,7 +18,7 @@ const EditDurationScreen = ({editRef, durationInput, setDurationInput, temporary
                     //we may need to add durationt to sessionactivity in the backend. If that is the case, we will need to put a hook here
                     className="bg-white text-gray-800 rounded px-4 py-2 hover:bg-gray-300"
                     onClick={() => {
-                        handleEditDuration(setShowEditDurationScreen)
+                        handleEditDuration(setShowEditDurationScreen, durationInput, temporaryActivity)
                         const activityWithDuration = { ...temporaryActivity, duration: durationInput };
                         handleClickActivity({activity: activityWithDuration, setSessions, singleSelectedSession});
                         setTemporaryActivity({name: null, description: null, time: null, category: null, duration: 0, row: null});
