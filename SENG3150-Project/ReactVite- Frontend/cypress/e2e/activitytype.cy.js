@@ -12,7 +12,6 @@ describe('Activity Type Create Flow',() => {
         cy.intercept('POST', '/api/activityType/create').as('createActivtyType');
 
         cy.get('input[placeholder="Enter New Category Name"]').type(categoryName);
-
         cy.get('button[type="submit"]').click();
 
         cy.wait('@createActivtyType').then((interception) => {
@@ -20,10 +19,8 @@ describe('Activity Type Create Flow',() => {
                 name: categoryName, 
                 description: '' 
             });
-
             expect(interception.response.body).to.have.property('message', "ActivityType created successfully");
-
             expect(interception.response.statusCode).to.equal(200);
         });
-    }
-}
+    });
+});
