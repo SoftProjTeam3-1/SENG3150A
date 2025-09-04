@@ -1,12 +1,18 @@
 // to do: hook here, need to change DB to store database duration in session activity instead of session
 // backend will need to be written for this as well.
 // For when changing the duration of an activity
-export const handleEditDuration = (setShowEditDurationScreen, inputDuration, temporaryActivity) => {
+export const handleEditDuration = async (setShowEditDurationScreen, inputDuration, temporaryActivity, singleSelectedSession) => {
     //setShowEditDurationScreen(prev => !prev);
+    var durationString = inputDuration.toString() + " mins";
+    
     const response = await fetch('api/sessionActivity/editDuration',{
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ activity: temporaryActivity, duration: inputDuration })
+        body: JSON.stringify({ 
+            session : singleSelectedSession,
+            activity: temporaryActivity,
+            duration: durationString
+        })
     })
 
     if (!response.ok) {
