@@ -12,7 +12,15 @@ package com.example.entities;
 
 import java.sql.Date;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.CascadeType;
 
 import java.util.List;
 
@@ -22,10 +30,9 @@ import java.util.ArrayList;
 
 @Entity
 public class Session {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer sessionID;
+    private int sessionID;
 
     private Date date;
 
@@ -50,10 +57,9 @@ public class Session {
     private List<VoiceNote> voiceNotes = new ArrayList<>();
 
     @JsonIgnore
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "rollID")
     private Roll roll;
-
 
     public Session(){}
     public Session(Date date, User user, SessionType type) {
@@ -62,11 +68,11 @@ public class Session {
         this.type = type;
     }
 
-    public Integer getId() {
+    public int getId() {
         return sessionID;
     }
 
-    public void setId(Integer sessionID) {
+    public void setId(int sessionID) {
         this.sessionID = sessionID;
     }
 

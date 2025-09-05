@@ -34,6 +34,8 @@ public class User {
   private String emailCodeReceived;
   private String emailCodeSentTo;
 
+  private String refreshToken;
+
   @JsonIgnore
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Session> sessions = new ArrayList<>();
@@ -116,7 +118,7 @@ public class User {
   }
   public void setEmailCodeSentTo(String emailCodeSentTo) {
     this.emailCodeSentTo = emailCodeSentTo;
-  }
+}
 
   public List<Session> getSessions(){
     return sessions;
