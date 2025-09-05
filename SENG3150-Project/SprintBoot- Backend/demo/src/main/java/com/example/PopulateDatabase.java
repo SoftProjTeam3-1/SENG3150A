@@ -120,6 +120,7 @@ public class PopulateDatabase implements CommandLineRunner{
             .hashString("JasminSchmidt123#", StandardCharsets.UTF_8)
             .toString();
         User coach = new User("Stuart", "Mendes", "stuart.mendes@gmail.com", false, stuartPassword);
+        User coach2 = new User("Firstname", "Lastname", "dannydavino6@gmail.com", false, stuartPassword);
         User assistantCoach = new User("Jasmin", "Schmidt", "`", false, assistantCoachPassword);
 
         //create sessions
@@ -242,6 +243,7 @@ public class PopulateDatabase implements CommandLineRunner{
             activityR.save(miniGame);
 
             userR.save(coach);
+            userR.save(coach2);
             userR.save(assistantCoach);
 
             sessionR.save(trainingSession1);
