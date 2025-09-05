@@ -114,3 +114,19 @@ export async function syncSession(sessions) {
     }
 }
 
+export async function fetchCategoriesAndActivities() {
+    try {
+        const response = await fetch('/api/session/fetchCategoriesAndActivities', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: "include"
+        });
+
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+        return await response.json(); // This will be a List<FetchSessionsResponse> from the backend
+    } catch (error) {
+        console.error("Error fetching sessions from backend:", error);
+        return null;
+    }
+}

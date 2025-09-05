@@ -1,16 +1,8 @@
-# OS junk
-**/.DS_Store
-**/__MACOSX/
-
-# Java
-**/target/
-**/.idea/
-**/.vscode/
-
-# Node
-**/node_modules/
-dist/
-dist-ssr/
-
-# Misc
-*.log
+#ignore class files in SENG3150A\SENG3150-Project\SprintBoot- Backend\demo\target\classes\com\example\config
+# Class files
+*.class
+# JAR files
+*.jar
+SENG3150-Project/SprintBoot- Backend/demo/target/classes/com/.DS_Store
+SENG3150-Project/SprintBoot- Backend/demo/target/classes/application.properties
+SENG3150-Project/SprintBoot- Backend/demo/target/classes/.DS_Store
