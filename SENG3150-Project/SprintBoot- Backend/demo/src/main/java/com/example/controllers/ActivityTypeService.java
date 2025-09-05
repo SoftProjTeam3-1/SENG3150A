@@ -20,6 +20,9 @@ public class ActivityTypeService {
     }
 
     public boolean createActivityType(ActivityType activityType){
+        if (activityType == null) {
+            return false;
+        }
         CreateActivityType createActivityType = new CreateActivityType(activityTypeRepository);
         boolean isCreated = createActivityType.createActivityType(activityType);
         return isCreated;
