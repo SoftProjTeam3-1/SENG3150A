@@ -1,4 +1,5 @@
 // npm install --save-dev cypress-mailslurp
+// Install MailSlurp for email testing
 
 import { MailSlurp } from 'mailslurp-client';
 
@@ -22,7 +23,7 @@ describe('Reset Password Flow', () => {
         }).then(function (mailslurp) {
             mailslurp.emptyInbox(inboxId);
         });
-    });
+    }); 
 
     // Enter valid email, click on send code, check for success message, get code, enter code and submit, 
     //new password, confirm password, be back in login page and login with new password
