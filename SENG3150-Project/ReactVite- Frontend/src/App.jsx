@@ -1,8 +1,4 @@
-import { Route, 
-  createBrowserRouter, 
-  createRoutesFromElements, 
-  RouterProvider } from 'react-router-dom';
-
+import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider, Outlet } from 'react-router-dom';
 import './App.css';
 import Login from './pages/Login';
 import EntryLayout from './layout/EntryLayout';
@@ -14,11 +10,20 @@ import ForgetPasswordEnterCode from './pages/ForgetPasswordEnterCode';
 import ResetPassword from './pages/ResetPassword';
 import Attendance from "./pages/Attendance";
 import ProtectedRoute from './components/ProtectedRoute';
+import { AuthProvider } from './components/Auth/AuthProvider.jsx';
+import RequireAuth from './components/Auth/RequireAuth.jsx';
+
+function AuthShell() {
+  return (
+    <AuthProvider>
+      <Outlet />
+    </AuthProvider>
+  );
+}
 
 const router = createBrowserRouter(
-  //routes using the layout are enclosed together, the dashboard is outside because it does not use the layout.
   createRoutesFromElements(
-    <>
+    <Route element={<AuthShell />}>
       <Route path='/' element={<EntryLayout />}>
         <Route index element={<Login />} />
         <Route path='/register' element={<Register />} />
@@ -26,19 +31,24 @@ const router = createBrowserRouter(
         <Route path='/forget-password-enter-code' element={<ForgetPasswordEnterCode />} />
         <Route path='/reset-password' element={<ResetPassword/>}/>
       </Route>
-      <Route path='/dashboard' element={
-        <ProtectedRoute>
-          <Dashboard />
-        </ProtectedRoute>
-      } />
+
+    <Route
+      path="/dashboard"
+      element={
+        <RequireAuth>
+        <Dashboard />
+      </RequireAuth>
+     
+      }
+    />
+
+
       <Route path='/manage-activities' element={<ManageActivitiesPage />} />
       <Route path='/attendance' element={<Attendance />}/>
-    </>
+    </Route>
   )
 );
 
-const App = () => {
-    return (<RouterProvider router = {router}/>)
-};
-
-export default App
+export default function App() {
+  return <RouterProvider router={router} />;
+}

@@ -444,7 +444,6 @@ const TileBody = ({ categoryName }) => {
                   Cancel
                 </button>
                 <button
-                  id = "addActivitySubmitButton"
                   type="submit"
                   className="bg-[#202C39] hover:bg-[#8C9195] transition-colors duration-200 text-white border-none rounded px-3 py-1 cursor-pointer"
                 >
