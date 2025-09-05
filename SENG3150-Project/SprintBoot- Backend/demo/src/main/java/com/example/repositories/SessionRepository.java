@@ -25,4 +25,8 @@ public interface SessionRepository extends JpaRepository<Session, Integer>{
 
     @Query(value = "SELECT s.* FROM session s INNER JOIN session_type st ON st.session_typeid = s.session_typeid WHERE st.name = :typeName AND s.date = :date", nativeQuery = true)
     Session findSessionByDateAndType(@Param("typeName") String typeName, @Param("date") Date date);
+
+    List<Session> findAllByUserId(int id);
+
+    List<Session> findAllByUser(User user);
 }
