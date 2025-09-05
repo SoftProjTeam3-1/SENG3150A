@@ -18,11 +18,14 @@ import CalendarScreen from "./screens/CalendarScreen.jsx";
 import SessionTypeScreen from "./screens/SessionTypeScreen.jsx";
 
 import {populateDefaultCategories} from "./logic/PopulatingLogic.js";
+import {fetchCategoriesAndActivities, fetchSessions, syncSession} from "./logic/hooks.js";
+import {transformCategoriesToFront, transformSessionsToBack, transformSessionsToFront} from "./logic/CleanInputs.js";
+
 
 
 const HomeDashboard = () => {
     // Temporary session which holds data before creation to db
-    const [temporarySession, setTemporarySession] = useState({ id:null, date:null, type:null, activities:[], notes:""});
+    const [temporarySession, setTemporarySession] = useState({ id:null, shortDate:null, date:null, type:null, activities:[], notes:""});
 
     // Stores sessions from the database
     const [sessions, setSessions] = useState([]);
@@ -66,11 +69,60 @@ const HomeDashboard = () => {
     // Handles Duration of Activity Functions
     const [durationInput, setDurationInput] = useState(0);
 
+    useEffect(() => {
+        if (sessions && sessions.length > 0) {
+            const fetchAndClean = async () => {
+                const cleanedSessions = await transformSessionsToBack(sessions);
+                await syncSession(cleanedSessions)
+                    .then(data => {
+                        console.log("Sessions synced:", data);
+                    })
+                    .catch(err => {
+                        console.error("Error syncing sessions:", err);
+                    });
+            }
+            fetchAndClean();
+        }
+    }, [sessions]); // runs only when `sessions` changes
 
     // Show sessions in console for debugging
     useEffect(() => {
         console.log("Sessions updated:", sessions);
     }, [sessions]);
+
+
+
+    // Get Categories and Activities
+    useEffect(() => {
+        console.log("Got Categories:", Categories);
+    }, [Categories]);
+
+    // After User Logs in
+    useEffect(() => {
+        fetchSessions()
+            .then((sessions) => {
+                console.log("Fetched sessions:", sessions);
+                if (sessions === null) {
+                    console.warn("Returned Sessions list is null");
+                } else {
+                    const fetchAndClean = async () => {
+                        const rawSessions = await fetchSessions();
+                        const cleanedSessions = await transformSessionsToFront(rawSessions);
+                        console.log("Cleaned Sessions: ", cleanedSessions);
+                        setSessions(cleanedSessions);
+
+                        const rawCategories = await fetchCategoriesAndActivities();
+                        const cleanCategories = await transformCategoriesToFront(rawCategories);
+                        setCategories(cleanCategories);
+                    };
+                    fetchAndClean();
+                }
+            })
+            .catch((err) => {
+                console.error("Failed to fetch sessions", err);
+                // optionally redirect to login if 403
+            });
+    }, []);
 
 
     // When a User clicks away from a menu, the pop-up screen disappears
@@ -107,9 +159,9 @@ const HomeDashboard = () => {
 
 
     // POPULATES DASHBOARD -- REMOVE WHEN HOOKS WORK
-    useEffect(() => {
-        populateDefaultCategories({setCategories});
-    }, []);
+    // useEffect(() => {
+    //     populateDefaultCategories({setCategories});
+    // }, []);
 
 
     const parseDroppableId = (id) => {
