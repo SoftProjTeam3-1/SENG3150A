@@ -68,23 +68,23 @@ describe("Activity Update Flow", () => {
             cy.get('li').first().click();
 
             //type in input fields 
-            cy.get('input[placeholder="Enter activity name"]').type(activityNameChanged);
-            cy.get('textarea[placeholder="Enter activity description"]').type(activityDescriptionChanged);
-            cy.get('input[placeholder="Enter the number of people required"]').type(activityPeopleRequiredChanged);
+            cy.get('input[placeholder="Enter activity name"]').clear().type(activityNameChanged);
+            cy.get('textarea[placeholder="Enter activity description"]').clear().type(activityDescriptionChanged);
+            cy.get('input[placeholder="Enter the number of people required"]').clear().type(activityPeopleRequiredChanged);
             cy.get('input[placeholder="Enter time in minutes"]').type(activityDurationChanged);
             //submit the form
             cy.contains('button', "Save").click();
 
             //wait for post request and assert response and requests
             cy.wait('@updateActivity').then((interception) => {
-                expect(interception.request.body).to.include({
+                expect(interception.request.body.changedActivity).to.include({
                     name: activityNameChanged,
                     description: activityDescriptionChanged,
-                    duration: activityDurationChanged,
+                    duration: activityDurationChanged+"mins",
                     peopleRequired: activityPeopleRequiredChanged,
                 });
 
-                expect(interception.request.body.activityType).to.deep.include({
+                expect(interception.request.body.changedActivity.activityType).to.deep.include({
                     name: categoryName,
                     description: null
                 });
