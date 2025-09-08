@@ -1,16 +1,11 @@
-
-
-import { defineConfig } from 'cypress'
+import { defineConfig } from "cypress";
+import codeCoverageTask from "@cypress/code-coverage/task";
 
 export default defineConfig({
-    reporter: 'mocha-junit-reporter',
-    reporterOptions: {
-        mochaFile: 'test-results/[datetime]/[name]-results.xml',
-        toConsole: true
-    },
-    
     e2e: {
-        specPattern: 'cypress/e2e/**/*.cy.{js,jsx,ts,tsx}',
-        setupNodeEvents(on, config) { return config }
+        setupNodeEvents(on, config) {
+            codeCoverageTask(on, config);
+            return config;
+        }
     }
-})
+});
