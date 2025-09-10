@@ -105,22 +105,30 @@ describe('Login Flow', () => {
     });
 
     it('sets auth token on success', () => {
-        cy.intercept('POST', '**/api/user/login', {
-            statusCode: 200,
-            body: { token: 'fake.jwt.token' },
+        cy.intercept('POST', '**/api/user/login', (req) => {
+            // Safely handle both string and object bodies
+            const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+
+            // Assert payload your app sends, expects cookie
+            expect(body).to.have.keys('email', 'password');
+            expect(body.email).to.eq('u@e.com');
+            expect(body.password).to.match(/^[a-f0-9]{64}$/); // sha256 hex
+
+            // Reply in the shape your frontend treats as success
+            req.reply({ statusCode: 200, body: { response: true } });
         }).as('login');
+
         cy.get('#email').type('u@e.com');
         cy.get('#password').type('Passw0rd!');
         cy.get('button[type="submit"]').click();
-        cy.wait('@login');
-        cy.window().its('localStorage.token').should('eq', 'fake.jwt.token'); // adjust key
+
+        cy.wait('@login').its('response.statusCode').should('eq', 200);
+        cy.location('pathname', { timeout: 10000 }).should('eq', '/dashboard');
     });
 
     it('blocks /dashboard when logged out', () => {
         cy.visit('http://localhost:5173/dashboard');
         cy.location('pathname').should('match', /^\/($|login)/);
     });
-
-
 
 })
