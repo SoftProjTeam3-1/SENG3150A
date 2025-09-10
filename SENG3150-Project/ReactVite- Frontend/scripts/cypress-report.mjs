@@ -8,6 +8,18 @@ import cypress from "cypress";
 import { merge } from "mochawesome-merge";
 import marge from "mochawesome-report-generator";
 
+import { createRequire } from "node:module";
+const requireCjs = createRequire(import.meta.url);
+
+// Absolute path to the project's nyc CLI (from node_modules)
+const nycBin = requireCjs.resolve("nyc/bin/nyc.js");
+
+// Helper to run: node <nycBin> report <args...>
+async function runNYC(cwd, env, args) {
+    return pexecFile(process.execPath, [nycBin, "report", ...args], { cwd, env });
+}
+
+
 const pexecFile = promisify(execFile);
 
 const __filename = fileURLToPath(import.meta.url);
@@ -110,20 +122,16 @@ try {
     const npxBin = isWin ? "npx.cmd" : "npx";
 
     // lcov + html
-    await pexecFile(npxBin, [
-        "nyc",
-        "report",
+    await runNYC(projectRoot, env, [
         "--reporter=lcov",
         "--reporter=html",
         `--report-dir=${coverageDir}`
-    ], { cwd: projectRoot, env });
+    ]);
 
     // text-summary (GLOBAL TOTALS)
-    const { stdout: textSummary } = await pexecFile(npxBin, [
-        "nyc",
-        "report",
+    const { stdout: textSummary } = await runNYC(projectRoot, env, [
         "--reporter=text-summary"
-    ], { cwd: projectRoot, env });
+    ]);
     fs.writeFileSync(path.join(runDir, "coverage-summary.txt"), textSummary);
 
     // --- PER-SPEC COVERAGE: run each spec individually (with filtering + pruning)
@@ -177,12 +185,11 @@ try {
         fs.mkdirSync(tmpReportDir, { recursive: true });
         fs.writeFileSync(path.join(tmpNycOut, "out.json"), JSON.stringify(pruned));
 
-        await pexecFile(npxBin, [
-            "nyc",
-            "report",
+        await runNYC(tmpPerSpecRoot, env, [
             "--reporter=json-summary",
             `--report-dir=${tmpReportDir}`
-        ], { cwd: tmpPerSpecRoot, env });
+        ]);
+
 
         const summaryPath = path.join(tmpReportDir, "coverage-summary.json");
         const summary = JSON.parse(fs.readFileSync(summaryPath, "utf8"));
