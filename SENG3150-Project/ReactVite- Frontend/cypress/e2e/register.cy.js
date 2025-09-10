@@ -67,7 +67,7 @@ describe('Register Flow', () => {
         cy.get('#password2').should('have.attr', 'type', 'password');
     });
 
-    // 5) Successful registration with backend stub -> success toast then redirect to /dashboard after 3s
+    // 5) Successful registration with backend stub -> success toast then redirect to / after 3s
     it('registers successfully and redirects after toast delay (stubbed)', () => {
         cy.clock(); // control setTimeout redirect
 
@@ -89,9 +89,9 @@ describe('Register Flow', () => {
 
         cy.wait('@register');
         cy.get('.Toastify__toast--success').should('contain.text', 'Registration successful!');
-        cy.location('pathname').should('not.eq', '/dashboard'); // not yet
+        cy.location('pathname').should('not.eq', '/'); // not yet
         cy.tick(3000);
-        cy.location('pathname').should('eq', '/dashboard');
+        cy.location('pathname').should('eq', '/');
     });
 
     // 6) Duplicate email / server validation error (409 or 400)
