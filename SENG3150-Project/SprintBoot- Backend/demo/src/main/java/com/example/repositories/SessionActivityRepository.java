@@ -45,6 +45,4 @@ public interface SessionActivityRepository extends JpaRepository<SessionActivity
         @Param("sessionTypeId") int sessionTypeId,
         @Param("activityName") String activityName
     );
-
-    void deleteBySessionIn(List<Session> existing);
 }
