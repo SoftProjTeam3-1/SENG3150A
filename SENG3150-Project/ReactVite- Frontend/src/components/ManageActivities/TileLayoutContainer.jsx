@@ -30,6 +30,7 @@ export const TileLayoutContainer = () => {
                 <div className="text-center pb-1.5">
                 <input
                     type="text"
+                    data-testid="categoryNameInput"
                     placeholder="Enter New Category Name"
                     onChange={(e) => setNewCategoryName(e.target.value)}
                     value={newCategoryName}
