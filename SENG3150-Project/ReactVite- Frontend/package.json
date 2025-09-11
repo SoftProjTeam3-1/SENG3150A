@@ -12,7 +12,7 @@
     "coverage": "vitest run --coverage",
     "test:ui": "cypress open",
     "test:ci": "cypress run",
-    "cypress:report": "CYPRESS_COVERAGE=1 node ./scripts/cypress-report.mjs"
+    "cypress:report": "cross-env CYPRESS_COVERAGE=1 node ./scripts/cypress-report.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -55,6 +55,7 @@
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.21",
     "babel-plugin-istanbul": "^7.0.1",
+    "cross-env": "^10.0.0",
     "cypress": "^15.1.0",
     "cypress-multi-reporters": "^2.0.5",
     "eslint": "^9.21.0",
