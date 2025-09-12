@@ -6,8 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Optional;
-
 import com.example.entities.Activity;
 import com.example.entities.ActivityType;
 
@@ -17,8 +15,6 @@ public interface ActivityRepository extends JpaRepository<Activity, Integer>{
     Activity findById(int id);
     List<Activity> findByName(String name);
     Activity findDistinctByName(String name);
-    @Query("select distinct a from Activity a where a.name = :name")
-    Optional<Activity> findDistinctByNameOptional(String name);
     List<Activity> findByDescription(String description);
     List<Activity> findByPeopleRequired(int peopleRequired);
     List<Activity> findByDuration(String duration);

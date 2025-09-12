@@ -1,3 +1,4 @@
+// vite.config.js
 
 
 import { defineConfig } from 'vite'
@@ -23,18 +24,22 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 5173,
     proxy: {
-      '/api': 'http://localhost:8080',
+      '/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        secure: false,
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq, req) => {
+            console.log('[proxy] →', req.method, req.url)
+          })
+          proxy.on('proxyRes', (proxyRes, req) => {
+            console.log('[proxy] ←', proxyRes.statusCode, req.method, req.url)
+          })
+          proxy.on('error', (err, req) => {
+            console.error('[proxy] error', req.method, req.url, err.message)
+          })
+        },
+      },
     },
   },
-  test: {
-    globals: true,
-    environment: 'jsdom',
-    coverage: {
-      provider: 'c8',
-      reporter: ['text', 'json', 'html'],
-    },
-  },
-    define: {
-        __COVERAGE__: useCoverage
-    }
 })
