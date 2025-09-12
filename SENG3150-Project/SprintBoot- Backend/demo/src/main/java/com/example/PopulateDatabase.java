@@ -44,6 +44,8 @@ public class PopulateDatabase implements CommandLineRunner{
     private final VoiceNoteRepository voiceNoteR;
     private final RollRepository rollR;
     private final AttendanceRepository attendanceR;
+    private final PasswordEncoder passwordEncoder;
+
 
     public PopulateDatabase(
         ActivityTypeRepository activityTypeR,
@@ -58,6 +60,7 @@ public class PopulateDatabase implements CommandLineRunner{
         RollRepository rollR,
         PasswordEncoder passwordEncoder,
         AttendanceRepository attendanceR){
+
             this.activityTypeR = activityTypeR;
             this.passwordEncoder = passwordEncoder;
             this.sessionTypeR = sessionTypeR;
@@ -70,7 +73,10 @@ public class PopulateDatabase implements CommandLineRunner{
             this.voiceNoteR = voiceNoteR;
             this.rollR = rollR;
             this.attendanceR = attendanceR;
+            this.passwordEncoder = passwordEncoder;
+
         }
+
 
     @Override
     public void run(String... args){
@@ -119,12 +125,11 @@ public class PopulateDatabase implements CommandLineRunner{
         //create users
         String stuartPassword = passwordEncoder.encode(" "); //Please use the password encoder when creating users 
         //DO NOT use other shii ty.
-        
+
         String assistantCoachPassword = Hashing.sha256()
             .hashString("JasminSchmidt123#", StandardCharsets.UTF_8)
             .toString();
         User coach = new User("Stuart", "Mendes", "stuart.mendes@gmail.com", false, stuartPassword);
-        User coach2 = new User("Firstname", "Lastname", "dannydavino6@gmail.com", false, stuartPassword);
         User assistantCoach = new User("Jasmin", "Schmidt", "`", false, assistantCoachPassword);
 
         //create sessions
@@ -247,7 +252,6 @@ public class PopulateDatabase implements CommandLineRunner{
             activityR.save(miniGame);
 
             userR.save(coach);
-            userR.save(coach2);
             userR.save(assistantCoach);
 
             sessionR.save(trainingSession1);

@@ -22,13 +22,14 @@ const SessionContainer_Mobile = ({sessions, selectedSessions, setSessions}) => {
                         });
 
                         return (
-                            <div key={id} className="flex flex-col gap-y-5 items-center justify-center">
+                            <div className="flex flex-col gap-y-5 items-center justify-center">
 
                                 {/* Determines if game or training was selected */}
                                 {type === 'game' ? (
                                     <>
                                         <div className="border-white border-2 rounded-2xl">
                                             <div
+                                                key={id}
                                                 className="w-75 h-140 bg-white rounded-2xl flex flex-col items-center text-black "
                                             >
                                                 <div className="text-xl w-full text-center py-3 font-bold">{month} {day}</div>
@@ -60,7 +61,7 @@ const SessionContainer_Mobile = ({sessions, selectedSessions, setSessions}) => {
                                                     {Object.keys(groupedActivities)
                                                         .sort((a, b) => parseInt(a) - parseInt(b))
                                                         .map((rowKey) => (
-                                                            <div key={`${id}-row-${rowKey}`}   className="flex gap-2 mb-2 px-3">
+                                                            <div className="flex gap-2 mb-2 px-3">
                                                                 {groupedActivities[rowKey].map((activity) => (
                                                                     <div key={activity.id} className="flex-1 basis-0 relative group bg-orange-100 px-4 py-2 rounded shadow">
                                                                         <div className="font-bold !k-text-center">{activity.name}</div>

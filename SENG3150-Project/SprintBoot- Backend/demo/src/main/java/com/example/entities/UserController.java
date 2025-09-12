@@ -20,6 +20,7 @@ import com.example.services.JwtService;
 
 import jakarta.servlet.http.HttpServletResponse;
 
+
 @RestController
 public class UserController {
 
@@ -59,12 +60,14 @@ public class UserController {
     System.out.println("User fetched from DB: " + (u != null ? u.getEmail() : "null"));
     if (u == null) {
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
+
     }
 
     // bcrypt(raw) only
     if (!passwordEncoder.matches(entity.getPassword(), u.getPassword())) {
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
     }
+
 
     String access  = jwt.generateAccessToken(u.getEmail(), Map.of("uid", u.getId(), "email", u.getEmail()));
     String refresh = jwt.generateRefreshToken(u.getEmail());
