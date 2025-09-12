@@ -1,71 +1,116 @@
 package com.example.entities;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.time.Duration;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
-import com.example.responses.LoginResponse;
 import com.example.responses.RegisterResponse;
+import com.example.services.JwtService;
 
+import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 public class UserController {
 
-    @Autowired
-    UserService userService;
+    private final UserService userService;
+    private final JwtService jwt;
+    private final PasswordEncoder passwordEncoder;
 
-    
-    @PostMapping("api/user/register")
+    @Value("${app.cookies.secure:false}") private boolean cookieSecure; // true in HTTPS prod
+    @Value("${app.cookies.same-site:Lax}") private String sameSite;     // None in HTTPS prod
+
+    public UserController(UserService userService, JwtService jwt, PasswordEncoder passwordEncoder) {
+        this.userService = userService;
+        this.jwt = jwt;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    // ---------------- Register ----------------
+    @PostMapping("/api/user/register")
     public ResponseEntity<RegisterResponse> register(@RequestBody User entity) {
         User user = new User();
         user.setFirstName(entity.getFirstName());
         user.setSurname(entity.getSurname());
         user.setEmail(entity.getEmail());
-        user.setPassword(entity.getPassword());
+        // hash the password before save (fallback to plain if you haven't migrated yet)
+        user.setPassword(passwordEncoder.encode(entity.getPassword()));
 
-        System.out.println("User object created: " + user);
-
-        Boolean result = userService.registerUser(user);
-        if (result) {
-            return new ResponseEntity<>(new RegisterResponse(true, "User registered successfully"), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(new RegisterResponse(false, "User registration failed"), HttpStatus.OK);
-        }
+        boolean ok = userService.registerUser(user);
+        return ResponseEntity.ok(
+            ok ? new RegisterResponse(true, "User registered successfully")
+               : new RegisterResponse(false, "User registration failed")
+        );
     }
 
-    // login
     @PostMapping("/api/user/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody User entity, HttpServletResponse response) {
-        User user = new User();
-        user.setEmail(entity.getEmail());
-        user.setPassword(entity.getPassword());
-
-        //fetch user
-        User result = userService.getUser(user.getEmail());
-
-        if(result != null && result.getPassword().equals(user.getPassword())){
-            // Create cookie
-            Cookie cookie = new Cookie("userId", String.valueOf(userService.getUser(entity.getEmail()).getId())); // There was an issue here where the id wasn't matching the db id - Oscar
-            cookie.setPath("/");                 // Cookie is valid for all paths
-            cookie.setHttpOnly(true);           // JS can't access it (more secure)
-            cookie.setMaxAge(24 * 60 * 60);     // 1 day
-            cookie.setSecure(false); // for localhost testing only
-            response.addCookie(cookie);
-
-            System.err.println("User found: " + result.getFirstName());
-            LoginResponse loginResponse = new LoginResponse(true, "Login successful", result);
-            return new ResponseEntity<>(loginResponse, HttpStatus.OK);
-        } else {
-            System.out.println("User not found " + user.getEmail() + " " + user.getPassword());
-            LoginResponse loginResponse = new LoginResponse(false, "Login failed", null);
-            return new ResponseEntity<>(loginResponse, HttpStatus.OK);
-        }
+    public ResponseEntity<?> login(@RequestBody User entity, HttpServletResponse response) {
+    User u = userService.getUser(entity.getEmail());
+    System.out.println("User fetched from DB: " + (u != null ? u.getEmail() : "null"));
+    if (u == null) {
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
     }
+
+    // bcrypt(raw) only
+    if (!passwordEncoder.matches(entity.getPassword(), u.getPassword())) {
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
+    }
+
+    String access  = jwt.generateAccessToken(u.getEmail(), Map.of("uid", u.getId(), "email", u.getEmail()));
+    String refresh = jwt.generateRefreshToken(u.getEmail());
+
+    ResponseCookie cookie = ResponseCookie.from("refreshToken", refresh)
+            .httpOnly(true)
+            .secure(cookieSecure)      // set true in HTTPS prod
+            .sameSite(sameSite)        // "None" in HTTPS cross-site
+            .path("/api/auth")
+            .maxAge(Duration.ofDays(30))
+            .build();
+    response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
+    // keep response simple; frontend already expects accessToken at top level
+    return ResponseEntity.ok(Map.of(
+            "accessToken", access,
+            "user", Map.of("id", u.getId(), "email", u.getEmail(), "firstName", u.getFirstName())
+    ));
 }
 
+    // ---------------- Refresh: rotates cookie and returns a fresh access token ----------------
+  @PostMapping("/api/auth/refresh")
+public ResponseEntity<?> refresh(@CookieValue(value = "refreshToken", required = false) String refreshToken) {
+    if (refreshToken == null) {
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No refresh token");
+    }
+    String subject = jwt.getSubjectFromRefresh(refreshToken);
+    var user = userService.getUserByEmail(subject);
 
+    Map<String, Object> claims = Map.of("uid", user.getId(), "email", user.getEmail());
+    String newAccess = jwt.generateAccessToken(user.getEmail(), claims);
+
+    return ResponseEntity.ok(Map.of("accessToken", newAccess));
+}
+
+    // ---------------- Logout: clears refresh cookie ----------------
+    @PostMapping("/api/auth/logout")
+    public ResponseEntity<?> logout(HttpServletResponse response) {
+        ResponseCookie clear = ResponseCookie.from("refreshToken", "")
+                .httpOnly(true)
+                .secure(cookieSecure)
+                .sameSite(sameSite)
+                .path("/api/auth")
+                .maxAge(0)
+                .build();
+        response.addHeader(HttpHeaders.SET_COOKIE, clear.toString());
+        return ResponseEntity.noContent().build();
+    }
+}

@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.example.entities.Activity;
@@ -31,6 +32,7 @@ import com.google.common.hash.Hashing;
 
 @Component
 public class PopulateDatabase implements CommandLineRunner{
+    private final PasswordEncoder passwordEncoder;
     private final ActivityTypeRepository activityTypeR;
     private final SessionTypeRepository sessionTypeR;
     private final PlayerRepository playerR;
@@ -43,7 +45,8 @@ public class PopulateDatabase implements CommandLineRunner{
     private final RollRepository rollR;
     private final AttendanceRepository attendanceR;
 
-    public PopulateDatabase(ActivityTypeRepository activityTypeR,
+    public PopulateDatabase(
+        ActivityTypeRepository activityTypeR,
         SessionTypeRepository sessionTypeR,
         PlayerRepository playerR,
         ActivityRepository activityR,
@@ -53,8 +56,10 @@ public class PopulateDatabase implements CommandLineRunner{
         TextNoteRepository textNoteR,
         VoiceNoteRepository voiceNoteR,
         RollRepository rollR,
+        PasswordEncoder passwordEncoder,
         AttendanceRepository attendanceR){
             this.activityTypeR = activityTypeR;
+            this.passwordEncoder = passwordEncoder;
             this.sessionTypeR = sessionTypeR;
             this.playerR = playerR;
             this.activityR = activityR;
@@ -112,9 +117,8 @@ public class PopulateDatabase implements CommandLineRunner{
         Activity miniGame = new Activity("Mini Game", "Play a small sided game to practice skills", 8, "30mins", game);
 
         //create users
-        String stuartPassword = Hashing.sha256()
-            .hashString("SENG3150isfun!", StandardCharsets.UTF_8)
-            .toString();
+        String stuartPassword = passwordEncoder.encode(" "); //Please use the password encoder when creating users 
+        //DO NOT use other shii ty.
         
         String assistantCoachPassword = Hashing.sha256()
             .hashString("JasminSchmidt123#", StandardCharsets.UTF_8)

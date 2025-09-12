@@ -1,12 +1,12 @@
 package com.example.repositories;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
-import java.util.List;
-import java.util.Optional;
 
 import com.example.entities.Activity;
 import com.example.entities.ActivityType;
@@ -27,7 +27,7 @@ public interface ActivityRepository extends JpaRepository<Activity, Integer>{
 
     @Modifying
     @Transactional
-    @Query("UPDATE Activity a SET a.peopleRequired = :peopleRequired, a.name = :name, a.description = :description, a.favourite = :favourite, a.duration = :duration WHERE a.id = :id")
+    @Query("UPDATE Activity a SET a.peopleRequired = :peopleRequired, a.name = :name, a.description = :description, a.favourite = :favourite, a.duration = :duration WHERE a.activityID = :id")
     void updateActivity(
         @Param("id") int id,
         @Param("peopleRequired") int peopleRequired,
