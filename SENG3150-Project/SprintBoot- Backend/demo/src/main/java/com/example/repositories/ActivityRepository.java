@@ -22,6 +22,8 @@ public interface ActivityRepository extends JpaRepository<Activity, Integer>{
     List<Activity> findByDuration(String duration);
     List<Activity> findByFavourite(boolean favourite);
     List<Activity> findByActivityType(ActivityType activityType);
+
+    @Query("select distinct a from Activity a where a.name = :name")
     Optional<Activity> findDistinctByNameOptional(String name);
 
     @Modifying

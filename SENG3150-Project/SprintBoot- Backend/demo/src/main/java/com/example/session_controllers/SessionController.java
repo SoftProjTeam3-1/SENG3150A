@@ -8,6 +8,8 @@ import com.example.controllers.ActivityService;
 import com.example.controllers.ActivityTypeService;
 import com.example.entities.*;
 import com.example.responses.*;
+import com.example.service.Secruity.JwtService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +31,9 @@ public class SessionController {
     private ActivityService activityService;
     @Autowired
     private ActivityTypeService activityTypeService;
+
+    private final JwtService jwt;
+    private final PasswordEncoder passwordEncoder;
 	
     // @GetMapping("/initialCall")
     // public ResponseEntity<InitialSessionGrabResponse> getSessions(){
@@ -41,6 +46,12 @@ public class SessionController {
     //         return new ResponseEntity<>(new InitialSessionGrabResponse(gameSession, trainingSessions, "Grabbed tasks appropriately", true), HttpStatus.OK);
     //     }
     // }
+
+    public SessionController(UserService userService, JwtService jwt, PasswordEncoder passwordEncoder) {
+        this.userService = userService;
+        this.jwt = jwt;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @PostMapping("/getNote")
     public ResponseEntity<GetTextNoteResponse> getNote(@RequestBody Session session){
@@ -105,16 +116,17 @@ public class SessionController {
     }
 
     @PostMapping("/fetchSessions")
-    public ResponseEntity<List<FetchSessionsResponse>> fetchSessions(@CookieValue(value = "userId", required = false) String userId) {
+    public ResponseEntity<List<FetchSessionsResponse>> fetchSessions(@CookieValue(value = "userId", required = false) String refreshToken) {
 
-        if (userId == null) {
+        if (refreshToken == null) {
             System.out.println("No user ID found in cookies");
         }else{
-            System.out.println("USerID HERE: "+ userId);
+            System.out.println("USerID HERE: "+ refreshToken);
         }
         try {
 
-            User user = userService.getUserByID(Integer.parseInt(userId)); // Needs to parse id here
+            String subject = jwt.getSubjectFromRefresh(refreshToken);
+            var user = userService.getUserByEmail(subject);
 
             System.out.println("WE GOT THE USER: "+user);
 
@@ -135,10 +147,14 @@ public class SessionController {
         }
     }
     @PutMapping("/updateSessions")
-    public ResponseEntity<String> updateSessions(@RequestBody List<SyncSessionsResponse> sessions,  @CookieValue(value = "userId", required = false) String userId) {
+    public ResponseEntity<String> updateSessions(@RequestBody List<SyncSessionsResponse> sessions,  @CookieValue(value = "userId", required = false) String refreshToken) {
         try {
-            if (userId == null) return ResponseEntity.status(401).body("No user ID cookie");
-            sessionService.replaceUserSessions(userService.getUserByID(Integer.parseInt(userId)), sessions);
+            if (refreshToken == null) return ResponseEntity.status(401).body("No user ID cookie");
+
+            String subject = jwt.getSubjectFromRefresh(refreshToken);
+            var user = userService.getUserByEmail(subject);
+
+            sessionService.replaceUserSessions(user, sessions);
             return ResponseEntity.ok("Sessions updated successfully.");
         } catch (IllegalArgumentException iae) {
             return ResponseEntity.badRequest().body(iae.getMessage());  // <-- see exact reason in Network tab
@@ -149,15 +165,16 @@ public class SessionController {
     }
 
     @PostMapping("/fetchCategoriesAndActivities")
-    public ResponseEntity<FetchCategoriesAndActivitiesResponse> fetchCategoriesAndActivities(@CookieValue(value = "userId", required = false) String userId) {
-        if (userId == null) {
+    public ResponseEntity<FetchCategoriesAndActivitiesResponse> fetchCategoriesAndActivities(@CookieValue(value = "userId", required = false) String refreshToken) {
+        if (refreshToken == null) {
             System.out.println("No user ID found in cookies");
         }else{
-            System.out.println("USerID HERE: "+ userId);
+            System.out.println("USerID HERE: "+ refreshToken);
         }
         try {
 
-            User user = userService.getUserByID(Integer.parseInt(userId)); // Needs to parse id here
+            String subject = jwt.getSubjectFromRefresh(refreshToken);
+            var user = userService.getUserByEmail(subject); // Needs to parse id here
 
             System.out.println("WE GOT THE USER: "+user);
 
