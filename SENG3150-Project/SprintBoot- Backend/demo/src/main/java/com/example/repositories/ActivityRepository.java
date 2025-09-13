@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
+
 import com.example.entities.Activity;
 import com.example.entities.ActivityType;
 
@@ -20,6 +22,7 @@ public interface ActivityRepository extends JpaRepository<Activity, Integer>{
     List<Activity> findByDuration(String duration);
     List<Activity> findByFavourite(boolean favourite);
     List<Activity> findByActivityType(ActivityType activityType);
+    Optional<Activity> findDistinctByNameOptional(String name);
 
     @Modifying
     @Transactional
