@@ -3,8 +3,14 @@ package com.example.session_controllers;
 import com.example.entities.SessionActivity;
 import com.example.entities.Session;
 import com.example.entities.Activity;
-
+import com.example.entities.User;
+import com.example.entities.SessionType;
+import com.example.repositories.ActivityRepository;
 import com.example.repositories.SessionActivityRepository;
+import com.example.repositories.SessionRepository;
+
+import java.util.List;
+import java.sql.Date;
 
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -17,12 +23,18 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 
 @ExtendWith(MockitoExtension.class)
 public class SessionActivityServiceTest {
 
     @Mock
     private SessionActivityRepository sessionActivityRepository;
+
+    @Mock
+    private ActivityRepository activityRepository;
+
+    @Mock SessionRepository sessionRepository;
 
     @InjectMocks
     private SessionActivityService sessionActivityService;
@@ -84,5 +96,78 @@ public class SessionActivityServiceTest {
 
         assertTrue(result, "Expected successful deletion of session activity");
         verify(sessionActivityRepository, times(1)).save(sessionActivity);
+    }
+
+    /*
+     * GET ACTIVITIES BY SESSION FUNCTIONS
+     * SUCCESS AND FAIL TESTS
+     */
+
+    @Test
+    public void testGetActivitiesBySession_DatabaseError() throws Exception {
+        Session session = new Session();
+        doThrow(new RuntimeException())
+            .when(activityRepository).findActivitiesBySession(session.getId());
+
+        List<Activity> result = sessionActivityService.getActivitiesBySession(session);
+
+        assertTrue(result == null, "Expected exception thrown during retrieval process");
+        verify(activityRepository, times(1)).findActivitiesBySession(session.getId());
+    }
+
+    @Test
+    public void testGetActivitiesBySession_SuccessfulRetrieval() throws Exception { 
+        Session session = new Session();
+
+        List<Activity> result = sessionActivityService.getActivitiesBySession(session);
+
+        assertTrue(result != null, "Expected successful deletion of session activity");
+        verify(activityRepository, times(1)).findActivitiesBySession(session.getId());    
+    }
+
+    /*
+     * getSessionByDateAndType TESTS
+     * SUCCESS AND FAIL AND DATA_NOT_FOUND TESTS
+     */
+
+    @Test
+    public void testGetSessionByDateAndType_DatabaseError() throws Exception {
+        Session session = new Session(new Date(1746118800000L), new User(), new SessionType("", ""));
+        Activity activity = new Activity();
+        SessionActivity sessionActivity = new SessionActivity(session, activity, "0mins", 1);
+        doThrow(new RuntimeException())
+            .when(sessionRepository).findSessionByDateAndType("", session.getDate());
+
+        Session result = sessionActivityService.getSessionByDateAndType(sessionActivity);
+
+        assertTrue(result == null, "Expected exception thrown during retrieval process");
+        verify(sessionRepository, times(1)).findSessionByDateAndType(session.getType().getName(), session.getDate());
+    }
+
+    @Test
+    public void testGetSessionByDateAndType_UnsuccessfulRetrieval() throws Exception { 
+        Session session = new Session(new Date(1746118800000L), new User(), new SessionType("", ""));
+        Activity activity = new Activity();
+        SessionActivity sessionActivity = new SessionActivity(session, activity, "0mins", 1);
+
+        Session result = sessionActivityService.getSessionByDateAndType(sessionActivity);
+
+        assertTrue(result == null, "Expected successful retrieval of session");
+        verify(sessionRepository, times(1)).findSessionByDateAndType(session.getType().getName(), session.getDate());    
+    }
+
+    @Test
+    public void testGetSessionByDateAndType_SuccessfulRetrieval() throws Exception { 
+        Session session = new Session(new Date(1746118800000L), new User(), new SessionType("", ""));
+        Activity activity = new Activity();
+        SessionActivity sessionActivity = new SessionActivity(session, activity, "0mins", 1);
+        
+        Mockito.when(sessionRepository.findSessionByDateAndType(session.getType().getName(), session.getDate()))
+            .thenReturn(session);
+
+        Session result = sessionActivityService.getSessionByDateAndType(sessionActivity);
+
+        assertTrue(result != null, "Expected successful retrieval of session");
+        verify(sessionRepository, times(1)).findSessionByDateAndType(session.getType().getName(), session.getDate());    
     }
 }
