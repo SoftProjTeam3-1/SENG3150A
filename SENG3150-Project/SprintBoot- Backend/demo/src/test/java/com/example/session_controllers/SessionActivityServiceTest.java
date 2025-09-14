@@ -1,62 +1,60 @@
 package com.example.session_controllers;
 
+import com.example.entities.SessionActivity;
 import com.example.entities.Session;
 import com.example.entities.Activity;
-import com.example.entities.SessionActivity;
-import com.example.entities.SessionType;
+
 import com.example.repositories.SessionActivityRepository;
-import com.example.entities.User;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
+
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-
-
+@ExtendWith(MockitoExtension.class)
 public class SessionActivityServiceTest {
 
     @Mock
     private SessionActivityRepository sessionActivityRepository;
 
-    private MockMvc mockMvc;
-    private ObjectMapper objectMapper;
-
-    @BeforeEach
-    public void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(sessionActivityRepository).build();
-        objectMapper = new ObjectMapper();
-
-        //create objects 
-        
-        Activity activity1 = new Activity();
-        Session session1 = new Session();
-        SessionActivity sessionActivity1 = new SessionActivity();
-        //session
-        //activity
-    }
+    @InjectMocks
+    private SessionActivityService sessionActivityService;
     
     /*
      * DELETE SESSION ACTIVITY TESTS FOR SESSIONACTIVITY SERVICE
      */
 
+
+
         // test for database error
     @Test
     public void testDeleteSessionActivity_DatabaseError() throws Exception {
+        SessionActivity sessionActivity = new SessionActivity();
+        doThrow(new RuntimeException())
+            .when(sessionActivityRepository).delete(sessionActivity);
 
-    }
-        
-        // test for data not found
-    @Test
-    public void testDeleteSessionActivity_DataNotFound() throws Exception {
+        boolean result = sessionActivityService.deleteSessionActivity(sessionActivity);
 
+        assertFalse(result, "Expected exception thrown during deletion process");
+        verify(sessionActivityRepository, times(1)).delete(sessionActivity);
     }
         
     // test for successful deletion
     @Test
     public void testDeleteSessionActivity_SuccessfulDeletion() throws Exception {
+        SessionActivity sessionActivity = new SessionActivity();
 
+        boolean result = sessionActivityService.deleteSessionActivity(sessionActivity);
+
+        assertTrue(result, "Expected successful deletion of session activity");
+        verify(sessionActivityRepository, times(1)).delete(sessionActivity);
     }
 
     /*
@@ -66,18 +64,25 @@ public class SessionActivityServiceTest {
         // test for database error
     @Test
     public void testAddSessionActivity_DatabaseError() throws Exception {
-    
+        SessionActivity sessionActivity = new SessionActivity();
+        doThrow(new RuntimeException())
+            .when(sessionActivityRepository).save(sessionActivity);
+
+        boolean result = sessionActivityService.saveSessionActivity(sessionActivity);
+
+        assertFalse(result, "Expected exception thrown during saving process");
+        verify(sessionActivityRepository, times(1)).save(sessionActivity);
     }
 
-        // test for data not found
-    @Test
-    public void testAddSessionActivity_DataNotFound() throws Exception {
-
-    }
 
         // test for successful addition
     @Test
     public void testAddSessionActivity_SuccessfulAddition() throws Exception {
+        SessionActivity sessionActivity = new SessionActivity();
 
+        boolean result = sessionActivityService.saveSessionActivity(sessionActivity);
+
+        assertTrue(result, "Expected successful deletion of session activity");
+        verify(sessionActivityRepository, times(1)).save(sessionActivity);
     }
 }

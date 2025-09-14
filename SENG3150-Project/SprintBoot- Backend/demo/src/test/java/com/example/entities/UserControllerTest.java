@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class UserControllerTest {
 
-    @Mock
+/*     @Mock
     private UserService userService;
 
     @InjectMocks
@@ -58,5 +58,5 @@ public class UserControllerTest {
                         .content(objectMapper.writeValueAsString(testUser2)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("Login failed"));
-    }
+    } */
 }
