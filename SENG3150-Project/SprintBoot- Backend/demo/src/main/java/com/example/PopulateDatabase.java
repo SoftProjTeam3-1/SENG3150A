@@ -70,7 +70,6 @@ public class PopulateDatabase implements CommandLineRunner{
             this.rollR = rollR;
             this.attendanceR = attendanceR;
             this.passwordEncoder = passwordEncoder;
-
         }
 
 
