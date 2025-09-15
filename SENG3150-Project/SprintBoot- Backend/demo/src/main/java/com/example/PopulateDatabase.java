@@ -32,7 +32,6 @@ import com.google.common.hash.Hashing;
 
 @Component
 public class PopulateDatabase implements CommandLineRunner{
-    private final PasswordEncoder passwordEncoder;
     private final ActivityTypeRepository activityTypeR;
     private final SessionTypeRepository sessionTypeR;
     private final PlayerRepository playerR;
@@ -73,7 +72,6 @@ public class PopulateDatabase implements CommandLineRunner{
             this.voiceNoteR = voiceNoteR;
             this.rollR = rollR;
             this.attendanceR = attendanceR;
-            this.passwordEncoder = passwordEncoder;
 
         }
 
@@ -123,7 +121,7 @@ public class PopulateDatabase implements CommandLineRunner{
         Activity miniGame = new Activity("Mini Game", "Play a small sided game to practice skills", 8, "30mins", game);
 
         //create users
-        String stuartPassword = passwordEncoder.encode(" "); //Please use the password encoder when creating users 
+        String stuartPassword = passwordEncoder.encode("SENG3150isfun!"); //Please use the password encoder when creating users 
         //DO NOT use other shii ty.
 
         String assistantCoachPassword = Hashing.sha256()
