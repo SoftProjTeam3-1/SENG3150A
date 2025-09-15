@@ -9,6 +9,7 @@ import com.example.controllers.ActivityTypeService;
 import com.example.entities.*;
 import com.example.responses.*;
 import com.example.service.Secruity.JwtService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,8 @@ public class SessionController {
     private ActivityService activityService;
     @Autowired
     private ActivityTypeService activityTypeService;
+    @Autowired
+    RequestUserService requestUserService;
 
     private final JwtService jwt;
     private final PasswordEncoder passwordEncoder;
@@ -47,10 +50,11 @@ public class SessionController {
     //     }
     // }
 
-    public SessionController(UserService userService, JwtService jwt, PasswordEncoder passwordEncoder) {
+    public SessionController(UserService userService, JwtService jwt, PasswordEncoder passwordEncoder, RequestUserService requestUserService) {
         this.userService = userService;
         this.jwt = jwt;
         this.passwordEncoder = passwordEncoder;
+        this.requestUserService = requestUserService;
     }
 
     @PostMapping("/getNote")
@@ -116,82 +120,49 @@ public class SessionController {
     }
 
     @PostMapping("/fetchSessions")
-    public ResponseEntity<List<FetchSessionsResponse>> fetchSessions(@CookieValue(value = "userId", required = false) String refreshToken) {
+    public ResponseEntity<List<FetchSessionsResponse>> fetchSessions(HttpServletRequest req) {
+        User user = requestUserService.requireUser(req);
 
-        if (refreshToken == null) {
-            System.out.println("No user ID found in cookies");
-        }else{
-            System.out.println("USerID HERE: "+ refreshToken);
-        }
-        try {
+        System.out.println("WE GOT THE USER: "+user);
 
-            String subject = jwt.getSubjectFromRefresh(refreshToken);
-            var user = userService.getUserByEmail(subject);
+        List<Session> sessions = sessionService.getSessionsByUser(user);
 
-            System.out.println("WE GOT THE USER: "+user);
+        List<FetchSessionsResponse> responseList = sessions.stream().map(session -> {
+            return new FetchSessionsResponse(
+                    session.getId(),
+                    session.getDate(),
+                    session.getType(),
+                    session.getSessionActivities()
+            );
+        }).collect(Collectors.toList());
 
-            List<Session> sessions = sessionService.getSessionsByUser(user);
-
-            List<FetchSessionsResponse> responseList = sessions.stream().map(session -> {
-                return new FetchSessionsResponse(
-                        session.getId(),
-                        session.getDate(),
-                        session.getType(),
-                        session.getSessionActivities()
-                );
-            }).collect(Collectors.toList());
-
-            return new ResponseEntity<>(responseList, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity<>(responseList, HttpStatus.OK);
     }
+
     @PutMapping("/updateSessions")
-    public ResponseEntity<String> updateSessions(@RequestBody List<SyncSessionsResponse> sessions,  @CookieValue(value = "userId", required = false) String refreshToken) {
-        try {
-            if (refreshToken == null) return ResponseEntity.status(401).body("No user ID cookie");
+    public ResponseEntity<String> updateSessions(@RequestBody List<SyncSessionsResponse> sessions, HttpServletRequest req) {
+        User user = requestUserService.requireUser(req);
 
-            String subject = jwt.getSubjectFromRefresh(refreshToken);
-            var user = userService.getUserByEmail(subject);
+        sessionService.replaceUserSessions(user, sessions);
 
-            sessionService.replaceUserSessions(user, sessions);
-            return ResponseEntity.ok("Sessions updated successfully.");
-        } catch (IllegalArgumentException iae) {
-            return ResponseEntity.badRequest().body(iae.getMessage());  // <-- see exact reason in Network tab
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(e.getMessage());
-        }
+        return ResponseEntity.ok("Sessions updated successfully.");
     }
 
     @PostMapping("/fetchCategoriesAndActivities")
-    public ResponseEntity<FetchCategoriesAndActivitiesResponse> fetchCategoriesAndActivities(@CookieValue(value = "userId", required = false) String refreshToken) {
-        if (refreshToken == null) {
-            System.out.println("No user ID found in cookies");
-        }else{
-            System.out.println("USerID HERE: "+ refreshToken);
+    public ResponseEntity<FetchCategoriesAndActivitiesResponse> fetchCategoriesAndActivities(HttpServletRequest req) {
+        User user = requestUserService.requireUser(req);
+
+        List<ActivityType> activityTypes = activityTypeService.getAllActivityTypes();
+
+        FetchCategoriesAndActivitiesResponse output = new FetchCategoriesAndActivitiesResponse();
+
+        for (ActivityType activityType : activityTypes) {
+            String name = activityType.getName();
+            List<Activity> activities = activityService.getActivitiesByType(name);
+            FetchSpecificCategoriesAndActivitiesResponse newEntry = new FetchSpecificCategoriesAndActivitiesResponse(name, activities);
+            output.addToList(newEntry);
         }
-        try {
 
-            String subject = jwt.getSubjectFromRefresh(refreshToken);
-            var user = userService.getUserByEmail(subject); // Needs to parse id here
-
-            System.out.println("WE GOT THE USER: "+user);
-
-            List<ActivityType> activityTypes = activityTypeService.getAllActivityTypes();
-
-            FetchCategoriesAndActivitiesResponse output = new FetchCategoriesAndActivitiesResponse();
-
-            for (ActivityType activityType : activityTypes) {
-                String name = activityType.getName();
-                List<Activity> activities = activityService.getActivitiesByType(name);
-                FetchSpecificCategoriesAndActivitiesResponse newEntry = new FetchSpecificCategoriesAndActivitiesResponse(name, activities);
-                output.addToList(newEntry);
-            }
-
-            return new ResponseEntity<>(output, HttpStatus.OK );
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity<>(output, HttpStatus.OK );
     }
 }

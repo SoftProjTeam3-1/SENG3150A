@@ -105,11 +105,28 @@ export async function syncSession(sessions) {
             throw new Error("Failed to update sessions");
         }
 
-        const data = await response.text(); // or json() depending on backend
+        const data = await response.text();
         console.log("Update success:", data);
         return data;
     } catch (err) {
         console.error("Error syncing sessions:", err);
+        return null;
+    }
+}
+
+export async function fetchCategoriesAndActivities() {
+    try {
+        const response = await fetch('/api/session/fetchCategoriesAndActivities', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: "include"
+        });
+
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+        return await response.json(); // This will be a List<FetchSessionsResponse> from the backend
+    } catch (error) {
+        console.error("Error fetching sessions from backend:", error);
         return null;
     }
 }
