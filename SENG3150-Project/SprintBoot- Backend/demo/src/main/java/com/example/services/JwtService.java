@@ -1,14 +1,20 @@
-package com.example.service.Secruity;
+package com.example.services;
 
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import javax.crypto.SecretKey;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Map;
+
+import javax.crypto.SecretKey;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 
 @Service
 public class JwtService {
@@ -31,31 +37,34 @@ public class JwtService {
 
     public String generateAccess(String subject, Map<String, Object> claims) {
         Instant now = Instant.now();
+        Claims c = Jwts.claims(claims);
+        c.setSubject(subject);
+    
         return Jwts.builder()
-                .subject(subject)
-                .claims(claims)
-                .issuedAt(Date.from(now))
-                .expiration(Date.from(now.plusMillis(accessTtlMs)))
-                .signWith(accessKey, Jwts.SIG.HS256)
-                .compact();
+            .setClaims(c)
+            .setIssuedAt(Date.from(now))
+            .setExpiration(Date.from(now.plusMillis(accessTtlMs)))
+            .signWith(accessKey, SignatureAlgorithm.HS256)
+            .compact();
     }
-
+    
     public String generateRefresh(String subject) {
         Instant now = Instant.now();
         return Jwts.builder()
-                .subject(subject)
-                .issuedAt(Date.from(now))
-                .expiration(Date.from(now.plusMillis(refreshTtlMs)))
-                .signWith(refreshKey, Jwts.SIG.HS256)
-                .compact();
+            .setSubject(subject) 
+            .setIssuedAt(Date.from(now))
+            .setExpiration(Date.from(now.plusMillis(refreshTtlMs)))
+            .signWith(refreshKey, SignatureAlgorithm.HS256)
+            .compact();
     }
+    
 
     public Jws<Claims> parseAccess(String token) {
-        return Jwts.parser().verifyWith(accessKey).build().parseSignedClaims(token);
+        return Jwts.parserBuilder().setSigningKey(accessKey).build().parseClaimsJws(token);
     }
 
     public Jws<Claims> parseRefresh(String token) {
-        return Jwts.parser().verifyWith(refreshKey).build().parseSignedClaims(token);
+        return Jwts.parserBuilder().setSigningKey(refreshKey).build().parseClaimsJws(token);
     }
 
     public String generateAccessToken(String subject, Map<String, Object> claims) {
@@ -69,7 +78,7 @@ public class JwtService {
     public String getSubjectFromRefresh(String refreshToken) {
         try {
             Jws<Claims> claims = parseRefresh(refreshToken);
-            return claims.getPayload().getSubject();
+            return claims.getBody().getSubject();
         } catch (JwtException e) {
             throw new RuntimeException("Invalid refresh token", e);
         }
@@ -78,7 +87,7 @@ public class JwtService {
     public String getSubjectFromAccess(String accessToken) {
         try {
             Jws<Claims> claims = parseAccess(accessToken);
-            return claims.getPayload().getSubject();
+            return claims.getBody().getSubject();
         } catch (JwtException e) {
             throw new RuntimeException("Invalid access token", e);
         }

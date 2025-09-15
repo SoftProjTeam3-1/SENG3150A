@@ -1,16 +1,25 @@
 package com.example.entities;
 
-import com.example.responses.RegisterResponse;
-import com.example.service.Secruity.JwtService; // keep your existing (typo) package name
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-
 import java.time.Duration;
 import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+
+import com.example.responses.RegisterResponse;
+import com.example.services.JwtService;
+
+import jakarta.servlet.http.HttpServletResponse;
+
 
 @RestController
 public class UserController {
@@ -51,12 +60,14 @@ public class UserController {
     System.out.println("User fetched from DB: " + (u != null ? u.getEmail() : "null"));
     if (u == null) {
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
+
     }
 
     // bcrypt(raw) only
     if (!passwordEncoder.matches(entity.getPassword(), u.getPassword())) {
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
     }
+
 
     String access  = jwt.generateAccessToken(u.getEmail(), Map.of("uid", u.getId(), "email", u.getEmail()));
     String refresh = jwt.generateRefreshToken(u.getEmail());
