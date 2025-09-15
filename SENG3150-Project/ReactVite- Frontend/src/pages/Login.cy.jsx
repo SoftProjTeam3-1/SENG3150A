@@ -29,4 +29,12 @@ describe('<Login />', () => {
     cy.get('input[name="password"]').should('have.attr', 'type', 'password')
   })
 
+  // Checks if Forgot password link redirects to /forget-password and Create account link redirects to /register
+  it('shows Forgot password link pointing to /forget-password', () => {
+    cy.get('a[href="/forget-password"]').should('contain.text', 'Forgot password?')
+  })
+
+  it('shows Create account link pointing to /register', () => {
+    cy.get('a[href="/register"]').should('contain.text', 'Create an Account')
+  })
 })

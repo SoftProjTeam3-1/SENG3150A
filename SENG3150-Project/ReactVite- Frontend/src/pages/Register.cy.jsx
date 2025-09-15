@@ -26,4 +26,9 @@ describe('<Register />', () => {
     cy.get('#hideButton2').click()
     cy.get('input[name="password2"]').should('have.attr', 'type', 'text')
   })
+
+  // Back link is present and points to home (component tests shouldn't assert URL changes)
+  it('shows Back link pointing to /', () => {
+    cy.get('a[href="/"]').should('contain.text', 'Back')
+  })
 })
