@@ -5,6 +5,7 @@ import com.example.entities.Session;
 import com.example.entities.Activity;
 import com.example.entities.User;
 import com.example.entities.SessionType;
+import com.example.entities.ActivityType;
 import com.example.repositories.ActivityRepository;
 import com.example.repositories.SessionActivityRepository;
 import com.example.repositories.SessionRepository;
@@ -169,5 +170,69 @@ public class SessionActivityServiceTest {
 
         assertTrue(result != null, "Expected successful retrieval of session");
         verify(sessionRepository, times(1)).findSessionByDateAndType(session.getType().getName(), session.getDate());    
+    }
+
+    /**
+     * GET ACTIVITY BY NAME TESTS
+     * SUCCESS AND FAIL AND DATABASE FAILURE TEST
+     */
+
+    @Test
+    public void testGetActivityByName_DatabaseError() throws Exception {
+        String name = "Test Activity";
+        
+        doThrow(new RuntimeException())
+            .when(activityRepository).findDistinctByName(name);
+
+        Activity result = sessionActivityService.getActivityByName(name);
+
+        assertTrue(result == null, "Expected exception thrown during retrieval process");
+        verify(activityRepository, times(1)).findDistinctByName(name);
+    }
+
+    @Test
+    public void testGetActivityByName_SuccessfulRetrieval() throws Exception { 
+        String name = "Dribbling";
+
+        Mockito.when(activityRepository.findDistinctByName(name))
+            .thenReturn(new Activity());
+
+        Activity result = sessionActivityService.getActivityByName(name);
+
+        assertTrue(result != null, "Expected successful retrieval of activity");
+        verify(activityRepository, times(1)).findDistinctByName(name);    
+    }
+
+    /**
+     * GET SESSION ACTIVITY BY SESSION AND ACTIVITY TESTS
+     * SUCCESS AND FAIL AND DATABASE FAILURE TEST
+     */
+
+    @Test
+    public void testGetSessionActivityBySessionAndActivity_DatabaseError() throws Exception {
+        Session session = new Session();
+        Activity activity = new Activity();
+        
+        doThrow(new RuntimeException())
+            .when(sessionActivityRepository).findDistinctBySessionAndActivity(session, activity);
+
+        SessionActivity result = sessionActivityService.getSessionActivityBySessionAndActivity(session, activity);
+
+        assertTrue(result == null, "Expected exception thrown during retrieval process");
+        verify(sessionActivityRepository, times(1)).findDistinctBySessionAndActivity(session, activity);
+    }
+
+    @Test
+    public void testGetSessionActivityBySessionAndActivity_SuccessfulRetrieval() throws Exception { 
+        Session session = new Session();
+        Activity activity = new Activity();
+
+        Mockito.when(sessionActivityRepository.findDistinctBySessionAndActivity(session, activity))
+            .thenReturn(new SessionActivity());
+
+        SessionActivity result = sessionActivityService.getSessionActivityBySessionAndActivity(session, activity);
+
+        assertTrue(result != null, "Expected successful retrieval of session activity");
+        verify(sessionActivityRepository, times(1)).findDistinctBySessionAndActivity(session, activity);    
     }
 }
