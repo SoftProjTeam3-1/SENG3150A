@@ -20,5 +20,8 @@ import { mount } from 'cypress/react'
 
 Cypress.Commands.add('mount', mount)
 
+// Enable code coverage collection in component tests
+import '@cypress/code-coverage/support'
+
 // Example use:
 // cy.mount(<MyComponent />)
