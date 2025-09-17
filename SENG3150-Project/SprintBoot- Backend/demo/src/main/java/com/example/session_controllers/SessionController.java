@@ -121,7 +121,7 @@ public class SessionController {
     }
 
     @PostMapping("/fetchSessions")
-    public ResponseEntity<List<FetchSessionsResponse>> fetchSessions(@CookieValue(value = "userId", required = false) String userId) {
+    public ResponseEntity<List<FetchSessionsResponse>> fetchSessions(@CookieValue(value = "JSESSIONID", required = false) String userId) {
 
         if (userId == null) {
             System.out.println("No user ID found in cookies");
@@ -151,7 +151,7 @@ public class SessionController {
         }
     }
     @PutMapping("/updateSessions")
-    public ResponseEntity<String> updateSessions(@RequestBody List<SyncSessionsResponse> sessions,  @CookieValue(value = "userId", required = false) String userId) {
+    public ResponseEntity<String> updateSessions(@RequestBody List<SyncSessionsResponse> sessions,  @CookieValue(value = "JSESSIONID", required = false) String userId) {
         try {
             if (userId == null) return ResponseEntity.status(401).body("No user ID cookie");
             sessionService.replaceUserSessions(userService.getUserByID(Integer.parseInt(userId)), sessions);
@@ -165,7 +165,7 @@ public class SessionController {
     }
 
     @PostMapping("/fetchCategoriesAndActivities")
-    public ResponseEntity<FetchCategoriesAndActivitiesResponse> fetchCategoriesAndActivities(@CookieValue(value = "userId", required = false) String userId) {
+    public ResponseEntity<FetchCategoriesAndActivitiesResponse> fetchCategoriesAndActivities(@CookieValue(value = "JSESSIONID", required = false) String userId) {
         if (userId == null) {
             System.out.println("No user ID found in cookies");
         }else{
