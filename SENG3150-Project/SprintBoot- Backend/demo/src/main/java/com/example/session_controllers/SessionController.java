@@ -10,6 +10,7 @@ import com.example.entities.*;
 import com.example.responses.*;
 import com.example.service.Secruity.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,25 +120,17 @@ public class SessionController {
         //get result and return response
     }
 
-    @PostMapping("/fetchSessions")
-    public ResponseEntity<List<FetchSessionsResponse>> fetchSessions(HttpServletRequest req) {
-        User user = requestUserService.requireUser(req);
-
-        System.out.println("WE GOT THE USER: "+user);
-
-        List<Session> sessions = sessionService.getSessionsByUser(user);
-
-        List<FetchSessionsResponse> responseList = sessions.stream().map(session -> {
-            return new FetchSessionsResponse(
-                    session.getId(),
-                    session.getDate(),
-                    session.getType(),
-                    session.getSessionActivities()
-            );
-        }).collect(Collectors.toList());
-
-        return new ResponseEntity<>(responseList, HttpStatus.OK);
+    @GetMapping("/fetchSessions")
+    public ResponseEntity<List<FetchSessionsResponse>> fetchSessions(
+            @AuthenticationPrincipal org.springframework.security.core.userdetails.UserDetails principal) {
+        String email = principal.getUsername();
+        User user = userService.getUserByEmail(email);
+        var body = sessionService.getSessionsByUser(user).stream()
+                .map(s -> new FetchSessionsResponse(s.getId(), s.getDate(), s.getType(), s.getSessionActivities()))
+                .toList();
+        return ResponseEntity.ok(body);
     }
+
 
     @PutMapping("/updateSessions")
     public ResponseEntity<String> updateSessions(@RequestBody List<SyncSessionsResponse> sessions, HttpServletRequest req) {
@@ -149,20 +142,31 @@ public class SessionController {
     }
 
     @PostMapping("/fetchCategoriesAndActivities")
-    public ResponseEntity<FetchCategoriesAndActivitiesResponse> fetchCategoriesAndActivities(HttpServletRequest req) {
-        User user = requestUserService.requireUser(req);
+    public ResponseEntity<FetchCategoriesAndActivitiesResponse> fetchCategoriesAndActivities(@CookieValue(value = "userId", required = false) String userId) {
 
-        List<ActivityType> activityTypes = activityTypeService.getAllActivityTypes();
-
-        FetchCategoriesAndActivitiesResponse output = new FetchCategoriesAndActivitiesResponse();
-
-        for (ActivityType activityType : activityTypes) {
-            String name = activityType.getName();
-            List<Activity> activities = activityService.getActivitiesByType(name);
-            FetchSpecificCategoriesAndActivitiesResponse newEntry = new FetchSpecificCategoriesAndActivitiesResponse(name, activities);
-            output.addToList(newEntry);
+        if (userId == null) {
+            System.out.println("No user ID found in cookies");
+        }else{
+            System.out.println("USerID HERE: "+ userId);
         }
 
-        return new ResponseEntity<>(output, HttpStatus.OK );
+        try{
+            User user = userService.getUserByID(Integer.parseInt(userId));
+
+            List<ActivityType> activityTypes = activityTypeService.getAllActivityTypes();
+
+            FetchCategoriesAndActivitiesResponse output = new FetchCategoriesAndActivitiesResponse();
+
+            for (ActivityType activityType : activityTypes) {
+                String name = activityType.getName();
+                List<Activity> activities = activityService.getActivitiesByType(name);
+                FetchSpecificCategoriesAndActivitiesResponse newEntry = new FetchSpecificCategoriesAndActivitiesResponse(name, activities);
+                output.addToList(newEntry);
+            }
+
+            return new ResponseEntity<>(output, HttpStatus.OK );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

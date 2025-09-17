@@ -74,21 +74,14 @@ export async function deleteSessionActivity(activity){
 }
 
 export async function fetchSessions() {
-    try {
-        const response = await fetch('/api/session/fetchSessions', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: "include"
-        });
-
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-
-        return await response.json(); // This will be a List<FetchSessionsResponse> from the backend
-    } catch (error) {
-        console.error("Error fetching sessions from backend:", error);
-        return null;
-    }
+    const res = await fetch('/api/session/fetchSessions', {
+        method: 'GET',
+        credentials: 'include',
+    });
+    if (!res.ok) throw new Error(res.status);
+    return res.json();
 }
+
 
 export async function syncSession(sessions) {
     try {

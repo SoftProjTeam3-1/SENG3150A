@@ -25,6 +25,9 @@ public class RequestUserService {
     public User requireUser(HttpServletRequest request) {
         // 1) Prefer Authorization: Bearer <access>
         String auth = request.getHeader(HttpHeaders.AUTHORIZATION);
+
+        System.out.println(" PART 1 ");
+
         if (auth != null && auth.startsWith("Bearer ")) {
             String accessToken = auth.substring(7);
             String subject = jwt.getSubjectFromAccess(accessToken); // implement if needed
