@@ -74,14 +74,21 @@ export async function deleteSessionActivity(activity){
 }
 
 export async function fetchSessions() {
-    const res = await fetch('/api/session/fetchSessions', {
-        method: 'GET',
-        credentials: 'include',
-    });
-    if (!res.ok) throw new Error(res.status);
-    return res.json();
-}
+    try {
+        const response = await fetch('/api/session/fetchSessions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: "include"
+        });
 
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+        return await response.json(); // This will be a List<FetchSessionsResponse> from the backend
+    } catch (error) {
+        console.error("Error fetching sessions from backend:", error);
+        return null;
+    }
+}
 
 export async function syncSession(sessions) {
     try {
@@ -98,7 +105,7 @@ export async function syncSession(sessions) {
             throw new Error("Failed to update sessions");
         }
 
-        const data = await response.text();
+        const data = await response.text(); // or json() depending on backend
         console.log("Update success:", data);
         return data;
     } catch (err) {
@@ -123,4 +130,3 @@ export async function fetchCategoriesAndActivities() {
         return null;
     }
 }
-

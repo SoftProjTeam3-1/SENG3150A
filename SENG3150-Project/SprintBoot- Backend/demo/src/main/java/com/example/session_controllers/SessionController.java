@@ -120,38 +120,62 @@ public class SessionController {
         //get result and return response
     }
 
-    @GetMapping("/fetchSessions")
-    public ResponseEntity<List<FetchSessionsResponse>> fetchSessions(
-            @AuthenticationPrincipal org.springframework.security.core.userdetails.UserDetails principal) {
-        String email = principal.getUsername();
-        User user = userService.getUserByEmail(email);
-        var body = sessionService.getSessionsByUser(user).stream()
-                .map(s -> new FetchSessionsResponse(s.getId(), s.getDate(), s.getType(), s.getSessionActivities()))
-                .toList();
-        return ResponseEntity.ok(body);
-    }
-
-
-    @PutMapping("/updateSessions")
-    public ResponseEntity<String> updateSessions(@RequestBody List<SyncSessionsResponse> sessions, HttpServletRequest req) {
-        User user = requestUserService.requireUser(req);
-
-        sessionService.replaceUserSessions(user, sessions);
-
-        return ResponseEntity.ok("Sessions updated successfully.");
-    }
-
-    @PostMapping("/fetchCategoriesAndActivities")
-    public ResponseEntity<FetchCategoriesAndActivitiesResponse> fetchCategoriesAndActivities(@CookieValue(value = "userId", required = false) String userId) {
+    @PostMapping("/fetchSessions")
+    public ResponseEntity<List<FetchSessionsResponse>> fetchSessions(@CookieValue(value = "userId", required = false) String userId) {
 
         if (userId == null) {
             System.out.println("No user ID found in cookies");
         }else{
             System.out.println("USerID HERE: "+ userId);
         }
+        try {
 
-        try{
-            User user = userService.getUserByID(Integer.parseInt(userId));
+            User user = userService.getUserByID(Integer.parseInt(userId)); // Needs to parse id here
+
+            System.out.println("WE GOT THE USER: "+user);
+
+            List<Session> sessions = sessionService.getSessionsByUser(user);
+
+            List<FetchSessionsResponse> responseList = sessions.stream().map(session -> {
+                return new FetchSessionsResponse(
+                        session.getId(),
+                        session.getDate(),
+                        session.getType(),
+                        session.getSessionActivities()
+                );
+            }).collect(Collectors.toList());
+
+            return new ResponseEntity<>(responseList, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @PutMapping("/updateSessions")
+    public ResponseEntity<String> updateSessions(@RequestBody List<SyncSessionsResponse> sessions,  @CookieValue(value = "userId", required = false) String userId) {
+        try {
+            if (userId == null) return ResponseEntity.status(401).body("No user ID cookie");
+            sessionService.replaceUserSessions(userService.getUserByID(Integer.parseInt(userId)), sessions);
+            return ResponseEntity.ok("Sessions updated successfully.");
+        } catch (IllegalArgumentException iae) {
+            return ResponseEntity.badRequest().body(iae.getMessage());  // <-- see exact reason in Network tab
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/fetchCategoriesAndActivities")
+    public ResponseEntity<FetchCategoriesAndActivitiesResponse> fetchCategoriesAndActivities(@CookieValue(value = "userId", required = false) String userId) {
+        if (userId == null) {
+            System.out.println("No user ID found in cookies");
+        }else{
+            System.out.println("USerID HERE: "+ userId);
+        }
+        try {
+
+            User user = userService.getUserByID(Integer.parseInt(userId)); // Needs to parse id here
+
+            System.out.println("WE GOT THE USER: "+user);
 
             List<ActivityType> activityTypes = activityTypeService.getAllActivityTypes();
 
@@ -166,7 +190,7 @@ public class SessionController {
 
             return new ResponseEntity<>(output, HttpStatus.OK );
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
