@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cypress Component Testing</title>
+    <!-- Ensure global app styles are available during component tests (served by Vite) -->
+    <link rel="stylesheet" href="/src/index.css" />
+    <style>
+      html, body { height: 100%; }
+      body { margin: 0; background-color: #111827; }
+      /* The component will be mounted into this element by Cypress */
+      [data-cy-root] { display: contents; }
+    </style>
+  </head>
+  <body>
+    <div data-cy-root></div>
+  </body>
+  </html>
