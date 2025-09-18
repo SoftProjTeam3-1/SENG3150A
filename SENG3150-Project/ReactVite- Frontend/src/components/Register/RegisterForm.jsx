@@ -23,9 +23,8 @@ const RegisterForm = () => {
   const passwordHints = [
     {text: "Password must be at least 8 characters", isValid: plainTextPassword.length >= 8},
     {text: "Password must contain at least one uppercase letter.", isValid: /[A-Z]/.test(plainTextPassword)},
-    {text: "Password must include a special character.", isValid: /[!@#$%^&*(),.?\":{}|<>]/.test(plainTextPassword)},
-    {text: "Passwords must match.", isValid: plainTextPassword !== "" && plainTextPassword === confirmPassword}
-  ];
+    {text: "Password must include a special character.", isValid: /[!@#$%^&*(),.?":{}|<>]/.test(plainTextPassword)},
+  ]
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -89,4 +89,7 @@ SENG3150-Project/ReactVite- Frontend/test-results/2025-09-09_17-00-50/mochawesom
 SENG3150-Project/ReactVite- Frontend/test-results/2025-09-09_17-00-50/mochawesome/assets/roboto-medium-webfont.woff
 SENG3150-Project/ReactVite- Frontend/test-results/2025-09-09_17-00-50/mochawesome/assets/roboto-medium-webfont.woff2
 SENG3150-Project/ReactVite- Frontend/test-results/2025-09-09_17-00-50/mochawesome/assets/roboto-regular-webfont.woff
-SENG3150-Project/ReactVite- Frontend/test-results/2025-09-09_17-00-50/mochawesome/assets/roboto-regular-webfont.woff2
+SENG3150-Project/ReactVite- Frontend/test-results
+SENG3150-Project/ReactVite- Frontend/cypress/screenshots/activity_management/ActivityCreate.cy.js/Activity Create Flow -- creates a new activity with the backend active (failed).png
+.gitignore
+C:\Users\hongd\OneDrive - The University Of Newcastle\Software Project 1\github Tutorial\SENG3150A\SENG3150-Project\ReactVite- Frontend\cypress\screenshots
