@@ -8,6 +8,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,34 +21,41 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-        .cors(cors -> cors.configurationSource(corsConfigurationSource()))  // Enable CORS  // Enable CORS
-            .csrf(csrf -> csrf.disable())  // Disable CSRF for this scenario
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/user/register", 
-                                 "/api/user/forgotpassword", 
-                                 "/api/user/reset-password", 
-                                 "/api/user/verify-reset-code",
-                                 "/api/user/login",
-                                 "/api/activityType/getAll",
-                                 "/api/activityType/create",
-                                 "/api/activityType/delete",
-                                 "/api/activityType/update",
-                                 "/api/activity/update",
-                                 "/api/activity/create",
-                                 "/api/activity/getAll",
-                                 "/api/activity/getByActivityType",
-                                 "/api/activity/delete",
-                                 "/api/session/fetchSessions",
-                                 "api/session/updateSessions").permitAll()
-                .anyRequest().authenticated()
-            )
-            .httpBasic(httpBasic -> httpBasic.disable());
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-        return http.build();
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
+@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+  http
+    .cors(c -> c.configurationSource(corsConfigurationSource()))
+    .csrf(csrf -> csrf.disable())
+    .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+    .authorizeHttpRequests(auth -> auth
+        // allow preflight + error page
+        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+        .requestMatchers("/error").permitAll()
+        // public endpoints
+        .requestMatchers(
+            "/api/user/register",
+            "/api/user/forgotpassword",
+            "/api/user/reset-password",
+            "/api/user/verify-reset-code",
+            "/api/user/login",
+            "/api/auth/refresh",
+            "/api/auth/logout"
+        ).permitAll()
+        .anyRequest().authenticated()
+    )
+    .exceptionHandling(e -> e
+        .authenticationEntryPoint((req, res, ex) -> res.sendError(HttpStatus.UNAUTHORIZED.value()))
+    )
+    .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+    .httpBasic(h -> h.disable());
+  return http.build();
+}
+
 
 @Bean
 public CorsConfigurationSource corsConfigurationSource() {
@@ -72,7 +80,3 @@ public PasswordEncoder passwordEncoder() {
     return PasswordEncoderFactories.createDelegatingPasswordEncoder();
 }
 }
-
-
-
-

@@ -1,33 +1,7 @@
 
 /// <reference types="cypress" />
 
-/**
- * Test for creating a new activity type
- */
-describe('Activity Type Create Flow',() => {
-    beforeEach(() => {
-        cy.visit('http://localhost:5173/manage-activities');
-    });
 
-
-    it('creates a new activity type succesfully with backend active', () => {
-        const categoryName = 'E2E Category';
-
-        cy.intercept('POST', '/api/activityType/create').as('createActivityType');
-
-        cy.get('input[placeholder="Enter New Category Name"]').clear().type(categoryName);
-        cy.get('button[type="submit"]').click();
-
-        cy.wait('@createActivityType').then((interception) => {
-            expect(interception.request.body).to.include({ 
-                name: categoryName, 
-                description: ''
-            });
-            expect(interception.response.body).to.have.property('message', "ActivityType created successfully");
-            expect(interception.response.statusCode).to.equal(200);
-        });
-    });
-});
 
 /**
  * Test for deleting an activity type
