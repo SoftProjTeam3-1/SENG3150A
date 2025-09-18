@@ -51,9 +51,9 @@ public class PopulateDatabaseTest {
             sessionActivityRepository,
             textNoteRepository,
             voiceNoteRepository,
-            rollRepository,
-            attendanceRepository,
-            passwordEncoder
+            rollRepository,passwordEncoder,
+            attendanceRepository
+
         );
     }
 
