@@ -46,6 +46,7 @@ class ActivityServiceTest {
     private Activity activity;
 
     @BeforeEach
+    @SuppressWarnings("unused")
     void setUp() {
         type = new ActivityType("Warm Up", "Pre session");
         activity = new Activity("Jog", "Light jogging", 20, "10m", type);
@@ -133,6 +134,39 @@ class ActivityServiceTest {
     void testUpdateActivityException() {
         when(activityRepository.findDistinctByName("Jog")).thenThrow(new RuntimeException("DB down"));
         boolean result = activityService.updateActivity(activity);
+        assertFalse(result);
+    }
+
+    @Test
+    @DisplayName("createActivity returns false when repository throws")
+    void testCreateActivityFailure() {
+        when(activityRepository.save(any(Activity.class))).thenThrow(new RuntimeException("save failed"));
+        boolean result = activityService.createActivity(activity);
+        assertFalse(result);
+    }
+
+    @Test
+    @DisplayName("getActivitiesByType returns null when type lookup is null")
+    void testGetActivitiesByTypeNullType() {
+        when(activityTypeRepository.findDistinctByName("Unknown")).thenReturn(null);
+        List<Activity> list = activityService.getActivitiesByType("Unknown");
+        assertNull(list);
+    }
+
+    @Test
+    @DisplayName("getActivitiesByType returns null when repository throws")
+    void testGetActivitiesByTypeRepositoryThrows() {
+        when(activityTypeRepository.findDistinctByName("Warm Up")).thenReturn(type);
+        when(activityRepository.findByActivityType(type)).thenThrow(new RuntimeException("Lookup failed"));
+        List<Activity> list = activityService.getActivitiesByType("Warm Up");
+        assertNull(list);
+    }
+
+    @Test
+    @DisplayName("deleteActivity returns false when exception occurs")
+    void testDeleteActivityException() {
+        when(activityRepository.findDistinctByName("Jog")).thenThrow(new RuntimeException("Delete failed"));
+        boolean result = activityService.deleteActivity("Jog");
         assertFalse(result);
     }
 }

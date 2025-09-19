@@ -1,7 +1,6 @@
 package com.example.repositories;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -23,7 +22,7 @@ public interface ActivityRepository extends JpaRepository<Activity, Integer>{
     List<Activity> findByFavourite(boolean favourite);
     List<Activity> findByActivityType(ActivityType activityType);
 
-    @Modifying
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Transactional
     @Query("UPDATE Activity a SET a.peopleRequired = :peopleRequired, a.name = :name, a.description = :description, a.favourite = :favourite, a.duration = :duration WHERE a.activityID = :id")
     void updateActivity(

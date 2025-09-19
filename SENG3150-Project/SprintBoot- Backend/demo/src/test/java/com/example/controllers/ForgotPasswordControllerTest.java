@@ -1,188 +1,172 @@
-// package com.example.controllers;
+package com.example.controllers;
 
-// import com.example.entities.User;
-// import com.example.entities.UserService;
-// import com.fasterxml.jackson.databind.ObjectMapper;
-// import org.junit.jupiter.api.BeforeEach;
-// import org.junit.jupiter.api.Test;
-// import org.junit.jupiter.api.extension.ExtendWith;
-// import org.mockito.InjectMocks;
-// import org.mockito.Mock;
-// import org.mockito.junit.jupiter.MockitoExtension;
-// import org.springframework.http.MediaType;
-// import org.springframework.mail.SimpleMailMessage;
-// import org.springframework.mail.javamail.JavaMailSender;
-// import org.springframework.test.web.servlet.MockMvc;
-// import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import java.util.HashMap;
+import java.util.Map;
 
-// import java.util.HashMap;
-// import java.util.Map;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import static org.mockito.ArgumentMatchers.any;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 
-// import static org.mockito.ArgumentMatchers.*;
-// import static org.mockito.Mockito.*;
-// import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-// import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import com.example.entities.User;
+import com.example.entities.UserService;
 
-// @ExtendWith(MockitoExtension.class)
-// class ForgotPasswordControllerTest {
 
-//     @Mock
-//     private JavaMailSender mailSender;
+//mvn -Dtest=com.example.controllers.ForgotPasswordControllerTest test
+@ExtendWith(MockitoExtension.class)
+class ForgotPasswordControllerTest {
 
-//     @Mock
-//     private UserService userService;
+    @Mock
+    private JavaMailSender mailSender;
 
-//     @InjectMocks
-//     private ForgotPasswordController forgotPasswordController;
+    @Mock
+    private UserService userService;
 
-//     private MockMvc mockMvc;
-//     private ObjectMapper objectMapper;
+    @InjectMocks
+    private ForgotPasswordController controller;
 
-//     @BeforeEach
-//     void setUp() {
-//         mockMvc = MockMvcBuilders.standaloneSetup(forgotPasswordController).build();
-//         objectMapper = new ObjectMapper();
-//     }
+    private Map<String, String> payload = new HashMap<>();
 
-//     @Test
-//     void testForgotPassword_UserExists_SendsEmailSuccessfully() throws Exception {
-//         // Given
-//         String email = "test@example.com";
-//         User mockUser = new User("John", "Doe", email, true, "hashedPassword");
-//         Map<String, String> payload = new HashMap<>();
-//         payload.put("email", email);
+    @Test
+    @DisplayName("forgotpassword returns error when email missing")
+    void forgotPassword_missingEmail() {
+        Map<String, String> res = controller.forgotPassword(payload);
+        assertEquals("Email is required.", res.get("error"));
+    }
 
-//         when(userService.getUser(email)).thenReturn(mockUser);
-//         doNothing().when(userService).saveResetToken(eq(email), anyString());
-//         doNothing().when(mailSender).send(any(SimpleMailMessage.class));
+    @Test
+    @DisplayName("forgotpassword returns error when user not found")
+    void forgotPassword_userNotFound() {
+        payload.put("email", "nouser@example.com");
+        when(userService.getUserByEmail("nouser@example.com")).thenReturn(null);
+        Map<String, String> res = controller.forgotPassword(payload);
+        assertEquals("No account found for that email.", res.get("error"));
+    }
 
-//         // When & Then
-//         mockMvc.perform(post("/api/user/forgotpassword")
-//                 .contentType(MediaType.APPLICATION_JSON)
-//                 .content(objectMapper.writeValueAsString(payload)))
-//                 .andExpect(status().isOk())
-//                 .andExpect(jsonPath("$.message").value("Password reset code sent to " + email));
+    @Test
+    @DisplayName("forgotpassword sends email and saves 4-digit code when user exists")
+    void forgotPassword_success() {
+        String email = "test@example.com";
+        payload.put("email", email);
+        User user = new User();
+        user.setEmail(email);
+        when(userService.getUserByEmail(email)).thenReturn(user);
 
-//         verify(userService, times(1)).getUser(email);
-//         verify(userService, times(1)).saveResetToken(eq(email), anyString());
-//         verify(mailSender, times(1)).send(any(SimpleMailMessage.class));
-//     }
+        // Capture the reset token saved
+        ArgumentCaptor<String> codeCaptor = ArgumentCaptor.forClass(String.class);
 
-//     @Test
-//     void testForgotPassword_UserDoesNotExist_ReturnsError() throws Exception {
-//         // Given
-//         String email = "nonexistent@example.com";
-//         Map<String, String> payload = new HashMap<>();
-//         payload.put("email", email);
+        Map<String, String> res = controller.forgotPassword(payload);
 
-//         when(userService.getUser(email)).thenReturn(null);
+        // Verify email sent
+        verify(mailSender, times(1)).send(any(SimpleMailMessage.class));
+        // Verify token saved and validate it's 4 digits
+        verify(userService).saveResetToken(org.mockito.Mockito.eq(email), codeCaptor.capture());
+        String code = codeCaptor.getValue();
+        assertTrue(code.matches("\\d{4}"), "Reset code should be 4 digits, was: " + code);
+        assertEquals("Password reset code sent to " + email, res.get("message"));
+    }
 
-//         mockMvc.perform(post("/api/user/forgotpassword")
-//                 .contentType(MediaType.APPLICATION_JSON)
-//                 .content(objectMapper.writeValueAsString(payload)))
-//                 .andExpect(status().isOk())
-//                 .andExpect(jsonPath("$.error").value("No account found for that email."));
+    @Test
+    @DisplayName("reset-password returns error for null stored code")
+    void resetPassword_nullStoredCode() {
+        payload.put("email", "a@b.com");
+        payload.put("code", "1234");
+        payload.put("newPassword", "newPass");
+        when(userService.getResetToken("a@b.com")).thenReturn(null);
+        Map<String, String> res = controller.resetPassword(payload);
+        assertEquals("Invalid or expired reset code.", res.get("error"));
+    }
 
-//         verify(userService, times(1)).getUser(email);
-//         verify(userService, never()).saveResetToken(anyString(), anyString());
-//         verify(mailSender, never()).send(any(SimpleMailMessage.class));
-//     }
+    @Test
+    @DisplayName("reset-password returns error for mismatched code")
+    void resetPassword_mismatchedCode() {
+        payload.put("email", "a@b.com");
+        payload.put("code", "9999");
+        payload.put("newPassword", "newPass");
+        when(userService.getResetToken("a@b.com")).thenReturn("1234");
+        Map<String, String> res = controller.resetPassword(payload);
+        assertEquals("Invalid or expired reset code.", res.get("error"));
+    }
 
-//     @Test
-//     void testForgotPassword_EmailSendingFails_HandlesException() throws Exception {
-//         // Given
-//         String email = "test@example.com";
-//         User mockUser = new User("John", "Doe", email, true, "hashedPassword");
-//         Map<String, String> payload = new HashMap<>();
-//         payload.put("email", email);
+    @Test
+    @DisplayName("reset-password returns error when update fails")
+    void resetPassword_updateFails() {
+        payload.put("email", "a@b.com");
+        payload.put("code", "1234");
+        payload.put("newPassword", "newPass");
+        when(userService.getResetToken("a@b.com")).thenReturn("1234");
+        when(userService.updatePassword("a@b.com", "newPass")).thenReturn(false);
+        Map<String, String> res = controller.resetPassword(payload);
+        assertEquals("Failed to update password.", res.get("error"));
+    }
 
-//         when(userService.getUser(email)).thenReturn(mockUser);
-//         doNothing().when(userService).saveResetToken(eq(email), anyString());
-//         doThrow(new RuntimeException("Email service error")).when(mailSender).send(any(SimpleMailMessage.class));
+    @Test
+    @DisplayName("reset-password succeeds and clears token")
+    void resetPassword_success() {
+        payload.put("email", "a@b.com");
+        payload.put("code", "1234");
+        payload.put("newPassword", "newPass");
+        when(userService.getResetToken("a@b.com")).thenReturn("1234");
+        when(userService.updatePassword("a@b.com", "newPass")).thenReturn(true);
 
-//         try {
-//             mockMvc.perform(post("/api/user/forgotpassword")
-//                     .contentType(MediaType.APPLICATION_JSON)
-//                     .content(objectMapper.writeValueAsString(payload)));
-//         } catch (Exception e) {
-//             // Expected behavior
-//         }
+        Map<String, String> res = controller.resetPassword(payload);
 
-//         verify(userService, times(1)).getUser(email);
-//         verify(userService, times(1)).saveResetToken(eq(email), anyString());
-//         verify(mailSender, times(1)).send(any(SimpleMailMessage.class));
-//     }
+        // Should clear token by saving "null" string
+        verify(userService).saveResetToken("a@b.com", "null");
+        assertEquals("Password updated successfully.", res.get("message"));
+    }
 
-//     @Test
-//     void testResetPassword_ValidCode_UpdatesPasswordSuccessfully() throws Exception {
-//         // Given
-//         String email = "test@example.com";
-//         String code = "1234";
-//         String newPassword = "newPassword123";
-//         Map<String, String> payload = new HashMap<>();
-//         payload.put("email", email);
-//         payload.put("code", code);
-//         payload.put("newPassword", newPassword);
+    @Test
+    @DisplayName("verify-reset-code returns error when fields missing")
+    void verifyResetCode_missingFields() {
+        Map<String, String> res = controller.verifyResetCode(new HashMap<>());
+        assertEquals("Email and code are required.", res.get("error"));
+    }
 
-//         when(userService.getResetToken(email)).thenReturn(code);
-//         when(userService.updatePassword(email, newPassword)).thenReturn(true);
+    @Test
+    @DisplayName("verify-reset-code returns error when user not found")
+    void verifyResetCode_userNotFound() {
+        payload.put("email", "none@x.com");
+        payload.put("code", "1111");
+        when(userService.getUserByEmail("none@x.com")).thenReturn(null);
+        Map<String, String> res = controller.verifyResetCode(payload);
+        assertEquals("No account found for that email.", res.get("error"));
+    }
 
-//         mockMvc.perform(post("/api/user/reset-password")
-//                 .contentType(MediaType.APPLICATION_JSON)
-//                 .content(objectMapper.writeValueAsString(payload)))
-//                 .andExpect(status().isOk())
-//                 .andExpect(jsonPath("$.message").value("Password updated successfully."));
+    @Test
+    @DisplayName("verify-reset-code returns error when code mismatched")
+    void verifyResetCode_codeMismatch() {
+        payload.put("email", "x@y.com");
+        payload.put("code", "0000");
+        User user = new User();
+        user.setEmail("x@y.com");
+        user.setEmailCodeSent("1234");
+        when(userService.getUserByEmail("x@y.com")).thenReturn(user);
+        Map<String, String> res = controller.verifyResetCode(payload);
+        assertEquals("Invalid or expired reset code.", res.get("error"));
+    }
 
-//         // Verify interactions
-//         verify(userService, times(1)).getResetToken(email);
-//         verify(userService, times(1)).updatePassword(email, newPassword);
-//     }
-
-//     @Test
-//     void testResetPassword_InvalidCode_ReturnsError() throws Exception {
-//         // Given
-//         String email = "test@example.com";
-//         String code = "1234";
-//         String storedCode = "5678";
-//         String newPassword = "newPassword123";
-//         Map<String, String> payload = new HashMap<>();
-//         payload.put("email", email);
-//         payload.put("code", code);
-//         payload.put("newPassword", newPassword);
-
-//         when(userService.getResetToken(email)).thenReturn(storedCode);
-
-//         mockMvc.perform(post("/api/user/reset-password")
-//                 .contentType(MediaType.APPLICATION_JSON)
-//                 .content(objectMapper.writeValueAsString(payload)))
-//                 .andExpect(status().isOk())
-//                 .andExpect(jsonPath("$.error").value("Invalid or expired reset code."));
-
-//         // Verify interactions
-//         verify(userService, times(1)).getResetToken(email);
-//         verify(userService, never()).updatePassword(anyString(), anyString());
-//     }
-
-//     @Test
-//     void testResetPassword_NoStoredCode_ReturnsError() throws Exception {
-//         String email = "test@example.com";
-//         String code = "1234";
-//         String newPassword = "newPassword123";
-//         Map<String, String> payload = new HashMap<>();
-//         payload.put("email", email);
-//         payload.put("code", code);
-//         payload.put("newPassword", newPassword);
-
-//         when(userService.getResetToken(email)).thenReturn(null);
-//         mockMvc.perform(post("/api/user/reset-password")
-//                 .contentType(MediaType.APPLICATION_JSON)
-//                 .content(objectMapper.writeValueAsString(payload)))
-//                 .andExpect(status().isOk())
-//                 .andExpect(jsonPath("$.error").value("Invalid or expired reset code."));
-
-//         verify(userService, times(1)).getResetToken(email);
-//         verify(userService, never()).updatePassword(anyString(), anyString());
-//     }
-
- 
-// }
+    @Test
+    @DisplayName("verify-reset-code succeeds when code matches")
+    void verifyResetCode_success() {
+        payload.put("email", "x@y.com");
+        payload.put("code", "1234");
+        User user = new User();
+        user.setEmail("x@y.com");
+        user.setEmailCodeSent("1234");
+        when(userService.getUserByEmail("x@y.com")).thenReturn(user);
+        Map<String, String> res = controller.verifyResetCode(payload);
+        assertEquals("Code verified successfully.", res.get("message"));
+    }
+}
