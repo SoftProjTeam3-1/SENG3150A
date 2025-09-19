@@ -3,10 +3,11 @@
     It contains the tile layout for the categories of activities
 */
 import {TileLayout} from '@progress/kendo-react-layout';
-import React, { useState, useEffect, use } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import createTile from './Tile.jsx';
 import '@progress/kendo-theme-default/dist/all.css';
 import './TileLayoutContainer.css';
+import { api } from '../../lib/api';
 
 export const TileLayoutContainer = () => {
     //variable to store the new category name
@@ -52,31 +53,20 @@ export const TileLayoutContainer = () => {
             resizable: false,
         };
     };
+
     // Method to handle header click
-    const onHeaderClick = (categoryName) => {
+    const onHeaderClick = useCallback((categoryName) => {
         // This function can be used to handle header clicks, e.g., to refresh the tile layout
         console.log(`Header clicked for category: ${categoryName}`);
         // You can implement any logic here, such as fetching new data or updating the UI
-        setUpdateSwitch(!updateSwitch); // Toggle the update switch to refresh the tiles
-    };
+        setUpdateSwitch((s) => !s); // Toggle the update switch to refresh the tiles
+    }, []);
 
     // Sample of Categories as tiles
     useEffect(() => {
         async function fetchData() {
             try {
-                const response = await fetch('/api/activityType/getAll', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-
-                const parsedData = await response.json();
-
+                const parsedData = await api.get('/api/activityType/getAll');
                 const loadedTiles = parsedData.activityTypes.map((activityTypes) =>
                     createTile(activityTypes.name, onHeaderClick)
                 );
@@ -86,27 +76,15 @@ export const TileLayoutContainer = () => {
             }
         }
         fetchData();
-    }, [updateSwitch]);
-
+    }, [updateSwitch, onHeaderClick]);
 
     //Method to add a new category
     async function loadNewCategory(){
         try{
-            const response = await fetch('/api/activityType/create', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ name : newCategoryName,
-                    description: newCategoryDescription
-                }),
+            const data = await api.post('/api/activityType/create', {
+                name : newCategoryName,
+                description: newCategoryDescription
             });
-
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-
-            const data = await response.json();
             console.log('Category added successfully:', data);
             setNewCategoryName(''); // Clear the input field after successful addition
             setNewCategoryDescription('');

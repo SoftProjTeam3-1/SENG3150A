@@ -41,7 +41,7 @@ describe('Reset Password Flow', () => {
             inboxId: inboxId
         }).then(function (mailslurp) {
             return mailslurp.waitForLatestEmail(inboxId, 60000, true);
-        }).then(function (email) {
+        }, { timeout: 70000 }).then(function (email) {
             expect(email).to.exist;
             expect(email.body).contains('Your password reset code is:');
             cy.log(email.body);
@@ -71,7 +71,6 @@ describe('Reset Password Flow', () => {
         cy.url().should('eq', 'http://localhost:5173/dashboard');
     });
 
-    // Check
 
 
 });

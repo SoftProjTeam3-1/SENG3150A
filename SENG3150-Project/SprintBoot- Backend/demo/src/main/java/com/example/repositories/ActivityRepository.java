@@ -23,6 +23,9 @@ public interface ActivityRepository extends JpaRepository<Activity, Integer>{
     List<Activity> findByFavourite(boolean favourite);
     List<Activity> findByActivityType(ActivityType activityType);
 
+    @Query("select distinct a from Activity a where a.name = :name")
+    Optional<Activity> findDistinctByNameOptional(String name);
+
     @Modifying
     @Transactional
     @Query("UPDATE Activity a SET a.peopleRequired = :peopleRequired, a.name = :name, a.description = :description, a.favourite = :favourite, a.duration = :duration WHERE a.activityID = :id")
