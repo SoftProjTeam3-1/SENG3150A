@@ -6,7 +6,7 @@ describe('template spec', () => {
     cy.visit('http://localhost:5173');
     //then login as standard user
     cy.get('input[type="email"]').type('stuart.mendes@gmail.com');
-    cy.get('input[type="password"]').type('StuartMendes123#');
+    cy.get('input[type="password"]').type('SENG3150isfun!');
     cy.get('button[type="submit"]').click();
     cy.contains('Dashboard').should('be.visible');
   });
