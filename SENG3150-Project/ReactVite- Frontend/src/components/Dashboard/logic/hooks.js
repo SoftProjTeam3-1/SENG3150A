@@ -1,23 +1,4 @@
-import { getAccessToken } from '../../Auth/AuthProvider';
-
-function authHeaders(extra = {}){
-    const token = getAccessToken();
-    return {
-        'Content-Type': 'application/json',
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        ...extra
-    };
-}
-
-function handleUnauthorized(response){
-    if(response.status === 401){
-        console.warn('Unauthorized – redirecting to login');
-        // Force logout style redirect
-        window.location.href = '/';
-        return true;
-    }
-    return false;
-}
+import { api } from '../../../lib/api';
 
 export async function createSessionInBackend(newSession){
     try{
@@ -30,16 +11,7 @@ export async function createSessionInBackend(newSession){
             rollid : null
         };
 
-        const response = await fetch('/api/session/create',{
-            method: 'POST',
-            headers: authHeaders(),
-            credentials: 'include',
-            body: JSON.stringify(sanitisedSession)
-        });
-
-        if (handleUnauthorized(response)) return null;
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-            await response.json();
+        await api.post('/api/session/create', sanitisedSession);
     }
     catch(error){
         console.error("Error creating session in backend:", error);
@@ -48,16 +20,7 @@ export async function createSessionInBackend(newSession){
 
 export async function deleteSession(selectedSessions){
     try{
-        const response = await fetch('/api/session/deleteSessions', {
-            method: 'POST',
-            headers: authHeaders(),
-            credentials: 'include',
-            body: JSON.stringify({ session : selectedSessions })
-        });
-
-        if (handleUnauthorized(response)) return null;
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-        await response.json();
+        await api.post('/api/session/deleteSessions', { session : selectedSessions });
     }
     catch(error){
         console.error("Error deleting session in backend:", error);
@@ -67,17 +30,7 @@ export async function deleteSession(selectedSessions){
 
 export async function addSessionActivity(activity){
     try{
-        const response = await fetch('/api/sessionActivity/addSessionActivity',{
-            method: 'POST',
-            headers: authHeaders(),
-            credentials: 'include',
-            body: JSON.stringify(activity)
-        });
-
-        if (handleUnauthorized(response)) return null;
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-        await response.json();
-
+        await api.post('/api/sessionActivity/addSessionActivity', activity);
     }
     catch(error){
         console.error("Error adding session Activity:", error);
@@ -86,15 +39,7 @@ export async function addSessionActivity(activity){
 
 export async function deleteSessionActivity(activity){
     try{
-        const response = await fetch('/api/sessionActivity/deleteSessionActivity',{
-            method: 'POST',
-            headers: authHeaders(),
-            credentials: 'include',
-            body: JSON.stringify(activity)
-        });
-        if (handleUnauthorized(response)) return null;
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-        await response.json();
+        await api.post('/api/sessionActivity/deleteSessionActivity', activity);
     }
     catch(error){
         console.error("Error deleting session Activity:", error);
@@ -103,16 +48,7 @@ export async function deleteSessionActivity(activity){
 
 export async function fetchSessions() {
     try {
-        const response = await fetch('/api/session/fetchSessions', {
-            method: 'POST',
-            headers: authHeaders(),
-            credentials: 'include'
-        });
-
-        if (handleUnauthorized(response)) return null;
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-
-        return await response.json(); // This will be a List<FetchSessionsResponse> from the backend
+        return await api.post('/api/session/fetchSessions', {});
     } catch (error) {
         console.error("Error fetching sessions from backend:", error);
         return null;
@@ -121,19 +57,7 @@ export async function fetchSessions() {
 
 export async function syncSession(sessions) {
     try {
-        const response = await fetch("api/session/updateSessions", {
-            method: "PUT",
-            headers: authHeaders(),
-            credentials: "include",
-            body: JSON.stringify(sessions)
-        });
-
-        if (handleUnauthorized(response)) return null;
-        if (!response.ok) {
-            throw new Error("Failed to update sessions");
-        }
-
-        const data = await response.text(); // or json() depending on backend
+        const data = await api.put("api/session/updateSessions", sessions);
         console.log("Update success:", data);
         return data;
     } catch (err) {
@@ -144,16 +68,7 @@ export async function syncSession(sessions) {
 
 export async function fetchCategoriesAndActivities() {
     try {
-        const response = await fetch('/api/session/fetchCategoriesAndActivities', {
-            method: 'POST',
-            headers: authHeaders(),
-            credentials: "include"
-        });
-
-        if (handleUnauthorized(response)) return null;
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-
-        return await response.json(); // This will be a List<FetchSessionsResponse> from the backend
+        return await api.post('/api/session/fetchCategoriesAndActivities', {});
     } catch (error) {
         console.error("Error fetching sessions from backend:", error);
         return null;

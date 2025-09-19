@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import '@progress/kendo-theme-default/dist/all.css';
 import { X } from 'lucide-react';
+import { getAccessToken } from '../Auth/AuthProvider';
 
 const TileBody = ({ categoryName }) => {
 
@@ -11,10 +12,12 @@ const TileBody = ({ categoryName }) => {
   useEffect(() => {
     async function fetchData() {
       try {
+        const token = getAccessToken();
         const response = await fetch('/api/activity/getByActivityType', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
           body: JSON.stringify({ activityType: categoryName }),
         });
@@ -39,7 +42,7 @@ const TileBody = ({ categoryName }) => {
       }
     }
     fetchData();
-  }, [updateSwitch]);
+  }, [updateSwitch, categoryName]);
 
   const [activityList, setActivityList] = useState([]);
   const [activityDescriptionList, setActivityDescriptionList] = useState([]);
@@ -75,10 +78,12 @@ const TileBody = ({ categoryName }) => {
   async function handleAddActivity() {
     if (newActivity.trim() !== '') {
       try {
+        const token = getAccessToken();
         const response = await fetch('/api/activity/create', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
           body: JSON.stringify({
             name: newActivity.trim(),
@@ -161,10 +166,12 @@ const TileBody = ({ categoryName }) => {
     console.log("New Activity: ", newName, newDescription, newTime, newPeopleRequired, categoryName);
       
     try {
+      const token = getAccessToken();
       const response = await fetch('/api/activity/update', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: JSON.stringify({
           originalActivity: {
@@ -209,10 +216,12 @@ const TileBody = ({ categoryName }) => {
 
   async function handleDeleteActivity() {
     try {
+      const token = getAccessToken();
       const response = await fetch('/api/activity/delete', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: JSON.stringify({
           name: activityToDelete,
