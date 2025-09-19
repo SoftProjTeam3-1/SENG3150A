@@ -12,7 +12,9 @@ import eyeOpenIcon from '../../assets/eye-open.svg';
 import eyeClosedIcon from '../../assets/eye-closed.svg';
 import './login.css';
 
-import { useAuth } from '../Auth/AuthProvider.jsx';
+
+import { useAuth as fixedUseAuth } from '../Auth/AuthProvider';
+
 
 import { useNavigate, Link } from 'react-router-dom';
 import { validateLogin } from '../../lib/validation.js';
@@ -23,7 +25,9 @@ const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  const { login } = useAuth();            
+
+  const { login } = fixedUseAuth();            
+
   const navigate = useNavigate();
 
   async function parseResponse(resp) {
@@ -199,3 +203,4 @@ const LoginForm = () => {
 };
 
 export default LoginForm;
+

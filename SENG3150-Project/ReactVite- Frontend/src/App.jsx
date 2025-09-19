@@ -9,9 +9,9 @@ import ForgetPassword from './pages/ForgetPassword';
 import ForgetPasswordEnterCode from './pages/ForgetPasswordEnterCode';
 import ResetPassword from './pages/ResetPassword';
 import Attendance from "./pages/Attendance";
-import ProtectedRoute from './components/ProtectedRoute';
-import { AuthProvider } from './components/Auth/AuthProvider.jsx';
-import RequireAuth from './components/Auth/RequireAuth.jsx';
+// Removed ProtectedRoute (unused) and fixed RequireAuth import
+import { AuthProvider } from './components/Auth/AuthProvider';
+import RequireAuth from './components/Auth/RequireAuth';
 
 function AuthShell() {
   return (
@@ -23,28 +23,20 @@ function AuthShell() {
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route element={<AuthShell />}>
-      <Route path='/' element={<EntryLayout />}>
+    <Route element={<AuthShell />}>   
+      <Route path='/' element={<EntryLayout />}>        
         <Route index element={<Login />} />
         <Route path='/register' element={<Register />} />
         <Route path='/forget-password' element={<ForgetPassword />} />
         <Route path='/forget-password-enter-code' element={<ForgetPasswordEnterCode />} />
         <Route path='/reset-password' element={<ResetPassword/>}/>
       </Route>
-
-    <Route
-      path="/dashboard"
-      element={
-        <RequireAuth>
-        <Dashboard />
-      </RequireAuth>
-     
-      }
-    />
-
-
-      <Route path='/manage-activities' element={<ManageActivitiesPage />} />
-      <Route path='/attendance' element={<Attendance />}/>
+      {/* Protected routes */}
+      <Route element={<RequireAuth />}>        
+        <Route path='/dashboard' element={<Dashboard />} />
+        <Route path='/manage-activities' element={<ManageActivitiesPage />} />
+        <Route path='/attendance' element={<Attendance />}/>
+      </Route>
     </Route>
   )
 );

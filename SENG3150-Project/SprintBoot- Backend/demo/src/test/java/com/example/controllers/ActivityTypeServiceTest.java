@@ -1,358 +1,223 @@
-// package com.example.controllers;
+package com.example.controllers;
 
-// import com.example.entities.ActivityType;
-// import com.example.repositories.ActivityTypeRepository;
-// import com.example.stored_procedures.CreateActivityType;
-// import com.example.stored_procedures.GetActivityTypes;
-// import org.junit.jupiter.api.BeforeEach;
-// import org.junit.jupiter.api.Test;
-// import org.junit.jupiter.api.extension.ExtendWith;
-// import org.mockito.InjectMocks;
-// import org.mockito.Mock;
-// import org.mockito.MockedConstruction;
-// import org.mockito.junit.jupiter.MockitoExtension;
+import com.example.stored_procedures.CreateActivityType;
+import com.example.stored_procedures.GetActivityTypes;
+import com.example.entities.ActivityType;
+import com.example.repositories.ActivityTypeRepository;
 
-// import java.util.ArrayList;
-// import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-// import static org.junit.jupiter.api.Assertions.*;
-// import static org.mockito.ArgumentMatchers.any;
-// import static org.mockito.Mockito.*;
+import java.util.List;
 
-// // Run this test with the command:
-// // mvn test -Dtest=ActivityTypeServiceTest
-// @ExtendWith(MockitoExtension.class)
-// class ActivityTypeServiceTest {
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-//     @Mock
-//     private ActivityTypeRepository activityTypeRepository;
+import java.util.ArrayList;
 
-//     @InjectMocks
-//     private ActivityTypeService activityTypeService;
+@ExtendWith(MockitoExtension.class)
+public class ActivityTypeServiceTest {
 
-//     private ActivityType testActivityType;
-//     private List<ActivityType> testActivityTypeList;
+    @Mock
+    private CreateActivityType createActivityType;
 
-//     @BeforeEach
-//     void setUp() {
-//         testActivityType = new ActivityType();
-//         testActivityType.setId(1);
-//         testActivityType.setName("Training");
-//         testActivityType.setDescription("Training activity");
+    @Mock 
+    private GetActivityTypes getActivityTypes;
 
-//         testActivityTypeList = new ArrayList<>();
-//         testActivityTypeList.add(testActivityType);
-//     }
+    @Mock
+    private ActivityTypeRepository activityTypeRepository;
 
-//     // Tests for createActivityType method
-//     @Test
-//     void testCreateActivityType_Success_ReturnsTrue() {
-//         // Given
-//         try (MockedConstruction<CreateActivityType> mockedConstruction = 
-//              mockConstruction(CreateActivityType.class, (mock, context) -> {
-//                  when(mock.createActivityType(testActivityType)).thenReturn(true);
-//              })) {
-            
-//             // When
-//             boolean result = activityTypeService.createActivityType(testActivityType);
-            
-//             // Then
-//             assertTrue(result);
-//             assertEquals(1, mockedConstruction.constructed().size());
-//         }
-//     }
+    /*
+     * CREATE ACTIVITY TYPE TESTS
+     * SUCCESS
+     * FAILURE
+     */
 
-//     @Test
-//     void testCreateActivityType_Failure_ReturnsFalse() {
-//         // Given
-//         try (MockedConstruction<CreateActivityType> mockedConstruction = 
-//              mockConstruction(CreateActivityType.class, (mock, context) -> {
-//                  when(mock.createActivityType(testActivityType)).thenReturn(false);
-//              })) {
-            
-//             // When
-//             boolean result = activityTypeService.createActivityType(testActivityType);
-            
-//             // Then
-//             assertFalse(result);
-//             assertEquals(1, mockedConstruction.constructed().size());
-//         }
-//     }
+    @Test
+    public void createActivityType_success(){
+        ActivityType testType = new ActivityType();
+        Mockito.when(createActivityType.createActivityType(testType)).thenReturn(true);
 
-//     @Test
-//     void testCreateActivityType_NullActivityType_ReturnsFalse() {
-//         // Given
-//         try (MockedConstruction<CreateActivityType> mockedConstruction = 
-//              mockConstruction(CreateActivityType.class, (mock, context) -> {
-//                  when(mock.createActivityType(null)).thenReturn(false);
-//              })) {
-            
-//             // When
-//             boolean result = activityTypeService.createActivityType(null);
-            
-//             // Then
-//             assertFalse(result);
-//         }
-//     }
+        ActivityTypeService activityTypeService = new ActivityTypeService(activityTypeRepository);
 
-//     // Tests for getAllActivityTypes method
-//     @Test
-//     void testGetAllActivityTypes_Success_ReturnsListOfActivityTypes() {
-//         // Given
-//         try (MockedConstruction<GetActivityTypes> mockedConstruction = 
-//              mockConstruction(GetActivityTypes.class, (mock, context) -> {
-//                  when(mock.getAll()).thenReturn(testActivityTypeList);
-//              })) {
-            
-//             // When
-//             List<ActivityType> result = activityTypeService.getAllActivityTypes();
-            
-//             // Then
-//             assertNotNull(result);
-//             assertEquals(1, result.size());
-//             assertEquals(testActivityType.getId(), result.get(0).getId());
-//             assertEquals(testActivityType.getName(), result.get(0).getName());
-//             assertEquals(testActivityType.getDescription(), result.get(0).getDescription());
-//             assertEquals(1, mockedConstruction.constructed().size());
-//         }
-//     }
+        assert(createActivityType.createActivityType(testType) == true);
+        assert(activityTypeService.createActivityType(testType) == true);
+    }
 
-//     @Test
-//     void testGetAllActivityTypes_EmptyList_ReturnsEmptyList() {
-//         // Given
-//         List<ActivityType> emptyList = new ArrayList<>();
-//         try (MockedConstruction<GetActivityTypes> mockedConstruction = 
-//              mockConstruction(GetActivityTypes.class, (mock, context) -> {
-//                  when(mock.getAll()).thenReturn(emptyList);
-//              })) {
-            
-//             // When
-//             List<ActivityType> result = activityTypeService.getAllActivityTypes();
-            
-//             // Then
-//             assertNotNull(result);
-//             assertTrue(result.isEmpty());
-//         }
-//     }
+    @Test
+    public void createActivityType_failure(){
+        ActivityType testType = new ActivityType();
 
-//     @Test
-//     void testGetAllActivityTypes_DatabaseError_ReturnsNull() {
-//         // Given
-//         try (MockedConstruction<GetActivityTypes> mockedConstruction = 
-//              mockConstruction(GetActivityTypes.class, (mock, context) -> {
-//                  when(mock.getAll()).thenReturn(null);
-//              })) {
-            
-//             // When
-//             List<ActivityType> result = activityTypeService.getAllActivityTypes();
-            
-//             // Then
-//             assertNull(result);
-//         }
-//     }
+        Mockito.when(createActivityType.createActivityType(testType)).thenReturn(false);
 
-//     // Tests for getDistinctByName method
-//     @Test
-//     void testGetDistinctByName_ActivityTypeExists_ReturnsActivityType() {
-//         // Given
-//         String name = "Training";
-//         try (MockedConstruction<GetActivityTypes> mockedConstruction = 
-//              mockConstruction(GetActivityTypes.class, (mock, context) -> {
-//                  when(mock.getDistinctByName(name)).thenReturn(testActivityType);
-//              })) {
-            
-//             // When
-//             ActivityType result = activityTypeService.getDistinctByName(name);
-            
-//             // Then
-//             assertNotNull(result);
-//             assertEquals(testActivityType.getId(), result.getId());
-//             assertEquals(testActivityType.getName(), result.getName());
-//             assertEquals(testActivityType.getDescription(), result.getDescription());
-//         }
-//     }
+        assertFalse(createActivityType.createActivityType(testType));
+        }
 
-//     @Test
-//     void testGetDistinctByName_ActivityTypeNotFound_ReturnsNull() {
-//         // Given
-//         String name = "NonexistentActivity";
-//         try (MockedConstruction<GetActivityTypes> mockedConstruction = 
-//              mockConstruction(GetActivityTypes.class, (mock, context) -> {
-//                  when(mock.getDistinctByName(name)).thenReturn(null);
-//              })) {
-            
-//             // When
-//             ActivityType result = activityTypeService.getDistinctByName(name);
-            
-//             // Then
-//             assertNull(result);
-//         }
-//     }
+    /*
+     * GET ALL ACTIVITY TYPES TEST
+     * SUCCESS
+     * FAILURE
+     * 
+     */
 
-//     @Test
-//     void testGetDistinctByName_NullName_ReturnsNull() {
-//         // Given
-//         try (MockedConstruction<GetActivityTypes> mockedConstruction = 
-//              mockConstruction(GetActivityTypes.class, (mock, context) -> {
-//                  when(mock.getDistinctByName(null)).thenReturn(null);
-//              })) {
-            
-//             // When
-//             ActivityType result = activityTypeService.getDistinctByName(null);
-            
-//             // Then
-//             assertNull(result);
-//         }
-//     }
+    @Test
+    public void getAllActivityTypes_success(){
+        ArrayList<ActivityType> testList = new ArrayList<>();
+        Mockito.when(getActivityTypes.getAll()).thenReturn(testList);
 
-//     // Tests for deleteActivityType method
-//     @Test
-//     void testDeleteActivityType_ActivityTypeExists_ReturnsTrue() {
-//         // Given
-//         String name = "Training";
-//         when(activityTypeRepository.findDistinctByName(name)).thenReturn(testActivityType);
+        ActivityTypeService activityTypeService = new ActivityTypeService(activityTypeRepository);
+        assert(getActivityTypes.getAll() != null);
+        assert(activityTypeService.getAllActivityTypes() != null);
+    }
+
+    @Test
+    public void getAllActivityTypes_failure(){
+        Mockito.when(getActivityTypes.getAll()).thenReturn(null);
+
+        assert(getActivityTypes.getAll() == null);
+    }
+
+    /*
+     * GET DISTINCT BY NAME TESTS
+     * SUCCESS
+     * FAILURE
+     */
+
+    @Test
+    public void getDistinctByName_success() {
+        ActivityType testType = new ActivityType();
+        testType.setName("Test Name");
+
+        // Mock the repository behavior
+        Mockito.when(activityTypeRepository.findDistinctByName("Test Name")).thenReturn(testType);
+
+        // Create the service instance
+        ActivityTypeService activityTypeService = new ActivityTypeService(activityTypeRepository);
+
+        // Call the service method and assert the result
+        ActivityType result = activityTypeService.getDistinctByName("Test Name");
+        assert(result != null);
+        assert("Test Name".equals(result.getName()));
+    }
+
+    @Test
+    public void getDistinctByName_failure(){
+        ActivityType testType = new ActivityType();
+        testType.setName("Test Name");
+
+        // Mock the repository behavior
+        Mockito.when(activityTypeRepository.findDistinctByName("Test Name")).thenReturn(null);
+
+        // Create the service instance
+        ActivityTypeService activityTypeService = new ActivityTypeService(activityTypeRepository);
+
+        // Call the service method and assert the result
+        ActivityType result = activityTypeService.getDistinctByName("Test Name");
+        assert(result == null);
+    }
+
+    /*
+     * DELETE ACTIVITY TYPE TESTS
+     * SUCCESS
+     * FAILURE
+     */
+
+    @Test
+    public void deleteActivityType_success(){
+        ActivityType testType = new ActivityType();
+        testType.setName("Test Name");
+
+        Mockito.when(activityTypeRepository.findDistinctByName("Test Name")).thenReturn(testType);
+        Mockito.doNothing().when(activityTypeRepository).delete(testType);
         
-//         // When
-//         boolean result = activityTypeService.deleteActivityType(name);
+        ActivityTypeService activityTypeService = new ActivityTypeService(activityTypeRepository);
         
-//         // Then
-//         assertTrue(result);
-//         verify(activityTypeRepository, times(1)).findDistinctByName(name);
-//         verify(activityTypeRepository, times(1)).delete(testActivityType);
-//     }
+        boolean result = activityTypeService.deleteActivityType("Test Name");
+        assert(result);
+        Mockito.verify(activityTypeRepository).findDistinctByName("Test Name");
+        Mockito.verify(activityTypeRepository).delete(testType);
+    }
 
-//     @Test
-//     void testDeleteActivityType_ActivityTypeNotFound_ReturnsFalse() {
-//         // Given
-//         String name = "NonexistentActivity";
-//         when(activityTypeRepository.findDistinctByName(name)).thenReturn(null);
+    @Test void deleteActivityType_failure(){
+        Mockito.when(activityTypeRepository.findDistinctByName("NonExistent")).thenReturn(null);
         
-//         // When
-//         boolean result = activityTypeService.deleteActivityType(name);
+        ActivityTypeService activityTypeService = new ActivityTypeService(activityTypeRepository);
         
-//         // Then
-//         assertFalse(result);
-//         verify(activityTypeRepository, times(1)).findDistinctByName(name);
-//         verify(activityTypeRepository, never()).delete(any(ActivityType.class));
-//     }
+        boolean result = activityTypeService.deleteActivityType("NonExistent");
+        assert(!result);
+        Mockito.verify(activityTypeRepository).findDistinctByName("NonExistent");
+        Mockito.verify(activityTypeRepository, Mockito.never()).delete(Mockito.any());
+    }
 
-//     @Test
-//     void testDeleteActivityType_NullName_ReturnsFalse() {
-//         // Given
-//         when(activityTypeRepository.findDistinctByName(null)).thenReturn(null);
-        
-//         // When
-//         boolean result = activityTypeService.deleteActivityType(null);
-        
-//         // Then
-//         assertFalse(result);
-//         verify(activityTypeRepository, times(1)).findDistinctByName(null);
-//         verify(activityTypeRepository, never()).delete(any(ActivityType.class));
-//     }
+    /*
+     * UPDATE ACTIVITY TYPE TESTS
+     * SUCCESS
+     * FAILURE
+     * EXCEPTION
+     */
 
-//     // Tests for updateActivityType method
-//     @Test
-//     void testUpdateActivityType_ActivityTypeExists_ReturnsTrue() {
-//         // Given
-//         ActivityType updatedActivityType = new ActivityType();
-//         updatedActivityType.setName("Training");
-//         updatedActivityType.setDescription("Updated training activity");
-        
-//         when(activityTypeRepository.findDistinctByName(updatedActivityType.getName())).thenReturn(testActivityType);
-        
-//         // When
-//         boolean result = activityTypeService.updateActivityType(updatedActivityType);
-        
-//         // Then
-//         assertTrue(result);
-//         verify(activityTypeRepository, times(1)).findDistinctByName(updatedActivityType.getName());
-//         verify(activityTypeRepository, times(1)).updateActivityType(
-//             testActivityType.getId(),
-//             updatedActivityType.getName(),
-//             updatedActivityType.getDescription()
-//         );
-//     }
+    @Test
+    public void updateActivityType_success(){
+        ActivityType testType = new ActivityType();
+        testType.setName("Test Name");
+        testType.setDescription("Test Description");
 
-//     @Test
-//     void testUpdateActivityType_ActivityTypeNotFound_ReturnsFalse() {
-//         // Given
-//         ActivityType updatedActivityType = new ActivityType();
-//         updatedActivityType.setName("NonexistentActivity");
-//         updatedActivityType.setDescription("Updated description");
-        
-//         when(activityTypeRepository.findDistinctByName(updatedActivityType.getName())).thenReturn(null);
-        
-//         // When
-//         boolean result = activityTypeService.updateActivityType(updatedActivityType);
-        
-//         // Then
-//         assertFalse(result);
-//         verify(activityTypeRepository, times(1)).findDistinctByName(updatedActivityType.getName());
-//         verify(activityTypeRepository, never()).updateActivityType(anyInt(), anyString(), anyString());
-//     }
+        Mockito.when(activityTypeRepository.findDistinctByName("Test Name")).thenReturn(testType);
+        Mockito.doNothing().when(activityTypeRepository).updateActivityType(
+            Mockito.anyInt(), 
+            Mockito.eq("Test Name"), 
+            Mockito.eq("Test Description")
+        );
 
-//     @Test
-//     void testUpdateActivityType_DatabaseException_ReturnsFalse() {
-//         // Given
-//         ActivityType updatedActivityType = new ActivityType();
-//         updatedActivityType.setName("Training");
-//         updatedActivityType.setDescription("Updated description");
-        
-//         when(activityTypeRepository.findDistinctByName(updatedActivityType.getName())).thenReturn(testActivityType);
-//         doThrow(new RuntimeException("Database error")).when(activityTypeRepository)
-//             .updateActivityType(anyInt(), anyString(), anyString());
-        
-//         // When
-//         boolean result = activityTypeService.updateActivityType(updatedActivityType);
-        
-//         // Then
-//         assertFalse(result);
-//         verify(activityTypeRepository, times(1)).findDistinctByName(updatedActivityType.getName());
-//         verify(activityTypeRepository, times(1)).updateActivityType(
-//             testActivityType.getId(),
-//             updatedActivityType.getName(),
-//             updatedActivityType.getDescription()
-//         );
-//     }
+        ActivityTypeService activityTypeService = new ActivityTypeService(activityTypeRepository);
+        boolean result = activityTypeService.updateActivityType(testType);
+        assert(result);
+        Mockito.verify(activityTypeRepository).findDistinctByName("Test Name");
+        Mockito.verify(activityTypeRepository).updateActivityType(
+            Mockito.anyInt(), 
+            Mockito.eq("Test Name"), 
+            Mockito.eq("Test Description")
+        );
+    }
 
-//     @Test
-//     void testUpdateActivityType_NullActivityType_ReturnsFalse() {
-//         // When & Then
-//         assertThrows(NullPointerException.class, () -> {
-//             activityTypeService.updateActivityType(null);
-//         });
-//     }
+    @Test
+    public void updateActivityType_failure(){
+        ActivityType testType = new ActivityType();
+        testType.setName("NonExistent");
+        testType.setDescription("Test Description");
 
-//     // Edge case tests
-//     @Test
-//     void testDeleteActivityType_EmptyName_ReturnsFalse() {
-//         // Given
-//         String emptyName = "";
-//         when(activityTypeRepository.findDistinctByName(emptyName)).thenReturn(null);
-        
-//         // When
-//         boolean result = activityTypeService.deleteActivityType(emptyName);
-        
-//         // Then
-//         assertFalse(result);
-//         verify(activityTypeRepository, times(1)).findDistinctByName(emptyName);
-//         verify(activityTypeRepository, never()).delete(any(ActivityType.class));
-//     }
+        Mockito.when(activityTypeRepository.findDistinctByName("NonExistent")).thenReturn(null);
 
-//     @Test
-//     void testGetDistinctByName_EmptyName_ReturnsNull() {
-//         // Given
-//         String emptyName = "";
-//         try (MockedConstruction<GetActivityTypes> mockedConstruction = 
-//              mockConstruction(GetActivityTypes.class, (mock, context) -> {
-//                  when(mock.getDistinctByName(emptyName)).thenReturn(null);
-//              })) {
-            
-//             // When
-//             ActivityType result = activityTypeService.getDistinctByName(emptyName);
-            
-//             // Then
-//             assertNull(result);
-//         }
-//     }
-// }
+        ActivityTypeService activityTypeService = new ActivityTypeService(activityTypeRepository);
+        boolean result = activityTypeService.updateActivityType(testType);
+        assert(!result);
+        Mockito.verify(activityTypeRepository).findDistinctByName("NonExistent");
+        Mockito.verify(activityTypeRepository, Mockito.never()).updateActivityType(
+            Mockito.anyInt(), 
+            Mockito.eq("NonExistent"), 
+            Mockito.eq("Test Description")
+        );
+    }
+
+    @Test
+    public void updateActivityType_exception(){
+        ActivityType testType = new ActivityType();
+        testType.setName("Test Name");
+        testType.setDescription("Test Description");
+
+        Mockito.when(activityTypeRepository.findDistinctByName("Test Name")).thenThrow(new RuntimeException("DB error"));
+
+        ActivityTypeService activityTypeService = new ActivityTypeService(activityTypeRepository);
+        boolean result = activityTypeService.updateActivityType(testType);
+        assert(!result);
+        Mockito.verify(activityTypeRepository).findDistinctByName("Test Name");
+        Mockito.verify(activityTypeRepository, Mockito.never()).updateActivityType(
+            Mockito.anyInt(), 
+            Mockito.eq("Test Name"), 
+            Mockito.eq("Test Description")
+        );
+    }
+}

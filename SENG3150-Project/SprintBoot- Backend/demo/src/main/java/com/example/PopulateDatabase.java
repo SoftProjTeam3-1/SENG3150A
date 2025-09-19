@@ -46,7 +46,8 @@ public class PopulateDatabase implements CommandLineRunner{
     private final PasswordEncoder passwordEncoder;
 
 
-    public PopulateDatabase(ActivityTypeRepository activityTypeR,
+    public PopulateDatabase(
+        ActivityTypeRepository activityTypeR,
         SessionTypeRepository sessionTypeR,
         PlayerRepository playerR,
         ActivityRepository activityR,
@@ -56,9 +57,11 @@ public class PopulateDatabase implements CommandLineRunner{
         TextNoteRepository textNoteR,
         VoiceNoteRepository voiceNoteR,
         RollRepository rollR,
-        AttendanceRepository attendanceR
-        , PasswordEncoder passwordEncoder) {
+        PasswordEncoder passwordEncoder,
+        AttendanceRepository attendanceR){
+
             this.activityTypeR = activityTypeR;
+            this.passwordEncoder = passwordEncoder;
             this.sessionTypeR = sessionTypeR;
             this.playerR = playerR;
             this.activityR = activityR;
@@ -69,7 +72,7 @@ public class PopulateDatabase implements CommandLineRunner{
             this.voiceNoteR = voiceNoteR;
             this.rollR = rollR;
             this.attendanceR = attendanceR;
-            this.passwordEncoder = passwordEncoder;
+
         }
 
 
@@ -118,10 +121,9 @@ public class PopulateDatabase implements CommandLineRunner{
         Activity miniGame = new Activity("Mini Game", "Play a small sided game to practice skills", 8, "30mins", game);
 
         //create users
-        String stuartPassword = passwordEncoder.encode("StuartMendes123#");
+        String stuartPassword = passwordEncoder.encode("SENG3150isfun!"); //Please use the password encoder when creating users 
+        //DO NOT use other shii ty.
 
-
-        
         String assistantCoachPassword = Hashing.sha256()
             .hashString("JasminSchmidt123#", StandardCharsets.UTF_8)
             .toString();

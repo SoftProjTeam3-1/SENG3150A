@@ -71,5 +71,7 @@ describe('Reset Password Flow', () => {
         cy.url().should('eq', 'http://localhost:5173/dashboard');
     });
 
+    // Check
+
 
 });
