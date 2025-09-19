@@ -14,4 +14,5 @@ If you are developing a production application, we recommend using TypeScript an
 
 # Cypress Tests
 Some tests require installing mailslurp
-// npm install --save-dev cypress-mailslurp
+npm install --save-dev cypress-mailslurp
+npx run cypress open

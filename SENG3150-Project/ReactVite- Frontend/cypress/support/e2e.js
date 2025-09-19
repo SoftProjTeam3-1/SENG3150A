@@ -16,3 +16,9 @@
 // Import commands.js using ES2015 syntax:
 import './commands'
 import "@cypress/code-coverage/support";
+// Enable MailSlurp commands like cy.mailslurp()
+import 'cypress-mailslurp';
+
+Cypress.config({
+    defaultCommandTimeout: 30000, // 30 seconds
+});
