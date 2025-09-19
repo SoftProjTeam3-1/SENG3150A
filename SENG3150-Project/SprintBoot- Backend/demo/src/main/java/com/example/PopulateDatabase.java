@@ -130,6 +130,12 @@ public class PopulateDatabase implements CommandLineRunner{
         User coach = new User("Stuart", "Mendes", "stuart.mendes@gmail.com", false, stuartPassword);
         User assistantCoach = new User("Jasmin", "Schmidt", "`", false, assistantCoachPassword);
 
+        //user for danny
+        String dannyPassword = passwordEncoder.encode("SENG3150isfun!");
+        User danny = new User("Danny", "Smith", "dannydavino6@gmail.com", false, dannyPassword);
+
+
+
         //create sessions
         Session trainingSession1 = new Session(new Date(1746118800000L), coach, trainingSession);
         Session trainingSession2 = new Session(new Date(1746550800000L), coach, trainingSession);
@@ -251,6 +257,7 @@ public class PopulateDatabase implements CommandLineRunner{
 
             userR.save(coach);
             userR.save(assistantCoach);
+            userR.save(danny);
 
             sessionR.save(trainingSession1);
             sessionR.save(trainingSession2);
