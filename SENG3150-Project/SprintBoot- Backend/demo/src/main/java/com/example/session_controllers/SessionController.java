@@ -4,53 +4,66 @@
 
 package com.example.session_controllers;
 
-import com.example.controllers.ActivityService;
-import com.example.controllers.ActivityTypeService;
-import com.example.entities.*;
-import com.example.responses.*;
-import com.example.service.Secruity.JwtService;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.controllers.ActivityService;
+import com.example.controllers.ActivityTypeService;
+import com.example.entities.Activity;
+import com.example.entities.ActivityType;
+import com.example.entities.Session;
+import com.example.entities.User;
+import com.example.entities.UserService;
+import com.example.responses.CreateSessionResponse;
+import com.example.responses.DeleteSessionResponse;
+import com.example.responses.EditNoteResponse;
+import com.example.responses.FetchCategoriesAndActivitiesResponse;
+import com.example.responses.FetchSessionsResponse;
+import com.example.responses.FetchSpecificCategoriesAndActivitiesResponse;
+import com.example.responses.GetTextNoteResponse;
+import com.example.responses.SyncSessionsResponse;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:5173") // Adjust to match your frontend origin
 @RequestMapping("/api/session")
 public class SessionController {
 
-    @Autowired
-    private SessionService sessionService;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private ActivityService activityService;
-    @Autowired
-    private ActivityTypeService activityTypeService;
+    private final SessionService sessionService;
+    private final UserService userService;
+    private final ActivityService activityService;
+    private final ActivityTypeService activityTypeService;
 
-    private final JwtService jwt;
-    private final PasswordEncoder passwordEncoder;
-	
-    // @GetMapping("/initialCall")
-    // public ResponseEntity<InitialSessionGrabResponse> getSessions(){
-    //     List<Session> trainingSessions = sessionService.getTrainingSessions();
-    //     Session gameSession = sessionService.getGameSession();
-    //     if (gameSession == null || trainingSessions.isEmpty() || trainingSessions == null) {
-    //         return new ResponseEntity<>(new InitialSessionGrabResponse(null, null, "Error in session grab", false), HttpStatus.BAD_REQUEST);
-    //     }
-    //     else{
-    //         return new ResponseEntity<>(new InitialSessionGrabResponse(gameSession, trainingSessions, "Grabbed tasks appropriately", true), HttpStatus.OK);
-    //     }
-    // }
-
-    public SessionController(UserService userService, JwtService jwt, PasswordEncoder passwordEncoder) {
+    public SessionController(SessionService sessionService,
+                             UserService userService,
+                             ActivityService activityService,
+                             ActivityTypeService activityTypeService) {
+        this.sessionService = sessionService;
         this.userService = userService;
-        this.jwt = jwt;
-        this.passwordEncoder = passwordEncoder;
+        this.activityService = activityService;
+        this.activityTypeService = activityTypeService;
+    }
+
+    // Resolve current authenticated user from the SecurityContext (Authorization: Bearer ...)
+    private User requireCurrentUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated()) {
+            throw new RuntimeException("Unauthorized");
+        }
+        Object principal = auth.getPrincipal();
+        String email = principal instanceof String ? (String) principal : null;
+        if (email == null) throw new RuntimeException("Unauthorized");
+        return userService.getUserByEmail(email);
     }
 
     @PostMapping("/getNote")
@@ -116,22 +129,10 @@ public class SessionController {
     }
 
     @PostMapping("/fetchSessions")
-    public ResponseEntity<List<FetchSessionsResponse>> fetchSessions(@CookieValue(value = "userId", required = false) String refreshToken) {
-
-        if (refreshToken == null) {
-            System.out.println("No user ID found in cookies");
-        }else{
-            System.out.println("USerID HERE: "+ refreshToken);
-        }
+    public ResponseEntity<List<FetchSessionsResponse>> fetchSessions() {
         try {
-
-            String subject = jwt.getSubjectFromRefresh(refreshToken);
-            var user = userService.getUserByEmail(subject);
-
-            System.out.println("WE GOT THE USER: "+user);
-
+            User user = requireCurrentUser();
             List<Session> sessions = sessionService.getSessionsByUser(user);
-
             List<FetchSessionsResponse> responseList = sessions.stream().map(session -> {
                 return new FetchSessionsResponse(
                         session.getId(),
@@ -140,58 +141,43 @@ public class SessionController {
                         session.getSessionActivities()
                 );
             }).collect(Collectors.toList());
-
             return new ResponseEntity<>(responseList, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
     }
+
     @PutMapping("/updateSessions")
-    public ResponseEntity<String> updateSessions(@RequestBody List<SyncSessionsResponse> sessions,  @CookieValue(value = "userId", required = false) String refreshToken) {
+    public ResponseEntity<String> updateSessions(@RequestBody List<SyncSessionsResponse> sessions) {
         try {
-            if (refreshToken == null) return ResponseEntity.status(401).body("No user ID cookie");
-
-            String subject = jwt.getSubjectFromRefresh(refreshToken);
-            var user = userService.getUserByEmail(subject);
-
+            User user = requireCurrentUser();
             sessionService.replaceUserSessions(user, sessions);
             return ResponseEntity.ok("Sessions updated successfully.");
         } catch (IllegalArgumentException iae) {
-            return ResponseEntity.badRequest().body(iae.getMessage());  // <-- see exact reason in Network tab
+            return ResponseEntity.badRequest().body(iae.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(e.getMessage());
+            return ResponseEntity.status(401).body("Unauthorized");
         }
     }
 
     @PostMapping("/fetchCategoriesAndActivities")
-    public ResponseEntity<FetchCategoriesAndActivitiesResponse> fetchCategoriesAndActivities(@CookieValue(value = "userId", required = false) String refreshToken) {
-        if (refreshToken == null) {
-            System.out.println("No user ID found in cookies");
-        }else{
-            System.out.println("USerID HERE: "+ refreshToken);
-        }
+    public ResponseEntity<FetchCategoriesAndActivitiesResponse> fetchCategoriesAndActivities() {
         try {
-
-            String subject = jwt.getSubjectFromRefresh(refreshToken);
-            var user = userService.getUserByEmail(subject); // Needs to parse id here
-
-            System.out.println("WE GOT THE USER: "+user);
+            // ensure the request is authenticated
+            User user = requireCurrentUser();
+            System.out.println("Authenticated user: " + (user != null ? user.getEmail() : "null"));
 
             List<ActivityType> activityTypes = activityTypeService.getAllActivityTypes();
-
             FetchCategoriesAndActivitiesResponse output = new FetchCategoriesAndActivitiesResponse();
-
             for (ActivityType activityType : activityTypes) {
                 String name = activityType.getName();
                 List<Activity> activities = activityService.getActivitiesByType(name);
                 FetchSpecificCategoriesAndActivitiesResponse newEntry = new FetchSpecificCategoriesAndActivitiesResponse(name, activities);
                 output.addToList(newEntry);
             }
-
             return new ResponseEntity<>(output, HttpStatus.OK );
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
     }
 }

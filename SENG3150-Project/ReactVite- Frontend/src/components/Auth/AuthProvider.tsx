@@ -3,6 +3,12 @@ import React, { createContext, useContext, useEffect, useMemo, useState } from "
 let currentToken: string | null = null;
 export const getAccessToken = () => currentToken;
 
+// Allow non-React utilities to set the module token (e.g., after refresh in api helper)
+export const setAccessTokenExternal = (token: string | null) => {
+  currentToken = token;
+  if (token) localStorage.setItem('accessToken', token); else localStorage.removeItem('accessToken');
+};
+
 function decodeJwt(token: string){
   try { return JSON.parse(atob(token.split('.')[1] || '')); } catch { return null; }
 }

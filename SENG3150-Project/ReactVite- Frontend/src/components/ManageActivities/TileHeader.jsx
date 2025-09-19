@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { X } from 'lucide-react';
+import { api } from '../../lib/api';
 
 export const TileHead = ({ categoryName, onHeaderClick }) => {
     const [showConfirmation, setShowConfirmation] = useState(false);
@@ -9,19 +10,10 @@ export const TileHead = ({ categoryName, onHeaderClick }) => {
 
     async function handleDeleteActivityType() {
         try {
-            const response = await fetch('/api/activityType/delete', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: categoryName, description: null })
-            });
-            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-            await response.json();
-            // //reload
+            await api.post('/api/activityType/delete', { name: categoryName, description: null });
             if (onHeaderClick) {
                 onHeaderClick(categoryName); // tell TileLayoutContainer to update
             }
-            
-            
         } catch (error) {
             console.error('Error deleting activity:', error);
         }
