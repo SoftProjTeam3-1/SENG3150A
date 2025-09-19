@@ -7,7 +7,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import createTile from './Tile.jsx';
 import '@progress/kendo-theme-default/dist/all.css';
 import './TileLayoutContainer.css';
-import { api } from '../../lib/api';
 
 export const TileLayoutContainer = () => {
     //variable to store the new category name

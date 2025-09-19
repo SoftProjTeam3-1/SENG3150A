@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { X } from 'lucide-react';
-import { api } from '../../lib/api';
 
 export const TileHead = ({ categoryName, onHeaderClick }) => {
     const [showConfirmation, setShowConfirmation] = useState(false);
