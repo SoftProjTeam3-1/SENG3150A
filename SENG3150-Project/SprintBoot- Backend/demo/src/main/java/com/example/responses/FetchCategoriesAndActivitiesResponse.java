@@ -9,10 +9,10 @@ public class FetchCategoriesAndActivitiesResponse {
     public List<FetchSpecificCategoriesAndActivitiesResponse> getFetchSpecificCategoriesAndActivitiesResponseList() {
         return fetchSpecificCategoriesAndActivitiesResponseList;
     }
+
     public void setFetchSpecificCategoriesAndActivitiesResponseList(
-            List<FetchSpecificCategoriesAndActivitiesResponse> fetchSpecificCategoriesAndActivitiesResponseList
-    ) {
-        this.fetchSpecificCategoriesAndActivitiesResponseList = fetchSpecificCategoriesAndActivitiesResponseList;
+        List<FetchSpecificCategoriesAndActivitiesResponse> fetchSpecificCategoriesAndActivitiesResponseList){
+            this.fetchSpecificCategoriesAndActivitiesResponseList = fetchSpecificCategoriesAndActivitiesResponseList;
     }
 
     public void addToList(FetchSpecificCategoriesAndActivitiesResponse input){
