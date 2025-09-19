@@ -93,3 +93,4 @@ SENG3150-Project/ReactVite- Frontend/test-results
 SENG3150-Project/ReactVite- Frontend/cypress/screenshots/activity_management/ActivityCreate.cy.js/Activity Create Flow -- creates a new activity with the backend active (failed).png
 .gitignore
 C:\Users\hongd\OneDrive - The University Of Newcastle\Software Project 1\github Tutorial\SENG3150A\SENG3150-Project\ReactVite- Frontend\cypress\screenshots
+SENG3150-Project/ReactVite- Frontend/cypress/screenshots/login_register/login.cy.js
