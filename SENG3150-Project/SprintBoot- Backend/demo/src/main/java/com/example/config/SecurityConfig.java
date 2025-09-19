@@ -43,8 +43,8 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
             "/api/user/login",
             "/api/auth/refresh",
             "/api/auth/logout",
+            "/api/auth/session*",
             // make these public for easier local testing
-            "/api/session/**",
             "/api/activityType/**",
             "/api/sessionActivity/**"
         ).permitAll()

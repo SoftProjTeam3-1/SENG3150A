@@ -7,6 +7,8 @@ export const getAccessToken = () => currentToken;
 export const setAccessTokenExternal = (token: string | null) => {
   currentToken = token;
   if (token) localStorage.setItem('accessToken', token); else localStorage.removeItem('accessToken');
+  // Notify this tab so AuthProvider can sync React state immediately
+  try { window.dispatchEvent(new CustomEvent('auth-token-updated', { detail: token })); } catch {}
 };
 
 function decodeJwt(token: string){
@@ -46,6 +48,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     currentToken = accessToken;
     if (accessToken) localStorage.setItem('accessToken', accessToken); else localStorage.removeItem('accessToken');
   }, [accessToken]);
+
+  // Listen for external token updates (from api helper refresh) in this tab
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent<string | null>).detail;
+      setAccessToken(detail ?? null);
+    };
+    window.addEventListener('auth-token-updated', handler as EventListener);
+    return () => window.removeEventListener('auth-token-updated', handler as EventListener);
+  }, []);
 
   // Attempt refresh once on mount (only if we don't already have a valid token)
   useEffect(() => {
