@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FetchSpecificCategoriesAndActivitiesResponse {
+    
     private String ActivityType = "";
     private List<Activity> activities = new ArrayList<>();
 
