@@ -12,7 +12,7 @@ export async function transformSessionsToFront(rawSessions) {
                 name: a.name || "Unnamed Activity",
                 description: a.description || "",
                 duration: parseInt(a.duration) || "0",
-                category: a.category || "General",
+                category: a.activityType?.name || a.category || "General",
                 row: sa.row || 0
             };
         })
@@ -74,4 +74,19 @@ export function transformSessionsToBack(transformedSessions) {
             }))
         };
     });
+}
+
+export function transformCategoriesToFront(payload) {
+    // payload is the whole response object
+    const list = payload?.fetchSpecificCategoriesAndActivitiesResponseList ?? [];
+
+    return list.map(({ activityType, activities }) => ({
+        name: activityType,                            // <-- your category name
+        activities: (activities ?? []).map(a => ({
+            name: a.name ?? "",
+            description: a.description ?? "",
+            duration: Number.parseInt(a.duration ?? 0, 10) || 0,
+            category: activityType
+        })),
+    }));
 }
