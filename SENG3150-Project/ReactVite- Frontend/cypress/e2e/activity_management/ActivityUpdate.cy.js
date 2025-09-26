@@ -16,11 +16,11 @@ describe("Activity Update Flow", () => {
         const activityDescriptionChanged = "This is an activity created during E2E testing -edited";
         const activityDurationChanged = "20";
         const activityPeopleRequiredChanged = "6";
-        const activityTypeDescriptionChanged = null;
+        const activityTypeDescriptionChanged = '';
 
         cy.intercept('POST', '/api/activity/update').as('updateActivity');
 
-        cy.get('span#categoryName').first().invoke('text').then((categoryName) => {
+        cy.get('div[data-testid^="category-"]').first().invoke('text').then((categoryName) => {
             //click on activity to edit it
             cy.get('li').first().click();
 
