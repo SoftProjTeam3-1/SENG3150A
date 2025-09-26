@@ -1,0 +1,15 @@
+
+
+@startuml
+!theme plain
+title Backend Components
+package "Backend" {
+  [AuthController] --> [AuthService]
+  [AuthService] --> [UserRepository]
+
+  [ActivityController] --> [CreateActivity]
+  [CreateActivity] --> [ActivityRepository]
+
+  [CreateActivityType] --> [ActivityTypeRepository]
+}
+@enduml
