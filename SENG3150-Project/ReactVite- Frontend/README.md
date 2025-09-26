@@ -16,3 +16,8 @@ If you are developing a production application, we recommend using TypeScript an
 Some tests require installing mailslurp
 npm install --save-dev cypress-mailslurp
 npx run cypress open
+
+# Run W3Schools Accessability test
+1. Run the fron end with npm run dev
+2. Run npx cypress run --headed --browser=chrome in another terminal
+
