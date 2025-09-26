@@ -2,7 +2,13 @@
 
 describe("Activity Update Flow", () => {
     beforeEach(() => {
-        cy.visit("http://localhost:5173/manage-activities");
+        cy.visit('http://localhost:5173');
+        //then login as standard user
+        cy.get('input[type="email"]').type('stuart.mendes@gmail.com');
+        cy.get('input[type="password"]').type('SENG3150isfun!');
+        cy.get('button[type="submit"]').click();
+        cy.contains('Dashboard').should('be.visible');
+        cy.visit('http://localhost:5173/manage-activities');
     });
 
     it("updates an existing activity with the backend active", () => {
