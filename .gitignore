@@ -94,3 +94,7 @@ SENG3150-Project/ReactVite- Frontend/cypress/screenshots/activity_management/Act
 .gitignore
 C:\Users\hongd\OneDrive - The University Of Newcastle\Software Project 1\github Tutorial\SENG3150A\SENG3150-Project\ReactVite- Frontend\cypress\screenshots
 SENG3150-Project/ReactVite- Frontend/cypress/screenshots
+SENG3150-Project/SprintBoot- Backend/demo/src/main/resources/application.properties
+
+# Cypress environment files containing API keys
+SENG3150-Project/ReactVite- Frontend/cypress.env.json

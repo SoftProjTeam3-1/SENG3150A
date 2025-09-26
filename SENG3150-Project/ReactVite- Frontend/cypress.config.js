@@ -1,18 +1,26 @@
 import { defineConfig } from "cypress";
-import codeCoverageTask from '@cypress/code-coverage/task.js'
+import codeCoverageTask from '@cypress/code-coverage/task.js';
+import { cypressConfig } from '@axe-core/watcher';
+
+const API_KEY = 'ccf8f7b4-3527-4828-b4a0-fa5e8f5967e0';
 
 export default defineConfig({
+  ...cypressConfig({
+    axe: {
+      apiKey: API_KEY,
+    },
+  }),
   e2e: {
     baseUrl: 'http://localhost:5173',
     setupNodeEvents(on, config) {
       // enable code coverage tasks for e2e
-      codeCoverageTask(on, config)
+      codeCoverageTask(on, config);
       // surface MAILSLURP API key if provided via environment
       if (process.env.CYPRESS_MAILSLURP_API_KEY && !config.env?.MAILSLURP_API_KEY) {
-        config.env = config.env || {}
-        config.env.MAILSLURP_API_KEY = process.env.CYPRESS_MAILSLURP_API_KEY
+        config.env = config.env || {};
+        config.env.MAILSLURP_API_KEY = process.env.CYPRESS_MAILSLURP_API_KEY;
       }
-      return config
+      return config;
     },
   },
   env: {
@@ -21,7 +29,6 @@ export default defineConfig({
       expectFrontendCoverageOnly: true,
     },
   },
-
   component: {
     devServer: {
       framework: "react",
@@ -29,8 +36,8 @@ export default defineConfig({
     },
     setupNodeEvents(on, config) {
       // enable code coverage tasks for component tests
-      codeCoverageTask(on, config)
-      return config
-    }
+      codeCoverageTask(on, config);
+      return config;
+    },
   },
 });
