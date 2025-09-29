@@ -5,11 +5,6 @@ import { cypressConfig } from '@axe-core/watcher';
 const API_KEY = 'ccf8f7b4-3527-4828-b4a0-fa5e8f5967e0';
 
 export default defineConfig({
-  ...cypressConfig({
-    axe: {
-      apiKey: API_KEY,
-    },
-  }),
   e2e: {
     baseUrl: 'http://localhost:5173',
     setupNodeEvents(on, config) {
@@ -40,4 +35,11 @@ export default defineConfig({
       return config;
     },
   },
+  // Explicitly invoke cypressConfig() for Axe Watcher
+  //TODO: enable this later when testing accessability
+  // ...cypressConfig({
+  //   axe: {
+  //     apiKey: API_KEY,
+  //   },
+  // }),
 });
