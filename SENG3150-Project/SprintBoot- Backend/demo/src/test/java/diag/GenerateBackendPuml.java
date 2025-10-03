@@ -2,172 +2,238 @@ package diag;
 
 
 //npm run uml
+// Change to do it when the backend is ran (SpringBoot)
 
-
+import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-/**
- * Generates a PlantUML class diagram by reflecting over compiled classes.
- * No external libraries. Works in multi-module layouts.
- */
 public class GenerateBackendPuml {
 
-    // TODO: set your real base package(s)
-    private static final List<String> ROOT_PACKAGES = List.of(
-            "com.example" // e.g. "au.uon.seng3150", "com.yourorg.project"
-    );
+    private static final String outputFilePath = "SENG3150-Project/Documentation/diagrams/src";
+    static ArrayList<String> classFiles = new ArrayList<>();
 
-    private static final String DEFAULT_OUT_DIR = "../../../../../Documentation/diagrams/src/out";;
+    static Map<String, Set<String>> extendMap = new HashMap<>();
+    static Map<String, Set<String>> implementMap = new HashMap<>();
+    static Map<String, Set<String>> assoicationMap = new HashMap<>();
+    static Map<String, Set<String>> dependencyMap = new HashMap<>();
 
     public static void main(String[] args) throws Exception {
-        String outDir  = args.length > 0 ? args[0] : DEFAULT_OUT_DIR;
-        String outFile = Paths.get(outDir, "backend-classes.puml").toString();
 
-        Path compiledRoot = findCompiledRoot();  // <-- key change
-        System.out.println("Using compiled classes at: " + compiledRoot);
+        List<String> pkg = List.of("com.example");
 
-        // Build classloader over compiled roots (test-classes + classes if both exist)
-        List<URL> urls = new ArrayList<>();
-        urls.add(compiledRoot.toUri().toURL());
-        Path mainClasses = compiledRoot.resolveSibling("classes");
-        if (Files.isDirectory(mainClasses) && !mainClasses.equals(compiledRoot)) {
-            urls.add(mainClasses.toUri().toURL());
+        System.out.println("Generating Backend Puml");
+
+        List<String> inputDirectory = new ArrayList<>();
+        inputDirectory.add("SENG3150-Project");
+        inputDirectory.add("SprintBoot- Backend");
+        inputDirectory.add("demo");
+        inputDirectory.add("target");
+        inputDirectory.add("classes");
+
+        Path outputPath = getRootClassDirectory(Optional.of(inputDirectory));
+        System.out.println(outputPath);
+        classFiles = scanClassFiles(outputPath);
+
+        String content = generatePumlContent();
+        createNewPumlFile(outputFilePath, content);
+    }
+
+
+    // Input: Package, Helps path to class location (auto-detects Maven/Gradle)
+    // Output: Path of class directory (backend)
+    private static Path getRootClassDirectory(Optional<List<String>> customDirectory) {
+        Path base = Paths.get("").toAbsolutePath();
+        Path compiledRoot = base;
+
+        if (customDirectory.isPresent()) {
+
+            for(String dircetoryName : customDirectory.get()) {
+                compiledRoot = compiledRoot.resolve(dircetoryName);
+            }
+
+        }else{
+            compiledRoot = Paths.get("demo", "target", "classes", "com", "example");
         }
 
-        try (URLClassLoader loader =
-                     new URLClassLoader(urls.toArray(new URL[0]),
-                             Thread.currentThread().getContextClassLoader())) {
+        return compiledRoot;
+    }
 
-            // Find all FQCNs under compiledRoot matching our packages
-            List<String> fqcnList = new ArrayList<>();
-            Files.walk(compiledRoot)
+
+    // Input: Classes pathway
+    // Output: Arraylist of all class file directory's
+    private static ArrayList<String> scanClassFiles(Path directory) {
+        ArrayList<String> classFiles = new ArrayList<>();
+
+        try(Stream<Path> stream = Files.walk(directory)) {
+            stream
                     .filter(p -> p.toString().endsWith(".class"))
+                    .filter(p -> !p.getFileName().toString().contains("$"))
                     .forEach(p -> {
-                        String rel = compiledRoot.relativize(p).toString();
-                        String name = rel.substring(0, rel.length() - ".class".length())
-                                .replace('/', '.').replace('\\', '.');
-                        if (name.contains("$")) return;                  // skip inner/anon classes
-                        if (startsWithAny(name, ROOT_PACKAGES)) {
-                            fqcnList.add(name);
-                        }
-                    });
 
-            List<Class<?>> classes = fqcnList.stream()
-                    .map(n -> tryLoad(loader, n))
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toList());
+                        String relativePath = directory.relativize(p).toString().replace(File.separatorChar, '.');
+
+                        String item = relativePath.substring(0, relativePath.length() - ".class".length());
+
+                        classFiles.add(item);
+                    });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        return classFiles;
+    }
+
+    // Input: None (Uses global var list classFiles)
+    // Output: string of content for puml file
+    private static String generatePumlContent() {
+        StringBuilder sb  = new StringBuilder();
+
+        sb.append("@startuml\n\n" +
+                "skinparam dpi 600\n");
+
+        for(String classFile : classFiles) {
+            sb.append(getUmlDeclaration(classFile)).append("\n");
+        }
+
+        for (var entry : extendMap.entrySet()) {
+            String parent = entry.getKey();
+            for (String child : entry.getValue()) {
+                sb.append(parent).append(" <|-- ").append(child).append("\n");
+            }
+        }
+
+        for (var entry : implementMap.entrySet()) {
+            String parent = entry.getKey();
+            for (String child : entry.getValue()) {
+                sb.append(parent).append(" <|.. ").append(child).append("\n");
+            }
+        }
+
+        for (var entry : assoicationMap.entrySet()) {
+            String parent = entry.getKey();
+            for (String child : entry.getValue()) {
+                sb.append(parent).append(" --> ").append(child).append("\n");
+            }
+        }
+
+        for (var entry : dependencyMap.entrySet()) {
+            String parent = entry.getKey();
+            for (String child : entry.getValue()) {
+                sb.append(parent).append(" ..> ").append(child).append("\n");
+            }
+        }
+
+        sb.append("\n@enduml");
+
+        return sb.toString();
+    }
+
+    // Input: String fileLocation where the fill will be made, String content which will make up whats in the file
+    // Output: file creation
+    private static void createNewPumlFile(String fileLocation, String content){
+        try{
+            Path dir = Paths.get(fileLocation);
+
+            Files.createDirectories(dir);
+
+            Path file = dir.resolve("backend.puml");
+
+            Files.writeString(file, content);
+        }catch(IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static String getUmlDeclaration(String fqcn) {
+        try {
+            Class<?> clazz = Class.forName(fqcn);
 
             StringBuilder sb = new StringBuilder();
-            sb.append("@startuml\n");
-            sb.append("!theme plain\n");
-            sb.append("hide empty members\n");
-            sb.append("skinparam classAttributeIconSize 0\n");
 
-            // Declarations + public members
-            for (Class<?> c : classes) {
-                String simple = c.getSimpleName();
-                String fqcn   = c.getName();
-                if (c.isInterface()) {
-                    sb.append("interface ").append(simple).append(" as \"").append(fqcn).append("\"\n");
-                } else if (c.isEnum()) {
-                    sb.append("enum ").append(simple).append(" as \"").append(fqcn).append("\"\n");
-                } else {
-                    sb.append("class ").append(simple).append(" as \"").append(fqcn).append("\"\n");
-                }
+            if (clazz.isInterface()) {
+                sb.append("interface ").append(clazz.getSimpleName()).append(" {\n");
+            } else if (clazz.isEnum()) {
+                sb.append("enum ").append(clazz.getSimpleName()).append(" {\n");
+            } else {
+                sb.append("class ").append(clazz.getSimpleName()).append(" {\n");
+            }
 
-                List<String> fields = Arrays.stream(c.getDeclaredFields())
-                        .filter(f -> Modifier.isPublic(f.getModifiers()))
-                        .map(f -> "  +" + f.getName() + " : " + friendlyType(f.getType()))
-                        .collect(Collectors.toList());
 
-                List<String> methods = Arrays.stream(c.getDeclaredMethods())
-                        .filter(m -> Modifier.isPublic(m.getModifiers()))
-                        .filter(m -> !m.isSynthetic() && !m.getName().startsWith("lambda$"))
-                        .map(m -> "  +" + m.getName() + "(" +
-                                Arrays.stream(m.getParameterTypes()).map(GenerateBackendPuml::friendlyType)
-                                        .collect(Collectors.joining(", ")) +
-                                ") : " + friendlyType(m.getReturnType()))
-                        .collect(Collectors.toList());
+            // Relations
 
-                if (!fields.isEmpty() || !methods.isEmpty()) {
-                    sb.append(simple).append(" {\n");
-                    fields.forEach(line -> sb.append(line).append("\n"));
-                    if (!fields.isEmpty() && !methods.isEmpty()) sb.append("--\n");
-                    methods.forEach(line -> sb.append(line).append("\n"));
-                    sb.append("}\n");
+            // Extends
+            Class<?> superClass = clazz.getSuperclass();
+            if (superClass != null && superClass != Object.class) {
+                extendMap.computeIfAbsent(superClass.getSimpleName(), k -> new HashSet<>()).add(clazz.getSimpleName());
+                //sb.append(superClass.getSimpleName() + " <|-- " + clazz.getSimpleName()).append(" \n");
+            }
+
+            // Implements
+            for (Class<?> interfaceClass : clazz.getInterfaces()) {
+                implementMap.computeIfAbsent(interfaceClass.getSimpleName(), k -> new HashSet<>()).add(clazz.getSimpleName());
+                //sb.append(interfaceClass.getSimpleName() + " <|.. " + clazz.getSimpleName()).append(" \n");
+            }
+
+            // Association
+            for (Field f : clazz.getDeclaredFields()) {
+                Class<?> fieldType = f.getType();
+                if (fieldType.getPackageName().startsWith("com.example")) {
+                    assoicationMap.computeIfAbsent(clazz.getSimpleName(), k -> new HashSet<>()).add(fieldType.getSimpleName());
+                    //sb.append(clazz.getSimpleName() + " --> " + fieldType.getSimpleName());
                 }
             }
 
-            // Extends / Implements
-            for (Class<?> c : classes) {
-                String from = c.getSimpleName();
-                Class<?> sup = c.getSuperclass();
-                if (sup != null && startsWithAny(sup.getName(), ROOT_PACKAGES)) {
-                    sb.append(sup.getSimpleName()).append(" <|-- ").append(from).append("\n");
-                }
-                for (Class<?> iface : c.getInterfaces()) {
-                    if (startsWithAny(iface.getName(), ROOT_PACKAGES)) {
-                        sb.append(iface.getSimpleName()).append(" <|.. ").append(from).append("\n");
+            // Dependency
+            for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
+                for (Class<?> paramType : constructor.getParameterTypes()) {
+                    if (paramType.getPackageName().startsWith("com.example")) {
+                        dependencyMap.computeIfAbsent(clazz.getSimpleName(), k -> new HashSet<>()).add(paramType.getSimpleName());
                     }
                 }
             }
 
-            // Simple field associations
-            for (Class<?> c : classes) {
-                String from = c.getSimpleName();
-                for (Field f : c.getDeclaredFields()) {
-                    Class<?> t = f.getType();
-                    if (t != null && startsWithAny(t.getName(), ROOT_PACKAGES)) {
-                        sb.append(from).append(" --> ").append(t.getSimpleName()).append("\n");
-                    }
-                }
+
+            // Fields && Methods
+
+            // Fields
+            for (var field : clazz.getDeclaredFields()) {
+                sb.append("  ").append(visibilitySymbol(field.getModifiers()))
+                        .append(field.getName()).append("\n");
             }
 
-            sb.append("@enduml\n");
+            // Methods
+            for (var method : clazz.getDeclaredMethods()) {
+                if(method.isSynthetic() || method.getName().startsWith("lambda$")){
+                    continue;
+                }else{
+                    sb.append("  ").append(visibilitySymbol(method.getModifiers()))
+                            .append(method.getName()).append("()\n");
+                }
 
-            Files.createDirectories(Paths.get(outDir));
-            Files.writeString(Paths.get(outFile), sb.toString());
-            System.out.println("Wrote " + outFile);
+            }
+
+            sb.append("}\n");
+            return sb.toString();
+        } catch (ClassNotFoundException e) {
+            return "// Could not load class " + fqcn + "\n";
         }
     }
 
-    /** Resolve target/test-classes (or classes) based on where THIS test class is loaded from. */
-    private static Path findCompiledRoot() throws URISyntaxException {
-        URL codeSource = GenerateBackendPuml.class.getProtectionDomain()
-                .getCodeSource().getLocation();
-        Path loc = Paths.get(codeSource.toURI()); // usually .../target/test-classes
-        if (Files.isDirectory(loc)) return loc;
-        // Fallbacks
-        Path tc = Paths.get("target", "test-classes");
-        if (Files.isDirectory(tc)) return tc;
-        Path mc = Paths.get("target", "classes");
-        if (Files.isDirectory(mc)) return mc;
-        throw new IllegalStateException("Compiled classes not found. Run mvn test-compile or mvn compile first.");
+    private static String visibilitySymbol(int mods) {
+        if (java.lang.reflect.Modifier.isPublic(mods)) return "+";
+        if (java.lang.reflect.Modifier.isPrivate(mods)) return "-";
+        if (java.lang.reflect.Modifier.isProtected(mods)) return "#";
+        return "~"; // package-private
     }
 
-    private static boolean startsWithAny(String s, List<String> prefixes) {
-        for (String p : prefixes) if (s.startsWith(p)) return true;
-        return false;
-    }
 
-    private static String friendlyType(Class<?> t) {
-        if (t.isArray()) return friendlyType(t.getComponentType()) + "[]";
-        String n = t.getName();
-        int i = n.lastIndexOf('.');
-        return i >= 0 ? n.substring(i + 1) : n;
-    }
 
-    private static Class<?> tryLoad(ClassLoader loader, String name) {
-        try { return Class.forName(name, false, loader); }
-        catch (Throwable ignored) { return null; }
-    }
 }
