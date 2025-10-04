@@ -4,6 +4,9 @@ package diag;
 //npm run uml
 // Change to do it when the backend is ran (SpringBoot)
 
+import net.sourceforge.plantuml.*;
+import org.springframework.data.util.Pair;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -14,17 +17,24 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static diag.RelationType.EXTENDS;
+import static diag.RelationType.IMPLEMENTS;
+import static diag.RelationType.ASSOCIATION;
+import static diag.RelationType.DEPENDENCY;
+
 public class GenerateBackendPuml {
 
     private static final String outputFilePath = "SENG3150-Project/Documentation/diagrams/src";
     static ArrayList<String> classFiles = new ArrayList<>();
 
-    static Map<String, Set<String>> extendMap = new HashMap<>();
-    static Map<String, Set<String>> implementMap = new HashMap<>();
-    static Map<String, Set<String>> assoicationMap = new HashMap<>();
-    static Map<String, Set<String>> dependencyMap = new HashMap<>();
+//    static Map<String, Set<String>> extendMap = new HashMap<>();
+//    static Map<String, Set<String>> implementMap = new HashMap<>();
+//    static Map<String, Set<String>> assoicationMap = new HashMap<>();
+//    static Map<String, Set<String>> dependencyMap = new HashMap<>();
 
-    public static void main(String[] args) throws Exception {
+    static Map<Pair<String,String>, RelationType> relationMap = new HashMap<>();
+
+    public static void main() {
 
         List<String> pkg = List.of("com.example");
 
@@ -93,7 +103,7 @@ public class GenerateBackendPuml {
 
     // Input: None (Uses global var list classFiles)
     // Output: string of content for puml file
-    private static String generatePumlContent() {
+    static String generatePumlContent() {
         StringBuilder sb  = new StringBuilder();
 
         sb.append("@startuml\n\n" +
@@ -102,34 +112,48 @@ public class GenerateBackendPuml {
         for(String classFile : classFiles) {
             sb.append(getUmlDeclaration(classFile)).append("\n");
         }
+//
+//        for (var entry : extendMap.entrySet()) {
+//            String parent = entry.getKey();
+//            for (String child : entry.getValue()) {
+//                sb.append(parent).append(" <|-- ").append(child).append("\n");
+//            }
+//        }
+//
+//        for (var entry : implementMap.entrySet()) {
+//            String parent = entry.getKey();
+//            for (String child : entry.getValue()) {
+//                sb.append(parent).append(" <|.. ").append(child).append("\n");
+//            }
+//        }
+//
+//        for (var entry : assoicationMap.entrySet()) {
+//            String parent = entry.getKey();
+//            for (String child : entry.getValue()) {
+//                sb.append(parent).append(" --> ").append(child).append("\n");
+//            }
+//        }
+//
+//        for (var entry : dependencyMap.entrySet()) {
+//            String parent = entry.getKey();
+//            for (String child : entry.getValue()) {
+//                sb.append(parent).append(" ..> ").append(child).append("\n");
+//            }
+//        }
 
-        for (var entry : extendMap.entrySet()) {
-            String parent = entry.getKey();
-            for (String child : entry.getValue()) {
-                sb.append(parent).append(" <|-- ").append(child).append("\n");
+        for (var entry : relationMap.entrySet()) {
+            Pair<String,String> pair = entry.getKey();
+            RelationType relationType = entry.getValue();
+
+            switch(relationType) {
+                case EXTENDS -> sb.append(pair.getFirst()).append(" <|-- ").append(pair.getSecond()).append("\n");
+                case IMPLEMENTS -> sb.append(pair.getFirst()).append(" <|.. ").append(pair.getSecond()).append("\n");
+                case ASSOCIATION -> sb.append(pair.getFirst()).append(" --> ").append(pair.getSecond()).append("\n");
+                case DEPENDENCY ->  sb.append(pair.getFirst()).append(" ..> ").append(pair.getSecond()).append("\n");
             }
         }
 
-        for (var entry : implementMap.entrySet()) {
-            String parent = entry.getKey();
-            for (String child : entry.getValue()) {
-                sb.append(parent).append(" <|.. ").append(child).append("\n");
-            }
-        }
 
-        for (var entry : assoicationMap.entrySet()) {
-            String parent = entry.getKey();
-            for (String child : entry.getValue()) {
-                sb.append(parent).append(" --> ").append(child).append("\n");
-            }
-        }
-
-        for (var entry : dependencyMap.entrySet()) {
-            String parent = entry.getKey();
-            for (String child : entry.getValue()) {
-                sb.append(parent).append(" ..> ").append(child).append("\n");
-            }
-        }
 
         sb.append("\n@enduml");
 
@@ -172,13 +196,15 @@ public class GenerateBackendPuml {
             // Extends
             Class<?> superClass = clazz.getSuperclass();
             if (superClass != null && superClass != Object.class) {
-                extendMap.computeIfAbsent(superClass.getSimpleName(), k -> new HashSet<>()).add(clazz.getSimpleName());
+                addRelation(superClass.getSimpleName(), clazz.getSimpleName(), EXTENDS);
+                //extendMap.computeIfAbsent(superClass.getSimpleName(), k -> new HashSet<>()).add(clazz.getSimpleName());
                 //sb.append(superClass.getSimpleName() + " <|-- " + clazz.getSimpleName()).append(" \n");
             }
 
             // Implements
             for (Class<?> interfaceClass : clazz.getInterfaces()) {
-                implementMap.computeIfAbsent(interfaceClass.getSimpleName(), k -> new HashSet<>()).add(clazz.getSimpleName());
+                addRelation(interfaceClass.getSimpleName(), clazz.getSimpleName(), IMPLEMENTS);
+                //implementMap.computeIfAbsent(interfaceClass.getSimpleName(), k -> new HashSet<>()).add(clazz.getSimpleName());
                 //sb.append(interfaceClass.getSimpleName() + " <|.. " + clazz.getSimpleName()).append(" \n");
             }
 
@@ -186,7 +212,8 @@ public class GenerateBackendPuml {
             for (Field f : clazz.getDeclaredFields()) {
                 Class<?> fieldType = f.getType();
                 if (fieldType.getPackageName().startsWith("com.example")) {
-                    assoicationMap.computeIfAbsent(clazz.getSimpleName(), k -> new HashSet<>()).add(fieldType.getSimpleName());
+                    addRelation(clazz.getSimpleName(), fieldType.getSimpleName(), ASSOCIATION);
+                    //assoicationMap.computeIfAbsent(clazz.getSimpleName(), k -> new HashSet<>()).add(fieldType.getSimpleName());
                     //sb.append(clazz.getSimpleName() + " --> " + fieldType.getSimpleName());
                 }
             }
@@ -195,7 +222,8 @@ public class GenerateBackendPuml {
             for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
                 for (Class<?> paramType : constructor.getParameterTypes()) {
                     if (paramType.getPackageName().startsWith("com.example")) {
-                        dependencyMap.computeIfAbsent(clazz.getSimpleName(), k -> new HashSet<>()).add(paramType.getSimpleName());
+                        addRelation(clazz.getSimpleName(), paramType.getSimpleName(), DEPENDENCY);
+                        //dependencyMap.computeIfAbsent(clazz.getSimpleName(), k -> new HashSet<>()).add(paramType.getSimpleName());
                     }
                 }
             }
@@ -234,6 +262,44 @@ public class GenerateBackendPuml {
         return "~"; // package-private
     }
 
+    static void addRelation(String from, String to, RelationType newType) {
+        Pair<String,String> key = Pair.of(from, to);
+        RelationType existing = relationMap.get(key);
+
+        if (existing == null || newType.priority < existing.priority) {
+            relationMap.put(key, newType); // overwrite only if stronger
+        }
+    }
+
+
+
+    static void writeSvg() throws IOException {
+        Path base = Paths.get("SENG3150-Project/Documentation/diagrams/src").toAbsolutePath().normalize();
+        Path puml = base.resolve("backend.puml");
+        Path svg  = base.resolve("backend.svg"); // or base.resolve("out/backend.svg")
+
+        String src = Files.readString(puml);
+        Files.createDirectories(svg.getParent());
+
+        try (var os = Files.newOutputStream(svg)) {
+            var reader = new SourceStringReader(src);
+            reader.outputImage(os, new FileFormatOption(FileFormat.SVG));
+        }
+        System.out.println("Generated: " + svg);
+    }
 
 
 }
+
+enum RelationType {
+    EXTENDS(1),
+    IMPLEMENTS(2),
+    ASSOCIATION(3),
+    DEPENDENCY(4);
+
+    final int priority;
+    RelationType(int p) { this.priority = p; }
+}
+
+
+
