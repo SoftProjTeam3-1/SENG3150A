@@ -1,0 +1,369 @@
+Nice — here's a complete, ready-to-paste prompt you can give to your automated agent (or human-run agent). It’s designed so the agent can run OWASP ZAP or Burp, exercise *all externally-accessible endpoints*, combine dynamic testing with code-aware static checks (because it has access to frontend & backend code), and output clear Markdown reports + backlog entries.
+
+**Important — put this at the top of whatever you run this against:** Only run this against systems you own or where you have explicit written authorization. Unauthorized scanning or exploitation is illegal.
+
+---
+
+# Agent prompt — Live Penetration Testing (deliver Markdown report + backlog entries)
+
+You are an automated penetration-testing agent. Your job is to perform a live penetration test of the deployed system described below and produce machine-readable and human-readable outputs.
+
+## Context (read before starting)
+
+* You have access to both the **frontend** and **backend** code repositories, build artifacts, and deployment endpoints for the target system.
+* You are authorized to test this system (ensure a copy of written authorization is available and log that fact).
+* The system exposes externally accessible endpoints (APIs, web app, static assets). Target **all** externally accessible endpoints.
+* Tools allowed: OWASP ZAP, Burp Suite (or equivalent). You may also use dependency scanners (e.g., OWASP Dependency-Check / `npm audit` / `mvn dependency:tree` + Snyk) and static code checks (linting, simple secret scanning).
+* Produce Markdown files containing the findings, plus raw scan artifacts (ZAP/Burp reports) and backlog entries for each identified issue.
+
+## High-level objectives
+
+1. Discover all externally reachable endpoints (automated crawl + code inspection + S3/CloudFront/public files if present).
+2. Perform automated dynamic scanning (spider/crawl, passive + active scans).
+3. Perform authenticated scans where relevant (use provided test accounts / credentials).
+4. Perform targeted manual verification for high-impact findings (auth, access control, injection, insecure direct object refs, CSRF, XSS).
+5. Run static analysis (dependency scanning, secret scanning, static code checks) on the repositories.
+6. Produce:
+
+   * `findings.md` — primary human-readable report in Markdown (see template below).
+   * `backlog.md` or `backlog.csv` — one entry per identified issue (title, priority, short description, reproduction steps, file/endpoint).
+   * Raw scan exports: `raw/owasp-zap-report.xml` (or `.json`), `raw/burp.xml` (if used), `raw/dependency-scan.json`.
+   * `evidence/` folder with screenshots, request/response snippets, curl commands used, and PoC if non-destructive.
+7. Log ALL actions and timestamps (scan start/end times, tool commands, credentials used in tests).
+
+## Scope and rules of engagement (enforce)
+
+* Scope: All externally accessible endpoints for the deployment(s) you are given. Include hostnames, ports (web: 80, 443, other exposed app ports), and any public APIs.
+* Out-of-scope: any systems not in the authorized targets list. Don’t scan internal-only networks unless explicitly authorized.
+* Aggressiveness: default to non-destructive verification. Do not delete, modify, or persistently alter production data. If a destructive test is required to confirm an issue, record steps and request explicit approval (log attempted action but do not execute).
+* Rate-limiting: respect rate limits; if you detect service-impacting behaviour, throttle or abort and report.
+
+## Preparation & configuration
+
+1. Create an artifacts directory:
+
+   ```
+   mkdir -p /work/pen-tests/{raw,evidence,logs}
+   cd /work/pen-tests
+   ```
+2. Place any supplied credentials as environment variables (never commit them to repo):
+
+   ```
+   export TEST_USER="testuser@example.com"
+   export TEST_PASS="supply_secure_password"
+   ```
+
+   Document which credentials are used in `logs/actions.log`.
+3. Initial reconnaissance steps:
+
+   * From code: enumerate routes, public API endpoints, CORS config, environment variables, build files for public URLs.
+   * From deployment: DNS, TLS certs, public headers.
+4. Confirm ZAP/Burp setup. Example for ZAP:
+
+   * If using ZAP CLI/API: ensure `zap.sh` or `zap-baseline.py` is available.
+   * Use an authenticated session for pages behind login (see Auth section).
+
+## Authentication handling
+
+* If the site uses login (form-based / JWT / OAuth):
+
+  * Use a provided test account. If SSO with OAuth, use test client id/secret and request token flow.
+  * For ZAP: configure the authentication method + session management + login script or form submit flow; add forced user for authenticated active scan.
+  * Record exact login request and session cookie or token obtained.
+* Keep credentials out of outputs (mask them) but record which test account and level of access (role) was used.
+
+## Automated ZAP baseline & active scans (example steps)
+
+1. Start ZAP headlessly (or assume running at localhost:8080).
+2. Spider the target:
+
+   ```
+   zap-cli --zap-url http://localhost -p 8080 open-url https://target.example.com
+   zap-cli -p 8080 spider https://target.example.com --max-children 50
+   ```
+3. Passive scan occurs during spider. Then run active scan:
+
+   ```
+   zap-cli -p 8080 active-scan https://target.example.com --recursive
+   ```
+4. Export results:
+
+   ```
+   zap-cli -p 8080 report -o raw/owasp-zap-report.html -f html
+   zap-cli -p 8080 report -o raw/owasp-zap-report.xml -f xml
+   ```
+5. For authenticated endpoints: configure zap to use the login flow and run active scan as the authenticated user.
+
+> If using Burp Suite, use the active scanner with an authenticated project, capture and save the project file and export issues (XML/JSON).
+
+## Manual testing checklist (examples to validate & capture evidence)
+
+For each externally accessible endpoint, attempt/check:
+
+* Input validation and injection:
+
+  * SQL injection (parameterized inputs in APIs, forms) — non-destructive probes: `' OR '1'='1' -- ` and look for error behaviors or different responses.
+  * Command injection if OS calls are present.
+* Cross-Site Scripting (XSS): reflected, stored, DOM XSS via parameters, headers, and JSON fields.
+* CSRF: state changing endpoints — check presence/absence of CSRF tokens or SameSite cookie attributes.
+* Authentication & session management:
+
+  * Weak password reset, predictable tokens, insecure cookie flags (HttpOnly, Secure, SameSite).
+  * Session fixation, session lifetime, logout invalidation.
+* Broken access control:
+
+  * Forced browsing / object ID tampering (IDOR), horizontal & vertical privilege escalation.
+  * API endpoints missing role checks.
+* Insecure direct object references (IDs, filenames).
+* Security misconfigurations:
+
+  * CORS overly permissive (`Access-Control-Allow-Origin: *` with credentials).
+  * Missing security headers (CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy).
+  * TLS issues (weak ciphers, expired certs) — use `openssl s_client`/`testssl.sh`/`sslyze`.
+* Sensitive data exposure:
+
+  * Secrets in source code (API keys, credentials), responses with secrets, debug endpoints.
+* Business logic flaws: multi-step flows that can be abused (e.g., price manipulation).
+* Rate-limiting and brute-force protections.
+* Insecure deserialization if found in code (Java/PHP/Python patterns).
+* Dependency vulnerabilities: run `npm audit`, `mvn dependency:check`, `pip-audit` as applicable.
+* S3 / public storage misconfigurations, excessive IAM privileges for cloud resources (if within scope).
+
+## Static code checks (since you have code access)
+
+* Enumerate routes and APIs in the code and compare against discovered endpoints; flag undocumented endpoints.
+* Search for secrets: regex scan for `API_KEY`, `SECRET`, `AKIA`, `password`, `.env` files in code.
+* Dependency scanning: run `npm audit --json`, `mvn dependency:tree` and `owasp-dependency-check`.
+* Check for unsafe deserialization, unsanitized string concatenation used in SQL queries (non-parameterized queries), and `eval()`/`new Function()` usage in JS.
+
+## Evidence collection
+
+* Save every suspicious request/response (redact credentials). Save curl commands that reproduce the request.
+* For XSS store the exact payload and the rendered snapshot (screenshot).
+* For auth/access control issues store the user roles used and exact URL/parameters.
+
+## Severity & risk rating
+
+* Use simple severity levels: **Critical**, **High**, **Medium**, **Low**, **Info**.
+* Include a short CVSS-like estimate (e.g., CVSS v3 base score ≈ `9.8` for RCE) if possible, or a narrative "impact likelihood × impact".
+* For each finding include: likelihood, impact, and recommended mitigation.
+
+## Reporting format — `findings.md` (Must be produced)
+
+Create `findings.md` in Markdown using the following template exactly. Populate all fields for each finding.
+
+```markdown
+# Penetration Test Report
+**Target:** <primary host(s) / base URL(s)>
+**Test start:** YYYY-MM-DD HH:MM (UTC)
+**Test end:** YYYY-MM-DD HH:MM (UTC)
+**Agent name:** <agent id>
+**Authorization:** <reference to written authorization>
+
+---
+
+## Executive summary
+Short high-level summary of findings: number of Critical/High/Medium/Low issues, general posture, top recommended actions.
+
+---
+
+## Scope
+- Hosts tested:
+  - https://target.example.com
+  - https://api.target.example.com
+- Ports: 80/443 (and any others)
+- Code repos scanned:
+  - frontend: <path or repo URL>
+  - backend: <path or repo URL>
+
+---
+
+## Methodology
+List of tools used (with versions), approach (recon, automated dynamic scan, manual verification, static analysis), and a brief description of steps.
+
+Tools:
+- OWASP ZAP vX.Y.Z (zap-cli)
+- Burp Suite Professional / Community vX
+- testssl.sh vX
+- npm audit / mvn dependency:check
+- git grep / trufflehog (secret scanning)
+
+---
+
+## Findings (one heading per issue)
+
+### [<Severity>] <Short title — e.g., "Reflected XSS in /search?q">
+**Affected endpoint(s):** `GET /search?q=`
+**Location / file (if seen in code):** `frontend/src/components/Search.jsx` (line 123) and `backend/src/controllers/SearchController.java` (line 45)
+**Severity:** High
+**CVSS (estimate):** 6.1 (AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:L/A:N)
+**Description:**
+Short description of the issue and why it's risky.
+
+**Evidence:**
+- Request:
+```
+
+curl '[https://target.example.com/search?q=](https://target.example.com/search?q=)<script>alert(1)</script>'
+
+```
+- Response snippet (sanitized):
+> ...`<div>Search results for: <script>alert(1)</script></div>`...
+- Screenshot: `evidence/xss_search_q.png`
+
+**Proof of concept (non-destructive):**
+Steps to reproduce (exact requests). Do not include destructive PoCs.
+
+**Impact:**
+Explain potential impact (session theft, defacement, phishing).
+
+**Remediation / Mitigation:**
+- Encode user input on output (use framework escaping).
+- Validate and sanitize input.
+- Implement CSP header: `Content-Security-Policy: default-src 'self'`.
+- Unit tests for output encoding.
+
+**Backlog entry:** (ID: `BK-001`) see `backlog.md` for ticket.
+
+---
+
+(Repeat for each finding)
+
+---
+
+## Additional notes
+- Summary of low-risk/info items, where to look next.
+- Any unstable endpoints or rate limits encountered.
+
+---
+
+## Raw artifacts
+- `raw/owasp-zap-report.xml`
+- `raw/burp-issues.xml`
+- `raw/dependency-scan.json`
+- `evidence/` (screenshots, request/response files)
+
+```
+
+## Backlog file (`backlog.md` or CSV)
+
+For each finding create a backlog entry with fields:
+
+Markdown example:
+
+```markdown
+### BK-001 — Reflected XSS in /search?q
+**Priority:** P1 (High)
+**Description:** Reflected XSS via `q` parameter. See `findings.md` for full details.
+**Endpoint:** GET /search?q=
+**Repro steps:** (copy from finding)
+**Suggested fix:** Escape output, validate input, add CSP.
+**Assignee:** security-team
+**Estimate:** 1 day
+```
+
+Or CSV:
+
+```
+id,title,priority,endpoint,short_description,estimate,assignee
+BK-001,"Reflected XSS in /search?q","High","GET /search?q=","Reflected XSS via q parameter","1d","security-team"
+```
+
+## Final deliverables (place in `/work/pen-tests`):
+
+* `findings.md`
+* `backlog.md` and `backlog.csv` (if preferred)
+* `raw/` (ZAP/Burp reports, dependency scans)
+* `evidence/` (screenshots, request/response files)
+* `logs/actions.log` (commands run, timestamps, credentials used — mask secrets)
+
+## Example commands & scripts (copy/paste)
+
+**ZAP headless spider + active scan:**
+
+```bash
+# start ZAP in daemon mode (if installed)
+zap.sh -daemon -host 127.0.0.1 -port 8080 -config api.disablekey=true &
+sleep 10
+# spider
+zap-cli -p 8080 -v spider https://target.example.com
+# active scan
+zap-cli -p 8080 -v active-scan https://target.example.com
+# export reports
+zap-cli -p 8080 -v report -o raw/owasp-zap-report.html -f html
+zap-cli -p 8080 -v report -o raw/owasp-zap-report.xml -f xml
+```
+
+**Simple dependency checks:**
+
+```bash
+# for node
+(cd frontend && npm ci && npm audit --json > raw/npm-audit.json)
+# for maven
+(cd backend && mvn -q dependency:tree > raw/mvn-dep-tree.txt)
+# owasp dependency-check (if installed)
+dependency-check --project "Target" --scan backend --format JSON --out raw/dependency-scan.json
+```
+
+**TLS check (quick):**
+
+```bash
+echo | openssl s_client -connect target.example.com:443 -servername target.example.com 2>/dev/null | openssl x509 -noout -dates -issuer -subject
+```
+
+## Logging template (append to `logs/actions.log`)
+
+```
+[YYYY-MM-DD HH:MM:SS UTC] ACTION: started zap spider for https://target.example.com
+[YYYY-MM-DD HH:MM:SS UTC] ACTION: performed active scan (authenticated) as testuser@example.com
+[YYYY-MM-DD HH:MM:SS UTC] NOTE: login token length 256 (redacted)
+[YYYY-MM-DD HH:MM:SS UTC] ACTION: exported zap report to raw/owasp-zap-report.xml
+```
+
+## Post-scan steps (required)
+
+1. Review all findings, remove duplicates, verify severity.
+2. Triage: assign to appropriate backlog owners.
+3. Provide remediation guidance (code-level if seen in repo).
+4. Deliver `findings.md`, `backlog.md`, raw artifacts and evidence to stakeholders.
+5. If any Critical issue found, immediately notify the project owner with the summary and mitigation steps.
+
+---
+
+## Safety & ethics reminder (must be included)
+
+* Ensure you have written authorization to test these assets.
+* Do not exfiltrate or store production user data beyond evidence snippets; redact personal data.
+* If a scan appears to degrade service, stop and notify the owner immediately.
+
+---
+
+## If you are ready, run the tests and produce the deliverables:
+
+1. Create `/work/pen-tests` and subfolders.
+2. Execute reconnaissance (code + live).
+3. Run automated dynamic scans with authentication where needed.
+4. Run static/dependency scans.
+5. Manually verify high-severity findings and capture evidence.
+6. Write `findings.md` and `backlog.md` using the templates above.
+7. Save all raw output in `raw/` and `evidence/`.
+8. Log actions in `logs/actions.log`.
+
+---
+
+### Small example output snippet (what `findings.md` first lines should look like)
+
+```markdown
+# Penetration Test Report
+**Target:** https://target.example.com
+**Test start:** 2025-10-01 09:00 UTC
+**Test end:** 2025-10-01 12:15 UTC
+**Agent name:** auto-pentest-bot-01
+**Authorization:** Signed authorization on 2025-09-30 (see logs)
+
+## Executive summary
+5 findings: 1 High, 2 Medium, 2 Low. Top priority: fix Reflected XSS in /search and implement proper access control on /admin/api.
+...
+```
+
+---
