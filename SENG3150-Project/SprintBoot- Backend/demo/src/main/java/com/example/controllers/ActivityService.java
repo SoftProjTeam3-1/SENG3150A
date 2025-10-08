@@ -10,7 +10,9 @@ import com.example.stored_procedures.CreateActivity;
 
 import java.util.List;
 
-
+/**
+ * The service that creates, views, modifies and deletes {@link Activity}.
+ */
 @Service
 public class ActivityService {
     
@@ -22,12 +24,21 @@ public class ActivityService {
         this.activityRepository = activityRepository;
     }
 
+    /**
+     * Creates an {@link Activity}
+     * @param activity The {@link Activity} being created
+     * @return {@code true} if creation succeeded; {@code false} otherwise
+     */
     public boolean createActivity(Activity activity){
         CreateActivity createActivity = new CreateActivity(activityRepository);
         boolean isCreated = createActivity.createActivity(activity);
         return isCreated;
     }
 
+    /**
+     * Retrieves all {@link Activity}
+     * @return Returns a {@link List} containing all {@link Activity} or {@code null} if there is an issue.
+     */
     public List<Activity> getAllActivities(){
         try {
             List<Activity> activities = activityRepository.findAll();
@@ -38,6 +49,11 @@ public class ActivityService {
         }
     }
 
+    /**
+     * Retrieves all {@link Activity} that match activityType
+     * @param activityType A String containing the name
+     * @return Returns a {@link List} containing all {@link Activity} that match the given {@link String} or {@code null} if there is an issue.
+     */
     public List<Activity> getActivitiesByType(String activityType) {
         try {
             System.out.println("Reached Activity Service function!!!!");
@@ -52,6 +68,11 @@ public class ActivityService {
         }
     }
 
+    /**
+     * Delete an {@link Activity} that matches the name
+     * @param name A String containing the name
+     * @return {@code true} if creation succeeded; {@code false} otherwise
+     */
     public boolean deleteActivity(String name){
         try {
             Activity activity = activityRepository.findDistinctByName(name);
@@ -68,6 +89,11 @@ public class ActivityService {
         }
     }
 
+    /**
+     * Update an {@link Activity}
+     * @param activity The {@link Activity} being modified
+     * @return {@code true} if creation succeeded; {@code false} otherwise
+     */
     public boolean updateActivity(Activity activity){
         try{
             System.out.println("\n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n" + "Reached updateActivity function in ActivityService!");
