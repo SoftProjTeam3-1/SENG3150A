@@ -51,23 +51,23 @@ const ForgetPasswordEnterCodeForm = () => {
 
   //Use effect runs every time the component is rendered
   //The empty array at the end of the useEffect function means that it will only run once
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await fetch('api/user')
-        console.log(response)
-        const data = await response.json()
-        setName(data.firstName	)
-        setEmail(data.email)
+  // useEffect(() => {
+  //   const fetchUser = async () => {
+  //     try {
+  //       const response = await fetch('api/user')
+  //       console.log(response)
+  //       const data = await response.json()
+  //       setName(data.firstName	)
+  //       setEmail(data.email)
 
-      } catch (err) {
-        console.error('Error fetching user:', err)
-      }
+  //     } catch (err) {
+  //       console.error('Error fetching user:', err)
+  //     }
 
-    }
+  //   }
 
-    fetchUser()
-  }, [message])
+  //   fetchUser()
+  // }, [message])
 
 
   return (
