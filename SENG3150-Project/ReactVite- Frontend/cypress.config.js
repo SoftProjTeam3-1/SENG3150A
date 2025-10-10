@@ -36,9 +36,10 @@ export default defineConfig({
     },
   },
   // Explicitly invoke cypressConfig() for Axe Watcher
-  ...cypressConfig({
-    axe: {
-      apiKey: API_KEY,
-    },
-  }),
+  //TODO: enable this later when testing accessability
+  // ...cypressConfig({
+  //   axe: {
+  //     apiKey: API_KEY,
+  //   },
+  // }),
 });
