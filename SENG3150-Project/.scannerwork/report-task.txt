@@ -1,0 +1,6 @@
+projectKey=SENG3150
+serverUrl=http://localhost:9000
+serverVersion=25.9.0.112764
+dashboardUrl=http://localhost:9000/dashboard?id=SENG3150
+ceTaskId=1ffcf64b-1ade-4986-8547-4450e5042ab3
+ceTaskUrl=http://localhost:9000/api/ce/task?id=1ffcf64b-1ade-4986-8547-4450e5042ab3
