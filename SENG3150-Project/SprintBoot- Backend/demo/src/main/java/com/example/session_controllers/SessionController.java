@@ -54,7 +54,10 @@ public class SessionController {
         this.activityTypeService = activityTypeService;
     }
 
-    // Resolve current authenticated user from the SecurityContext (Authorization: Bearer ...)
+    /**
+     * Resolve current authenticated user from the SecurityContext (Authorization: Bearer ...)
+     * @return {@link User} if successful; Otherwise an Unauthorised Error.
+     */
     private User requireCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated()) {
@@ -66,6 +69,11 @@ public class SessionController {
         return userService.getUserByEmail(email);
     }
 
+    /**
+     * Get the note from the given {@link Session}.
+     * @param session The given Session from the request payload.
+     * @return {@link ResponseEntity} containing {@link GetTextNoteResponse} and a message stating whether returning the note was successful.
+     */
     @PostMapping("/getNote")
     public ResponseEntity<GetTextNoteResponse> getNote(@RequestBody Session session){
         int foundSessionId = sessionService.getIdByDate(session.getDate().toString());
@@ -77,6 +85,11 @@ public class SessionController {
         }
     }
 
+    /**
+     * Edit the note of a {@link Session}.
+     * @param request The given edit changes from the request payload.
+     * @return {@link ResponseEntity} containing {@link EditNoteResponse} and a message stating whether editing the note was successful.
+     */
     @PostMapping("/editNote")
     public ResponseEntity<EditNoteResponse> editNote(@RequestBody UpdateTextNoteRequest request){
         //find session ID by date
@@ -93,6 +106,11 @@ public class SessionController {
         }
     }
 
+    /**
+     * Create a {@link Session}
+     * @param session The {@link Session} being created  from the request payload.
+     * @return {@link ResponseEntity} containing {@link CreateSessionResponse} and a  message stating whether creating the note was successful.
+     */
     @PostMapping("/create")
     public ResponseEntity<CreateSessionResponse> createSession(@RequestBody Session session){
         Session newSession = new Session();
@@ -108,6 +126,11 @@ public class SessionController {
         }
     }
 
+    /**
+     * Deleting a given {@link Session}.
+     * @param session The {@link Session} being delete from the request payload.
+     * @return {@link ResponseEntity} containing {@link DeleteSessionResponse} and a message stating whether the deletion was successful.
+     */
     @PostMapping("/deleteSession")
     public ResponseEntity<DeleteSessionResponse> postMethodName(@RequestBody Session session) {
         //get via date and type
@@ -128,6 +151,10 @@ public class SessionController {
         //get result and return response
     }
 
+    /**
+     * Fetch all Sessions from the current User
+     * @return {@link ResponseEntity} containing {@link List} containing {@link FetchSessionsResponse} otherwise an error message is returned.
+     */
     @PostMapping("/fetchSessions")
     public ResponseEntity<List<FetchSessionsResponse>> fetchSessions() {
         try {
@@ -147,6 +174,11 @@ public class SessionController {
         }
     }
 
+    /**
+     * Update all Sessions from the current User
+     * @param sessions The changes made to Sessions
+     * @return {@link ResponseEntity} with a message on whether the Sessions update was successful.
+     */
     @PutMapping("/updateSessions")
     public ResponseEntity<String> updateSessions(@RequestBody List<SyncSessionsResponse> sessions) {
         try {
@@ -160,6 +192,10 @@ public class SessionController {
         }
     }
 
+    /**
+     * Return all categories and activities for current user
+     * @return {@link ResponseEntity} containing {@link FetchCategoriesAndActivitiesResponse} otherwise an error message will be returned.
+     */
     @PostMapping("/fetchCategoriesAndActivities")
     public ResponseEntity<FetchCategoriesAndActivitiesResponse> fetchCategoriesAndActivities() {
         try {

@@ -10,7 +10,7 @@ import com.example.stored_procedures.CreateActivityType;
 import com.example.stored_procedures.GetActivityTypes;
 
 /**
- * ActivityTypeService performs actions such as add, create, view and delete directly to the repository.
+ * ActivityTypeService performs actions such as add, create, view and delete directly to/from the repository.
  */
 @Service
 public class ActivityTypeService {
@@ -69,9 +69,9 @@ public class ActivityTypeService {
     }
 
     /**
-     *
-     * @param activityType
-     * @return
+     * Update a specific {@link ActivityType} from the repository.
+     * @param activityType The activityType to be updated
+     * @return {@code true} if update succeeded; {@code false} otherwise.
      */
     public boolean updateActivityType(ActivityType activityType){
         try{

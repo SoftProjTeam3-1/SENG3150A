@@ -13,6 +13,9 @@ import com.example.services.JwtService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
+/**
+ * The Service for the User Requests.
+ */
 @Service
 public class RequestUserService {
 
@@ -24,6 +27,11 @@ public class RequestUserService {
         this.userService = userService;
     }
 
+    /**
+     * Return the User from the request.
+     * @param request The request must be a JWT or a cookie.
+     * @return {@link User}; Otherwise {@link ResponseStatusException} with an error message.
+     */
     public User requireUser(HttpServletRequest request) {
         // 1) Prefer Authorization: Bearer <access>
         String auth = request.getHeader(HttpHeaders.AUTHORIZATION);
@@ -58,6 +66,12 @@ public class RequestUserService {
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not authenticated");
     }
 
+    /**
+     * Return the JWT from the cookie.
+     * @param request The cookie.
+     * @param name The name of the header the cookie is under.
+     * @return {@link String}; Otherwise null.
+     */
     private String getCookie(HttpServletRequest request, String name) {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) return null;
