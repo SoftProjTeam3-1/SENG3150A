@@ -23,7 +23,7 @@ describe("Activity Create Flow", () => {
         // intercept post request
         cy.intercept('POST', '/api/activity/create').as('createActivity');
 
-        cy.get('span#categoryName').first().invoke('text').then((categoryName) => {
+        cy.get('div[data-testid^="category-"]').first().invoke('text').then((categoryName) => {
             //type in input fields
             //submit the form
             cy.contains('button', "Add Activity").first().click();
@@ -32,7 +32,7 @@ describe("Activity Create Flow", () => {
             cy.get('textarea[placeholder="Enter activity description"]').type(activityDescription);
             cy.get('input[placeholder="Enter the number of people required"]').type(activityPeopleRequired);
             cy.get('input[placeholder="Enter time in minutes"]').type(activityDuration);
-            cy.get('button#addActivitySubmitButton').click();
+            cy.get('button[type="submit"]').eq(1).click();
             
             //wait for post request and assert response and requests
             cy.wait('@createActivity').then((interception) => {

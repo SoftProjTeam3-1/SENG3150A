@@ -98,3 +98,6 @@ SENG3150-Project/SprintBoot- Backend/demo/src/main/resources/application.propert
 
 # Cypress environment files containing API keys
 SENG3150-Project/ReactVite- Frontend/cypress.env.json
+SENG3150-Project/ReactVite- Frontend/coverage/lcov-report/src/components/Auth/AuthProvider.tsx.html
+SENG3150-Project/ReactVite- Frontend/coverage/lcov-report/src/components/Auth/RequireAuth.tsx.html
+SENG3150-Project/ReactVite- Frontend/coverage/lcov-report/src/lib/api.js.html
