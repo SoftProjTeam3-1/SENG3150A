@@ -2,19 +2,37 @@
 
 describe("Activity Update Flow", () => {
     beforeEach(() => {
-        cy.visit("http://localhost:5173/manage-activities");
+        cy.visit('http://localhost:5173');
+        //then login as standard user
+        cy.get('input[type="email"]').type('stuart.mendes@gmail.com');
+        cy.get('input[type="password"]').type('SENG3150isfun!');
+        cy.get('button[type="submit"]').click();
+        cy.contains('Dashboard').should('be.visible');
+        cy.visit('http://localhost:5173/manage-activities');
     });
+
+    //TODO Test for coverage
+    describe("Activity Update Coverage", () => {
+        it("covers all fields in the update process", () => {
+            // Click on the first activity to open the edit form
+            cy.get('li').first().click();
+        });
+    });
+
+
+
+
 
     it("updates an existing activity with the backend active", () => {
         const activityNameChanged = "E2E Activity- edited";
         const activityDescriptionChanged = "This is an activity created during E2E testing -edited";
         const activityDurationChanged = "20";
         const activityPeopleRequiredChanged = "6";
-        const activityTypeDescriptionChanged = null;
+        const activityTypeDescriptionChanged = '';
 
         cy.intercept('POST', '/api/activity/update').as('updateActivity');
 
-        cy.get('span#categoryName').first().invoke('text').then((categoryName) => {
+        cy.get('div[data-testid^="category-"]').first().invoke('text').then((categoryName) => {
             //click on activity to edit it
             cy.get('li').first().click();
 

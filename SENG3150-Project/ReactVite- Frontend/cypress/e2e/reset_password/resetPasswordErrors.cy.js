@@ -1,10 +1,13 @@
 import { MailSlurp } from 'mailslurp-client';
 
 describe('Reset Password Flow', () => {
-    const apiKey = 'c263ede172dfd59ae905e0c55bdb358e683403e66d744bdf468c9afa1bba6e32';
-    const inboxId = '01aa6d4b-5545-4003-95ca-19551486c8f0';
+    const apiKey = 'f52c5d5d7a333551087dd13d6978c6d5c336054fec0711740ad095b038a6ed38';
+    const inboxId = '59cf25eb-83f8-429e-bbb5-73c136d6c0c2';
     beforeEach(() => {
-        cy.visit('http://localhost:5173/forget-password'); // adjust if route differs
+        cy.visit('http://localhost:5173'); // adjust if route differs
+        //Click on forget password link
+        cy.contains('Forgot password?').click();
+        cy.url().should('include', '/forget-password');
         // Delete mailslurp emails
         cy.mailslurp({ apiKey }).then((mailslurp) => {
             // Empty the inbox before each test

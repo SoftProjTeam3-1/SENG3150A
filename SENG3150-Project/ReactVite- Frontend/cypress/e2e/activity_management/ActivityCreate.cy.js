@@ -2,14 +2,14 @@
 
 describe("Activity Create Flow", () => {
     beforeEach(() => {
-    cy.visit('http://localhost:5173');
-    //then login as standard user
-    cy.get('input[type="email"]').type('stuart.mendes@gmail.com');
-    cy.get('input[type="password"]').type('SENG3150isfun!');
-    cy.get('button[type="submit"]').click();
-    cy.contains('Dashboard').should('be.visible');
-    cy.visit('http://localhost:5173/manage-activities');
-  });
+        cy.visit('http://localhost:5173');
+        //then login as standard user
+        cy.get('input[type="email"]').type('stuart.mendes@gmail.com');
+        cy.get('input[type="password"]').type('SENG3150isfun!');
+        cy.get('button[type="submit"]').click();
+        cy.contains('Dashboard').should('be.visible');
+        cy.visit('http://localhost:5173/manage-activities');
+    });
 
     it("creates a new activity with the backend active", () => {
         // declare example variables
@@ -23,7 +23,7 @@ describe("Activity Create Flow", () => {
         // intercept post request
         cy.intercept('POST', '/api/activity/create').as('createActivity');
 
-        cy.get('span#categoryName').first().invoke('text').then((categoryName) => {
+        cy.get('div[data-testid^="category-"]').first().invoke('text').then((categoryName) => {
             //type in input fields
             //submit the form
             cy.contains('button', "Add Activity").first().click();
@@ -32,7 +32,7 @@ describe("Activity Create Flow", () => {
             cy.get('textarea[placeholder="Enter activity description"]').type(activityDescription);
             cy.get('input[placeholder="Enter the number of people required"]').type(activityPeopleRequired);
             cy.get('input[placeholder="Enter time in minutes"]').type(activityDuration);
-            cy.get('button#addActivitySubmitButton').click();
+            cy.get('button[type="submit"]').eq(1).click();
             
             //wait for post request and assert response and requests
             cy.wait('@createActivity').then((interception) => {
