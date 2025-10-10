@@ -46,10 +46,20 @@ public class SessionService {
     //     );
     // }
 
+    /**
+     * Return the Session ID from the given date from the repository.
+     * @param date The given date as a {@link String}.
+     * @return The ID as an {@link Integer}.
+     */
     public int getIdByDate(String date){
         return sessionRepository.findIdByDate(date);
     }
 
+    /**
+     * Get the Notes from the given Session ID
+     * @param sessionId The given Session ID as an {@link Integer}
+     * @return {@link String} of notes if successful; Otherwise {@code null}.
+     */
     public String getTextBySessionId(int sessionId){
         try{
             String result = textNoteRepository.findTextBySessionId(sessionId);
@@ -61,6 +71,11 @@ public class SessionService {
         }
     }
 
+    /**
+     * Save the session to the repository.
+     * @param session The given {@link Session}
+     * @return {@code true} if save succeeded; {@code false} otherwise.
+     */
     public boolean saveSession(Session session) {
         try {
             sessionRepository.save(session);
@@ -71,6 +86,12 @@ public class SessionService {
         }
     }
 
+    /**
+     * Update the Notes with the given Session ID.
+     * @param text The change given.
+     * @param sessionId The given Session ID.
+     * @return {@code true} if update succeeded; {@code false} otherwise.
+     */
     public boolean updateTextBySessionId(String text, int sessionId) {
         try {
             textNoteRepository.updateTextBySessionId(text, sessionId);
@@ -81,10 +102,20 @@ public class SessionService {
         }
     }
 
+    /**
+     * Get the specific Session by the Date and Type of Session
+     * @param session The given {@link Session} just containing Date and Type
+     * @return The expected {@link Session}
+     */
     public Session getSessionByDateAndType(Session session) {
         return sessionRepository.findDistinctByDateAndType(session.getDate(), session.getType());
     }
 
+    /**
+     * Delete the given Session from the repository.
+     * @param session The given {@link Session}
+     * @return {@code true} if deletion succeeded; {@code false} otherwise.
+     */
     public boolean deleteSession(Session session){
         try {
             sessionRepository.delete(session);
@@ -95,8 +126,14 @@ public class SessionService {
         }
     }
 
+
     @Autowired
     EntityManager em;
+
+    /**
+     * Delete all Sessions from the given User
+     * @param user The given {@link User}
+     */
     public void deleteAllUserSessions(User user){
         try {
             List<Session> sessions = sessionRepository.findByUser(user);
@@ -107,11 +144,20 @@ public class SessionService {
             System.out.println("Error deleting sessions: " + e.getMessage());
         }
     }
+
+    /**
+     * Get all the Sessions from the specific User.
+     * @param user The given {@link User}
+     * @return The expected {@link Session}
+     */
     public List<Session> getSessionsByUser(User user) {
         return sessionRepository.findByUser(user);
     }
 
-
+    /**
+     * Validates the given Sessions Exist
+     * @param sessions The given {@link Session}
+     */
     private void prevalidate(List<SyncSessionsResponse> sessions) {
         for (int i = 0; i < sessions.size(); i++) {
             var dto = sessions.get(i);
@@ -125,6 +171,11 @@ public class SessionService {
         }
     }
 
+    /**
+     * Clears old User Sessions and replaces them with the updated versions.
+     * @param user The given {@link User}
+     * @param sessions The given {@link Session}
+     */
     @Transactional
     public void replaceUserSessions(User user, List<SyncSessionsResponse> sessions) {
 
