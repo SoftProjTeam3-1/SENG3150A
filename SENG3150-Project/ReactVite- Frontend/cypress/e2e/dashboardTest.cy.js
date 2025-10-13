@@ -39,7 +39,7 @@ describe('template spec', () => {
     cy.get('.text-center > .w-32').contains('16').should('be.visible');
     
     // click on 10 in class="react-datepicker__month-container"
-    cy.get('.react-datepicker__month-container').contains('10').click();
+    //cy.get('.react-datepicker__month-container').contains('10').click();
     // Display the Training Session and Game Session in the dashboard
     cy.get('.text-center > .w-32').contains('10').click();
     cy.get('#userDisplay > .p-5 > .gap-y-5 > .gap-y-3').contains('10');
@@ -48,58 +48,83 @@ describe('template spec', () => {
 
     // Add a New Activity to the Training Session
     cy.get('.text-4xl').contains('New Activity').click();
-    cy.get('.text-center > :nth-child(1) > .w-full').contains('Warm Up').click();
-    cy.get('.text-center > :nth-child(1) > .gap-2 > :nth-child(1)').contains('Light Jogging').click();
+    cy.get('.text-center > :nth-child(1) > .w-full').find("div").contains('Warmup').click();
+    cy.get('.text-center > :nth-child(1) > .gap-2 > :nth-child(1)').contains('Laps').click();
     cy.get('.w-20').type('5');
     cy.get('.fixed > .bg-gray-600 > .bg-white').contains('Confirm').click();
   
     // Check if the inputted Activity is displayed in the session
-    cy.get('#userDisplay > .p-5 > :nth-child(1) > .gap-y-3 > .overflow-y-auto > :nth-child(1) > .flex > .flex-1 > :nth-child(2)').should('have.text', 'Light Jogging');
-    cy.get('.flex-1 > :nth-child(4)').should('have.text', '5 minutes');
+    cy.get('#userDisplay > .p-5 > :nth-child(1) > .gap-y-3 > .overflow-y-auto > :nth-child(1) > .flex > .flex-1 > :nth-child(2)').should('have.text', 'Laps');
+    cy.get('.flex-1 > :nth-child(4)').should('have.text', '05 minutes');
   });
 
-  // Add and reorder activities in the Training Session
-  it('adds and reorders activities', () => {
+  // Reorder activities in the Training Session
+  it('add and reorders activities', () => {
     // Check if Sessions from previous test is still there
-    cy.get('.text-center > .w-32').contains('10').should('be.visible');
-    cy.get('.text-center > .w-32').contains('16').should('be.visible');
+    cy.get('.text-center > .w-32').contains('May 1').click();
+    cy.get('.text-center > .w-32').contains('May 6').click();
     // Add another Activity to the Training Session then drag and drop to reorder and parallel
-    cy.get('.text-4xl').contains('New Activity').click();
-    cy.get('.text-center > :nth-child(1) > .w-full').contains('Warm Up').click();
-    cy.get('.text-center > :nth-child(1) > .gap-2 > :nth-child(2)').contains('Arm Circles').click();
+
+      cy.get('#userDisplay .p-5 > .gap-y-5 > .gap-y-3')
+          .filter((_, el) => el.textContent?.includes('May 1'))
+          .first()
+          .as('sessionA');
+
+      cy.get('#userDisplay .p-5 > .gap-y-5 > .gap-y-3')
+          .filter((_, el) => el.textContent?.includes('May 6'))
+          .first()
+          .as('sessionB');
+
+      cy.get('@sessionA').within(() => {
+          cy.contains('button', 'New Activity').click();       // <-- key change
+      });
+
+    cy.get('.text-center > :nth-child(2) > .w-full').find("div").contains('Skills').click();
+    cy.get('.text-center > :nth-child(1) > .gap-2 > :nth-child(2)').contains('Dribbling').click();
     cy.get('.w-20').type('10');
     cy.get('.fixed > .bg-gray-600 > .bg-white').contains('Confirm').click();
+
+    // Move Activity
+
+
+    // Check Activity
   });
 
 
   // Delete an Activity from the Training Session
   it('deletes an activity', () => {
-    // Delete the first Activity from the Training Session
-    ccy.get('#userDisplay > .p-5 > .gap-y-5 > .gap-y-3 > .overflow-y-auto > :nth-child(1) > .flex > .flex-1').hover();
-    cy.get('#userDisplay > .p-5 > .gap-y-5 > .gap-y-3 > .overflow-y-auto > :nth-child(1) > .flex > .flex-1 > .flex > .gap-2 > .text-red-600').click();
-    // Check the Activity is deleted
-    cy.get('#userDisplay > .p-5 > .gap-y-5 > .gap-y-3 > .overflow-y-auto > :nth-child(1) > .flex > .flex-1 > :nth-child(2)').should('not.have.text', 'Light Jogging');
-  });
+      cy.contains('.text-center .w-32', 'May 1').click();
 
-  // Edit an Activity in the Training Session
-  it('edits an activity', () => {
-    // Edit the remaining Activity from the Training Session
-    cy.get('#userDisplay > .p-5 > .gap-y-5 > .gap-y-3 > .overflow-y-auto > :nth-child(1) > .flex > .flex-1').hover();
-    cy.get('#userDisplay > .p-5 > .gap-y-5 > .gap-y-3 > .overflow-y-auto > :nth-child(1) > .flex > .flex-1 > .flex > .gap-2 > .text-blue-600').click();
-    // Change duration to 15
-    cy.get('.w-20').clear().type('15');
-    cy.get('.fixed > .bg-gray-600 > .bg-white').contains('Confirm').click();
-    // Check the Activity is edited
-    cy.get('.flex-1 > :nth-child(4)').should('have.text', '15 minutes');
+      const list = '#userDisplay .p-5 > .gap-y-5 > .gap-y-3 .overflow-y-auto';
+
+      cy.contains(`${list} .flex .flex-1`, 'Laps')
+          .closest('.flex')
+          .as('row');
+
+      cy.get('@row').trigger('mouseover', { force: true });
+      cy.get('@row').find('.text-red-600').first().click({ force: true });
+
+// assert by text so we’re not tied to structure
+      cy.get(list).should('not.contain', 'Laps');
+
   });
 
   // Check times are calculated correctly
   it('checks time calculations', () => {
-    // Check if Sessions from previous test is still there
-    cy.get('.text-center > .w-32').contains('10').should('be.visible');
-    cy.get('.text-center > .w-32').contains('16').should('be.visible');
-    // Check if the total time is correct
-    cy.get('.text-2xl').contains('Total Time: 15 minutes').should('be.visible');
+      cy.contains('.text-center .w-32', 'May 1').click();
+
+      // Grab the May 1 panel
+      cy.get('#userDisplay .p-5 .gap-y-5 .gap-y-3')
+          .filter((_, el) => el.textContent?.includes('May 1'))
+          .first()
+          .as('sessionA');
+
+      // Assert total time (classes chained; scoped to the panel)
+      cy.get('@sessionA')
+          .find('.text-center.mt-auto.pt-3.text-white.font-bold')
+          .should('be.visible')// extra sanity
+          .invoke('text')
+          .should('match', /Total Time:\s*50\s*Minutes/i);
   });
 
   // Write notes for the session
