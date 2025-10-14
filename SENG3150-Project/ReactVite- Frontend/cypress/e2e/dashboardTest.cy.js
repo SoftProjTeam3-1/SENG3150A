@@ -19,6 +19,8 @@ describe('template spec', () => {
     cy.get('.react-datepicker__month-container').contains('10').click();
     // check if its created in the dashboard
     cy.get('.text-center > .w-32').contains('10').should('be.visible');
+
+      cy.wait(500)
   });
 
   it('creates a new game session', () => {
@@ -35,8 +37,8 @@ describe('template spec', () => {
 
   it('displays sessions and adds activities', () => {
     // Check if Sessions from previous test is still there
-    cy.get('.text-center > .w-32').contains('10').should('be.visible');
-    cy.get('.text-center > .w-32').contains('16').should('be.visible');
+    cy.get('.text-center > .w-32').contains('Oct 10').should('be.visible');
+    cy.get('.text-center > .w-32').contains('Oct 16').should('be.visible');
     
     // click on 10 in class="react-datepicker__month-container"
     //cy.get('.react-datepicker__month-container').contains('10').click();
@@ -129,20 +131,25 @@ describe('template spec', () => {
 
   // Write notes for the session
   it('writes notes for the session', () => {
-    cy.get('.text-4xl').contains('Notes').click();
-    cy.get('.w-full').type('This is a test note.');
-    cy.get('.fixed > .bg-gray-600 > .bg-white').contains('Confirm').click();
+      cy.contains('.text-center .w-32', 'May 1').click();
+      cy.get('.font-bold').contains('Notes').click();
+      cy.get('textarea[placeholder="Write something here..."]')
+          .filter(':visible')
+          .first()
+          .type('This is a test note.');
   });
 
   // Edit notes for the session and check they are saved
   it('edits notes for the session', () => {
-    cy.get('.text-4xl').contains('Notes').click();
+      cy.contains('.text-center .w-32', 'May 1').click();
+      cy.get('textarea[data-value="This is a test note."]')
     cy.get('.w-full').clear().type('This is an edited test note.');
     cy.get('.fixed > .bg-gray-600 > .bg-white').contains('Confirm').click();
   });
 
   // Check the session is saved and appears in the dashboard
   it('checks the session is saved and appears in the dashboard', () => {
+      cy.contains('.text-center .w-32', 'May 1').click();
     cy.get('.text-4xl').contains('Notes').click();
     cy.get('.w-full').should('have.value', 'This is an edited test note.');
     });
