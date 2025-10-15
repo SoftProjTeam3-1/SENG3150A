@@ -11,9 +11,11 @@ import org.junit.jupiter.api.Test;
 public class FetchSessionsResponseTest {
     
     private FetchSessionsResponse responseDefault = new FetchSessionsResponse();
+
     private FetchSessionsResponse response = new FetchSessionsResponse(1, 
         new Date(1746118800000L), 
         new SessionType("", ""),
+        new ArrayList<>(),
         new ArrayList<>());
 
 @Test

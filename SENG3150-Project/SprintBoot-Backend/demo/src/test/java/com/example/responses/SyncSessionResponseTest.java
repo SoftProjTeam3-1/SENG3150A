@@ -11,6 +11,7 @@ public class SyncSessionResponseTest {
     private SyncSessionsResponse response = new SyncSessionsResponse(1,
         new Date(1746118800000L),
         2,
+        new ArrayList<>(),
         new ArrayList<>());
     
     @Test
