@@ -2,6 +2,7 @@ package com.example.controllers;
 
 import java.util.List;
 
+import com.example.entities.Activity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,9 @@ import com.example.responses.GetActivityTypeResponse;
 import com.example.responses.DeleteActivityTypeResponse;
 import com.example.responses.UpdateActivityTypeResponse;
 
+/**
+ * The ActivityTypeController is incharge of creating, viewing, updating and deleting {@link ActivityType}
+ */
 @CrossOrigin(origins = "http://localhost:5173") // Adjust to match your frontend origin
 @RestController
 @RequestMapping("/api/activityType")
@@ -27,6 +31,11 @@ public class ActivityTypeController {
     ActivityTypeService activityTypeService;
     // Add methods to handle requests related to activity types
 
+    /**
+     * Create an {@link ActivityType}
+     * @param entity The {@link ActivityType} being created.
+     * @return {@link ResponseEntity} containing {@link ActivityType} as well as a message stating whether the creation was successful or not.
+     */
     @PostMapping("/create")
     public ResponseEntity<CreateActivityTypeResponse> createActivityType(@RequestBody ActivityType entity) {
         ActivityType newActivityType = new ActivityType();
@@ -44,12 +53,21 @@ public class ActivityTypeController {
         }
     }
 
+    /**
+     * Return all {@link ActivityType}
+     * @return {@link ResponseEntity} containing {@link GetActivityTypeResponse} as well as a message stating all Activities have been returned.
+     */
     @GetMapping(value="/getAll")
     public ResponseEntity<GetActivityTypeResponse> getAllActivityTypes() {
         List<ActivityType> activityTypes = activityTypeService.getAllActivityTypes();
         return new ResponseEntity<>(new GetActivityTypeResponse(activityTypes, "Activity types returned"), HttpStatus.OK);
     }
-    
+
+    /**
+     * Deletes an {@link ActivityType}
+     * @param entity The {@link ActivityType} being deleted.
+     * @return {@link ResponseEntity} containing {@link ActivityType} as well as a message stating whether the deletion was successful or not.
+     */
     @PostMapping(value="/delete")
     public ResponseEntity<DeleteActivityTypeResponse> deleteActivityType(@RequestBody ActivityType entity){
         boolean result = activityTypeService.deleteActivityType(entity.getName());
@@ -60,6 +78,11 @@ public class ActivityTypeController {
         }
     }
 
+    /**
+     * Updates an {@link ActivityType}
+     * @param entity The {@link ActivityType} being updated.
+     * @return {@link ResponseEntity} containing {@link ActivityType} as well as a message stating whether the modification was successful or not.
+     */
     @PostMapping(value="/update")
     public ResponseEntity<UpdateActivityTypeResponse> updateActivityType(@RequestBody ActivityType entity){
         boolean result = activityTypeService.updateActivityType(entity);

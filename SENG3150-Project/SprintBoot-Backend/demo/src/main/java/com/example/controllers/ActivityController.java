@@ -16,6 +16,10 @@ import com.example.responses.DeleteActivityResponse;
 import com.example.responses.GetActivityResponse;
 import com.example.responses.UpdateActivityResponse;
 
+/**
+ * REST controller for managing {@link Activity} resources.
+ * Provides endpoints to create, retrieve by type, update, and delete activities.
+ */
 @RestController
 @RequestMapping("/api/activity")
 public class ActivityController {
@@ -25,6 +29,11 @@ public class ActivityController {
     @Autowired
     ActivityTypeService activityTypeService;
 
+    /**
+     * Handles HTTP POST requests to create an activity.
+     * @param entity The {@link Activity} request payload that contains the name, description, peopleRequired, duration, activityType.
+     * @return {@link ResponseEntity} containing a {@link CreateActivityResponse} as well as a message indicating whether creation was successful.
+     */
     @PostMapping(value="/create")
     public ResponseEntity<CreateActivityResponse> createActivity(@RequestBody Activity entity){
         System.out.println("REACHED APPPROPRIATE POST MAPPING?!");
@@ -46,6 +55,11 @@ public class ActivityController {
         }
     }
 
+    /**
+     * Handles HTTP POST requests to return activities filtered by ActivityType.
+     * @param activityType The {@link ActivityTypeRequest} request payload.
+     * @return {@link ResponseEntity} containing {@link GetActivityResponse} as well as a message stating that the activities have been returned.
+     */
     @PostMapping(value="/getByActivityType")
     public ResponseEntity<GetActivityResponse> getAllActivities(@RequestBody ActivityTypeRequest activityType){
         System.out.println("REACHED APPPROPERIATE GET MAPPING?!");
@@ -55,6 +69,11 @@ public class ActivityController {
         return new ResponseEntity<>(new GetActivityResponse(activities, "Activities returned"), HttpStatus.OK);
     }
 
+    /**
+     * Handles HTTP POST requests to delete a given activity.
+     * @param activity The {@link Activity} request payload.
+     * @return {@link ResponseEntity} containing {@link DeleteActivityResponse} as well as a message indicating whether deletion was successful.
+     */
     @PostMapping(value="/delete")
     public ResponseEntity<DeleteActivityResponse> deleteActivity(@RequestBody Activity activity){
         boolean result = activityService.deleteActivity(activity.getName());
@@ -65,6 +84,11 @@ public class ActivityController {
         }
     }
 
+    /**
+     * Handles HTTP POST requests to update a given activity.
+     * @param entity The {@link Activity} request payload.
+     * @return {@link ResponseEntity} containing {@link UpdateActivityResponse} as well as a message indicating whether updating the activity was successful.
+     */
     @PostMapping(value="/update")
     public ResponseEntity<UpdateActivityResponse> updateActivity(@RequestBody Activity entity){
         System.out.println("REACHED THE UPDATE MAPPING LETS GO!");

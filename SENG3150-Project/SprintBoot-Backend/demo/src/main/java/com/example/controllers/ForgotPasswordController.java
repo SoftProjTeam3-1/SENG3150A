@@ -25,6 +25,11 @@ public class ForgotPasswordController {
     @Autowired
     private UserService userService;
 
+    /**
+     * Sends a code to the user to then reset there password
+     * @param payload The {@link Map} request payload.
+     * @return {@link Map} with a message or error, stating whether the password was reset or not.
+     */
     @PostMapping("/forgotpassword")
     public Map<String, String> forgotPassword(@RequestBody Map<String, String> payload) {
         String email = payload.get("email");
@@ -51,6 +56,11 @@ public class ForgotPasswordController {
     }
 
 
+    /**
+     * Changes user password
+     * @param payload The {@link Map} request payload.
+     * @return {@link Map} with a message or error, stating whether the password was changed or not.
+     */
     @PostMapping("/reset-password")
     public Map<String, String> resetPassword(@RequestBody Map<String, String> payload) {
         String email = payload.get("email");
@@ -70,6 +80,11 @@ public class ForgotPasswordController {
         return Map.of("message", "Password updated successfully.");
     }
 
+    /**
+     * Verifies the code inputted by the user against the specific accounts reset code.
+     * @param payload The {@link Map} request payload.
+     * @return {@link Map} with a message or error, stating whether the code was verified or not.
+     */
     @PostMapping("/verify-reset-code")
     public Map<String, String> verifyResetCode(@RequestBody Map<String, String> payload) {
         String email = payload.get("email");

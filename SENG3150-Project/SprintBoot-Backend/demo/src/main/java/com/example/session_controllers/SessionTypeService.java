@@ -18,11 +18,21 @@ public class SessionTypeService {
     }
 
 
+    /**
+     * Return the SessionType from the given ID
+     * @param id The Integer given
+     * @return {@link SessionType} if successful otherwise null.
+     */
     public SessionType findById(Integer id) {
         Optional<SessionType> sessionType = sessionTypeRepository.findById(id);
         return sessionType.orElse(null);
     }
 
+    /**
+     * Return the SessionType from the given name
+     * @param name The given name
+     * @return {@link SessionType} or otherwise null if not found.
+     */
     public SessionType findByName(String name) {
         List<SessionType> sessionType = sessionTypeRepository.findByName(name);
         return sessionType.isEmpty() ? null : sessionType.get(0);

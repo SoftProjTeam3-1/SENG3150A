@@ -4,6 +4,7 @@
 
 package com.example.session_controllers;
 
+import com.example.responses.*;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,13 +18,12 @@ import org.springframework.http.ResponseEntity;
 import com.example.entities.Session;
 import com.example.entities.Activity;
 import com.example.entities.SessionActivity;
-import com.example.responses.SessionActivityGrabResponse;
-import com.example.responses.AddSessionActivityResponse;
-import com.example.responses.DeleteSessionActivityResponse;
-import com.example.responses.EditSessionActivityDurationResponse;
 
 import java.util.List;
 
+/**
+ * The SessionActivityController, control's requests for adding, getting, updating and delete Session Activities.
+ */
 @RestController
 @CrossOrigin(origins = "http://localhost:5173") // Adjust to match your frontend origin
 @RequestMapping("/api/sessionActivity")
@@ -31,7 +31,12 @@ public class SessionActivityController {
 
     @Autowired
     private SessionActivityService sessionActivityService;
-	
+
+    /**
+     * Returns all the Activities from the given Session.
+     * @param session The {@link Session} request payload.
+     * @return {@link ResponseEntity} containing {@link SessionActivityGrabResponse} as well as a message indicating whether the return was successful.
+     */
     @PostMapping("/getSessionActivities")
     public ResponseEntity<SessionActivityGrabResponse> getSessionActivities(@RequestBody Session session){
         List<Activity> activities = sessionActivityService.getActivitiesBySession(session);
@@ -42,6 +47,11 @@ public class SessionActivityController {
         }
     }
 
+    /**
+     * Adds a new Session Activity to a Session.
+     * @param entity The {@link SessionActivity} request payload.
+     * @return {@link ResponseEntity} containing {@link AddSessionActivityResponse} as well as a message indicating whether creation was successful.
+     */
     @PostMapping("/addSessionActivity")
     public ResponseEntity<AddSessionActivityResponse> addSessionActivity(@RequestBody SessionActivity entity){
         //get session and activity for the entity
@@ -66,6 +76,11 @@ public class SessionActivityController {
         }
     }
 
+    /**
+     * Deletes a Session Activity from a Session
+     * @param sessionActivity The {@link SessionActivity} request payload.
+     * @return {@link ResponseEntity} containing {@link AddSessionActivityResponse} as well as a message indicating whether deletion was successful.
+     */
     @PostMapping("/deleteSessionActivity")
     public ResponseEntity<DeleteSessionActivityResponse> postMethodName(@RequestBody SessionActivity sessionActivity) {
         //get session activity
@@ -84,6 +99,11 @@ public class SessionActivityController {
         //run delete method in service with returned 
     }
 
+    /**
+     * Edit the duration of a Session Activity from a Session.
+     * @param request The {@link SessionActivity} request payload.
+     * @return {@link ResponseEntity} containing {@link AddSessionActivityResponse} as well as a message indicating whether a modification was successful.
+     */
     @PostMapping("/editDuration")
     public ResponseEntity<EditSessionActivityDurationResponse> editDuration(@RequestBody EditDurationRequest request) {
         SessionActivity sessionActivity = sessionActivityService.getSessionActivityBySessionAndActivity(request.getSession(), request.getActivity());
