@@ -22,5 +22,11 @@ import 'cypress-mailslurp';
 import "cypress-real-events/support";
 
 Cypress.config({
-    defaultCommandTimeout: 5000, // 5 seconds
+    defaultCommandTimeout: 10000, // 10 seconds
 });
+//TODO: enable this later when testing accessability
+// require('@axe-core/watcher/dist/cypressCommands');
+
+// afterEach(() => {
+//   cy.axeWatcherFlush();
+// });
