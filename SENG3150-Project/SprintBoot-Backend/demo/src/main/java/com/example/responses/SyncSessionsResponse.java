@@ -3,6 +3,7 @@ package com.example.responses;
 
 import com.example.entities.SessionActivity;
 import com.example.entities.SessionType;
+import com.example.entities.TextNote;
 import com.fasterxml.jackson.annotation.JsonAlias;
 
 import java.sql.Date;
@@ -17,16 +18,18 @@ public class SyncSessionsResponse {
     private Date date;
     private Integer rollId;
     private List<SyncSessionsActivityResponse> activities;
+    private List<TextNote> notes;
 
 
     public SyncSessionsResponse() {}
 
-    public SyncSessionsResponse(int sessionID, Date date, int sessionTypeId, List<SyncSessionsActivityResponse> activities) {
+    public SyncSessionsResponse(int sessionID, Date date, int sessionTypeId, List<SyncSessionsActivityResponse> activities, List<TextNote> notes) {
         this.sessionID = sessionID;
         this.sessionTypeId = sessionTypeId;
         this.rollId = sessionTypeId;
         this.date = date;
         this.activities = activities;
+        this.notes = notes;
     }
 
     public int getSessionID() {
@@ -66,6 +69,13 @@ public class SyncSessionsResponse {
     }
     public void setRollId(int rollId) {
         this.rollId = rollId;
+    }
+
+    public List<TextNote> getNotes() {
+        return notes;
+    }
+    public void setNotes(List<TextNote> notes) {
+        this.notes = notes;
     }
 }
 

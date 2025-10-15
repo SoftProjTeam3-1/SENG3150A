@@ -41,6 +41,7 @@ const SessionContainer_Mobile = ({sessions, selectedSessions, setSessions}) => {
                                                                 <textarea
                                                                     className="w-65 h-110 resize-none py-3 outline-none focus:outline-none"
                                                                     placeholder="Write something here..."
+                                                                    id="session-notes"
                                                                     value={notes}
                                                                     onChange={(e) => updateNotesForSession({id:id, newNotes:e.target.value, setSessions})}
                                                                 />
@@ -89,6 +90,7 @@ const SessionContainer_Mobile = ({sessions, selectedSessions, setSessions}) => {
                                                                 <textarea
                                                                     className="w-65 h-110 resize-none py-3 outline-none focus:outline-none"
                                                                     placeholder="Write something here..."
+                                                                    id="session-notes"
                                                                     value={notes}
                                                                     onChange={(e) => updateNotesForSession({id:id, newNotes:e.target.value, setSessions})}
                                                                 />

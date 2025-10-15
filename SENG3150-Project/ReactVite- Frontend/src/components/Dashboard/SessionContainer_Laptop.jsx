@@ -45,6 +45,7 @@ const SessionContainer_Laptop = ({sessions, setSessions, selectedSessions, DragD
                                                             <div>
                                                             <textarea
                                                                 className="w-65 h-110 resize-none py-3 outline-none focus:outline-none"
+                                                                id="session-notes"
                                                                 placeholder="Write something here..."
                                                                 value={notes}
                                                                 onChange={(e) => updateNotesForSession({id:id, newNotes:e.target.value, setSessions})}
@@ -151,6 +152,7 @@ const SessionContainer_Laptop = ({sessions, setSessions, selectedSessions, DragD
                                                     <div>
                                                             <textarea
                                                                 className="w-65 h-110 resize-none py-3 outline-none focus:outline-none"
+                                                                id="session-notes"
                                                                 placeholder="Write something here..."
                                                                 value={notes}
                                                                 onChange={(e) => updateNotesForSession({id:id, newNotes:e.target.value, setSessions})}

@@ -55,6 +55,7 @@
     "cypress": "^14.5.4",
     "cypress-mailslurp": "^1.11.1",
     "cypress-multi-reporters": "^1.6.4",
+    "cypress-real-events": "^1.15.0",
     "eslint": "^9.21.0",
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.19",
