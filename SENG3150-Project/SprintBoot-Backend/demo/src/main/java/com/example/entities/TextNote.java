@@ -21,7 +21,7 @@ import jakarta.persistence.CascadeType;
 public class TextNote {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int textNoteID;
+    private Integer textNoteID;
 
     private String text;
 
@@ -35,11 +35,11 @@ public class TextNote {
         this.text = text;
     }
 
-    public int getId() {
+    public Integer getId() {
         return textNoteID;
     }
 
-    public void setId(int textNoteID) {
+    public void setId(Integer textNoteID) {
         this.textNoteID = textNoteID;
     }
 

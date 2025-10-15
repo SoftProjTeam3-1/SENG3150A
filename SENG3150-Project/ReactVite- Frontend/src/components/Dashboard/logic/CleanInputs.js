@@ -4,7 +4,10 @@ export async function transformSessionsToFront(rawSessions) {
         shortDate: formatDate(session.date),     // e.g., 'Aug 14'
         date: session.date,
         type: session.sessionTypeId.toLowerCase(), // normalize case
-        notes: "", // add notes if you have it
+        notes:(session.notes ?? [])
+            .map(n => n?.text ?? '')
+            .filter(Boolean)
+            .join('\n'),
         activities: (session.activities || []).map(sa => {
             const a = sa.activity || {};  // Access nested activity
             return {
@@ -58,12 +61,31 @@ export function transformSessionsToBack(transformedSessions) {
             session.type?.name
         );
 
+        let notesPayload = [];
+        if (typeof session.notes === "string") {
+            notesPayload = session.notes
+                .split(/\r?\n/)
+                .map(s => s.trim())
+                .filter(Boolean)
+                .map(text => ({ text }));
+        } else if (Array.isArray(session.notes)) {
+            notesPayload = session.notes
+                .map(n => ({ id: n?.id ?? null, text: String(n?.text ?? "").trim() }))
+                .filter(n => n.text.length > 0);
+        }
+
+        console.log(
+            "[transform] notesPayload for session",
+            session.id,
+            JSON.stringify(notesPayload, null, 2)
+        );
+
         return {
             sessionID: parseInt(session.id.toString().replace("session-", "")),
             date: new Date(session.date),
             sessionTypeId: normalizeSessionTypeId(rawType),
             rollID: parseInt(session.id.toString().replace("session-", "")),
-            notes: session.notes || "",
+            notes: notesPayload,
             activities: (session.activities || []).map(a => ({
                 id: parseInt(a.id.toString().replace("activity-", "")),
                 name: a.name,

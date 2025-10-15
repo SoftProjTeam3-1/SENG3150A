@@ -19,6 +19,8 @@ import "@cypress/code-coverage/support";
 // Enable MailSlurp commands like cy.mailslurp()
 import 'cypress-mailslurp';
 
+import "cypress-real-events/support";
+
 Cypress.config({
     defaultCommandTimeout: 10000, // 10 seconds
 });

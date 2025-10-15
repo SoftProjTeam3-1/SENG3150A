@@ -203,6 +203,14 @@ public class SessionService {
                             "session[" + finalI + "]: sessionTypeId " + req.getSessionTypeId() + " not found"));
             s.setType(st);
 
+            s.getTextNotes().clear();
+            for (var nReq : req.getNotes()) {
+                if (nReq == null || nReq.getText() == null || nReq.getText().isBlank()) continue;
+                var note = new TextNote();
+                note.setText(nReq.getText().trim());
+                note.setSession(s);                // owning side set
+                s.getTextNotes().add(note);
+            }
 
             s.setRoll(new Roll());
 

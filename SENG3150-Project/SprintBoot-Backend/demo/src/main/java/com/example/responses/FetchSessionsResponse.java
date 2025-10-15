@@ -3,6 +3,7 @@ package com.example.responses;
 
 import com.example.entities.SessionActivity;
 import com.example.entities.SessionType;
+import com.example.entities.TextNote;
 
 import java.sql.Date;
 import java.util.List;
@@ -12,14 +13,16 @@ public class FetchSessionsResponse {
     private Date date;
     private String sessionTypeId;
     private List<SessionActivity> activities;
+    private List<TextNote> Notes;
 
     public FetchSessionsResponse() {}
 
-    public FetchSessionsResponse(int sessionID, Date date, SessionType sessionTypeId, List<SessionActivity> activities) {
+    public FetchSessionsResponse(int sessionID, Date date, SessionType sessionTypeId, List<SessionActivity> activities, List<TextNote> notes) {
         this.sessionID = sessionID;
         this.date = date;
         this.sessionTypeId = sessionTypeId.getName();
         this.activities = activities;
+        this.Notes = notes;
     }
 
     public int getSessionID() {
@@ -52,6 +55,14 @@ public class FetchSessionsResponse {
 
     public void setActivities(List<SessionActivity> activities) {
         this.activities = activities;
+    }
+
+    public List<TextNote> getNotes() {
+        return Notes;
+    }
+
+    public void setNotes(List<TextNote> notes) {
+        Notes = notes;
     }
 }
 

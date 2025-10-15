@@ -165,7 +165,8 @@ public class SessionController {
                         session.getId(),
                         session.getDate(),
                         session.getType(),
-                        session.getSessionActivities()
+                        session.getSessionActivities(),
+                        session.getTextNotes()
                 );
             }).collect(Collectors.toList());
             return new ResponseEntity<>(responseList, HttpStatus.OK);
