@@ -1,0 +1,12 @@
+
+
+
+@startuml
+!theme plain
+title System Context
+actor User
+rectangle "ReactVite- Frontend" as FE
+rectangle "SpringBoot- Backend" as BE
+User --> FE : UI
+FE --> BE : REST/JSON over HTTPS
+@enduml

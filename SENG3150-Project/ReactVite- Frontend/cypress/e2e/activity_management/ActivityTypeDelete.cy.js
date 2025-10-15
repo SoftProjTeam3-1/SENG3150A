@@ -21,7 +21,7 @@ describe('Activity Type Delete Flow',() => {
     it("deletes an activity type successfully with backend active", () => {
         cy.intercept('POST', '/api/activityType/delete').as('deleteActivityType');
 
-        cy.get('span#categoryName').first().invoke('text').then((categoryName) => {
+        cy.get('div[data-testid^="category-"]').first().invoke('text').then((categoryName) => {
             cy.get('button[title="Remove"]').first().click();
             cy.get('button').contains('Confirm').click();
 
