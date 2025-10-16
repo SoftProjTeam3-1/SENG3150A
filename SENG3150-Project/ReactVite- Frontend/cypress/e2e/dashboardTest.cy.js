@@ -1,6 +1,20 @@
 /* Tests for dashboard page
    http://localhost:5173/dashboard
 */
+
+const MONTH = new Date().toLocaleString('default', { month: 'short' });
+const SESSION1 = MONTH + " 10";
+const SESSION2 = MONTH + " 12";
+
+function pickDay(day) {
+    const d = String(day).padStart(2, '0'); // "01", "12", ...
+    cy.get('.react-datepicker')                // ensure the picker is open
+        .should('be.visible')
+        .find(`.react-datepicker__day--0${d}`)
+        .not('.react-datepicker__day--outside-month') // ignore leading/trailing days
+        .click({ force: true });
+}
+
 describe('template spec', () => {
   beforeEach(() => {
     cy.visit('http://localhost:5173');
@@ -9,18 +23,31 @@ describe('template spec', () => {
     cy.get('input[type="password"]').type('SENG3150isfun!');
     cy.get('button[type="submit"]').click();
     cy.contains('Dashboard').should('be.visible');
+
+      cy.intercept('PUT', '/api/session/updateSessions').as('updateSessions');
+      cy.intercept('POST', '/api/session/fetchSessions').as('fetchSessions')
   });
 
   // Create a Training Session
-  it('creates a new training session', () => {
-    cy.contains('button', 'New Session').click({ force: true });
-    cy.contains('Training Session').click({ force: true });
-    // click on 10 in class="react-datepicker__month-container"
-    cy.get('.react-datepicker__month-container').contains('10').click();
-    // check if its created in the dashboard
-    cy.get('.text-center > .w-32').contains('10').should('be.visible')
+    it('creates two training sessions deterministically (10 & 12)', () => {
+        // #1 create 10th
+        cy.contains('button', 'New Session').click({ force: true });
+        cy.contains('Training Session').click({ force: true });
+        pickDay(10);
+        cy.wait('@updateSessions');
 
-  });
+        // verify card shows day 10 (exact day text)
+        cy.contains('.text-center .w-32', 10).should('be.visible');
+
+        // #2 create 12th
+        cy.contains('button', 'New Session').click({ force: true });
+        cy.contains('Training Session').click({ force: true });
+        pickDay(12);
+        cy.wait('@updateSessions');
+
+        // verify card shows day 12 (avoid matching “12” in “2025” etc.)
+        cy.contains('.text-center .w-32', 12).should('be.visible');
+    });
 
   it('creates a new game session', () => {
     // Check if Training Session from previous test is still there
@@ -36,13 +63,13 @@ describe('template spec', () => {
 
   it('displays sessions and adds activities', () => {
     // Check if Sessions from previous test is still there
-    cy.get('.text-center > .w-32').contains('Oct 10').should('be.visible');
-    cy.get('.text-center > .w-32').contains('Oct 16').should('be.visible');
+    cy.get('.text-center > .w-32').contains(SESSION1).should('be.visible');
+    cy.get('.text-center > .w-32').contains(SESSION2).should('be.visible');
     
     // click on 10 in class="react-datepicker__month-container"
     //cy.get('.react-datepicker__month-container').contains('10').click();
     // Display the Training Session and Game Session in the dashboard
-    cy.get('.text-center > .w-32').contains('10').click();
+    cy.get('.text-center > .w-32').contains(SESSION1).click();
     cy.get('#userDisplay > .p-5 > .gap-y-5 > .gap-y-3').contains('10');
     cy.get('.text-center > .w-32').contains('16').click();
     cy.get('#userDisplay > .p-5 > :nth-child(2) > .border-white').contains('16');
@@ -60,66 +87,84 @@ describe('template spec', () => {
 
   });
 
-  // Reorder activities in the Training Session
-  it('add and reorders activities', () => {
-    // Check if Sessions from previous test is still there
-      openSession("May 1");
-      openSession("May 6");
-    // Add another Activity to the Training Session then drag and drop to reorder and parallel
 
-      cy.get('#userDisplay .p-5 > .gap-y-5 > .gap-y-3')
-          .filter((_, el) => el.textContent?.includes('May 1'))
-          .first()
-          .as('sessionA');
+    // Reorder activities in the Training Session
+    it('adds and reorders activities between SESSION1 and SESSION2', () => {
+        // open both sessions so both droppable lists are rendered
+        openSession(SESSION1);
+        openSession(SESSION2);
 
-      cy.get('#userDisplay .p-5 > .gap-y-5 > .gap-y-3')
-          .filter((_, el) => el.textContent?.includes('May 6'))
-          .first()
-          .as('sessionB');
+        // alias panels
+        cy.get('#userDisplay .p-5 > .gap-y-5 > .gap-y-3')
+            .filter((_, el) => el.textContent?.includes(SESSION1))
+            .first().as('sessionA');
 
-      cy.get('@sessionA').within(() => {
-          cy.contains('button', 'New Activity').click();       // <-- key change
-      });
+        cy.get('#userDisplay .p-5 > .gap-y-5 > .gap-y-3')
+            .filter((_, el) => el.textContent?.includes(SESSION2))
+            .first().as('sessionB');
 
-    cy.get('.text-center > :nth-child(2) > .w-full').find("div").contains('Skills').click();
-    cy.get('.text-center > :nth-child(1) > .gap-2 > :nth-child(2)').contains('Dribbling').click();
-    cy.get('.w-20').type('10');
-    cy.get('.fixed > .bg-gray-600 > .bg-white').contains('Confirm').click();
+        // add an activity to SESSION1
+        cy.get('@sessionA').within(() => {
+            cy.contains('button', 'New Activity').click({ force: true });
+        });
+        cy.get('.text-center > :nth-child(2) > .w-full').find('div').contains('Skills').click();
+        cy.get('.text-center > :nth-child(1) > .gap-2 > :nth-child(2)').contains('Dribbling').click();
+        cy.get('.w-20').clear().type('10');
+        cy.get('.fixed > .bg-gray-600 > .bg-white').contains('Confirm').click();
 
-    // Move Activity
+        // give backend time if you intercept these
+        cy.intercept('PUT', '/api/session/updateSessions').as('updateSessions');
+        cy.wait('@updateSessions');
 
-      // Grab draggables by r-b-d attribute or your own data-testid
-      // r-b-d auto-sets data-rbd-draggable-id on each item
-      cy.get('@sessionA')
-          .find('[data-rbd-draggable-id]')
-          .contains('Dribbling')     // item we want to move
-          .closest('[data-rbd-draggable-id]')
-          .as('drag');
+        // find the DRAGGABLE element for "Dribbling" in SESSION1 (it's also the handle)
+        cy.get('@sessionA')
+            .find('[data-rbd-draggable-id]')
+            .contains('Dribbling')
+            .closest('[data-rbd-draggable-id]')
+            .as('dragEl');
 
-      // Start keyboard drag, move up once, drop
-      cy.get('@drag').focus().realPress('Space');      // lift
-      cy.realPress('ArrowRight');                      // move to adjacent list (May 6)
-      // (optional) choose position inside May 6:
-      // cy.realPress('ArrowDown'); // move down one slot, repeat as needed
-      cy.realPress('Space');
+// pick a DROPPABLE list inside SESSION2 (first row / the empty dashed zone or first row)
+        cy.get('@sessionB')
+            .find('[data-rbd-droppable-id]')
+            .first()
+            .as('dropzone');
 
-      // Assert new order (read list text and check position)
-      cy.get('@sessionA').find('[data-rbd-draggable-id]').then($rows => {
-          const texts = [...$rows].map(r => r.textContent.trim());
-          expect(texts.some(t => /Dribbling/.test(t))).to.eq(false);
-      });
+// make sure both are in view
+        cy.get('@dragEl').scrollIntoView();
+        cy.get('@dropzone').scrollIntoView();
 
-      cy.get('@sessionB').find('[data-rbd-draggable-id]').then($rows => {
-          const texts = [...$rows].map(r => r.textContent.trim());
-          expect(texts.some(t => /Dribbling/.test(t))).to.eq(true);
-      });
+// compute a drop target (center of dropzone) and perform a real pointer drag
+        cy.get('@dropzone').then($dz => {
+            const r = $dz[0].getBoundingClientRect();
+            const targetX = Math.floor(r.left + r.width / 2);
+            const targetY = Math.floor(r.top  + r.height / 2);
 
-  });
+            cy.get('@dragEl').realMouseDown();                             // lift from the same element (it's the handle)
+            cy.realMouseMove(targetX, targetY, { position: 'client' });    // drag over session B
+            cy.realMouseUp();                                              // drop
+        });
+
+// if your app persists on drop, wait for it
+        cy.intercept('PUT', '/api/session/updateSessions').as('updateSessions');
+        cy.wait('@updateSessions');
+
+// assert it moved
+        cy.get('@sessionA').find('[data-rbd-draggable-id]').then($rows => {
+            const texts = [...$rows].map(r => r.textContent.trim());
+            expect(texts.some(t => /Dribbling/.test(t))).to.eq(false);
+        });
+
+        cy.get('@sessionB').find('[data-rbd-draggable-id]').then($rows => {
+            const texts = [...$rows].map(r => r.textContent.trim());
+            expect(texts.some(t => /Dribbling/.test(t))).to.eq(true);
+        });
+    });
 
 
-  // Delete an Activity from the Training Session
+
+    // Delete an Activity from the Training Session
   it('deletes an activity', () => {
-      openSession("May 1");
+      openSession(SESSION1);
 
       const list = '#userDisplay .p-5 > .gap-y-5 > .gap-y-3 .overflow-y-auto';
 
@@ -137,11 +182,11 @@ describe('template spec', () => {
 
   // Check times are calculated correctly
   it('checks time calculations', () => {
-      openSession("May 1");
+      openSession(SESSION1);
 
       // Grab the May 1 panel
       cy.get('#userDisplay .p-5 .gap-y-5 .gap-y-3')
-          .filter((_, el) => el.textContent?.includes('May 1'))
+          .filter((_, el) => el.textContent?.includes(SESSION1))
           .first()
           .as('sessionA');
 
@@ -150,13 +195,13 @@ describe('template spec', () => {
           .find('.text-center.mt-auto.pt-3.text-white.font-bold')
           .should('be.visible')// extra sanity
           .invoke('text')
-          .should('match', /Total Time:\s*35\s*Minutes/i);
+          .should('match', /Total Time:\s*15\s*Minutes/i);
 
   });
 
   // Write notes for the session
   it('writes notes for the session', () => {
-      openSession("May 1");
+      openSession(SESSION1);
       cy.get('#session-notes')
           .should('be.visible')
           .clear()
@@ -166,7 +211,7 @@ describe('template spec', () => {
 
   // Edit notes for the session and check they are saved
   it('edits notes for the session', () => {
-      openSession("May 1");
+      openSession(SESSION1);
       cy.get('#session-notes')
           .clear()
           .type('This is an edited test note.');
@@ -175,9 +220,11 @@ describe('template spec', () => {
 
   // Check the session is saved and appears in the dashboard
   it('checks the session is saved and appears in the dashboard', () => {
-      openSession("May 1");
+      openSession(SESSION1);
+      cy.wait('@fetchSessions');
+
       cy.get('#session-notes')
-          .should('have.value', 'This is an edited test note.').await
+          .should('have.value', 'This is an edited test note.')
     });
 
 });
