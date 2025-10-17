@@ -41,9 +41,6 @@ public class GenerateBackendPuml {
         System.out.println("Generating Backend Puml");
 
         List<String> inputDirectory = new ArrayList<>();
-        inputDirectory.add("SENG3150-Project");
-        inputDirectory.add("SprintBoot-Backend");
-        inputDirectory.add("demo");
         inputDirectory.add("target");
         inputDirectory.add("classes");
 
